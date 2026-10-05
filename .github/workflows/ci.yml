@@ -1,0 +1,16 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -r requirements.txt
+      - run: python verify_setup.py
+      - run: python -m pytest
+      # Deterministic evaluation (no API key in CI): public checks + rules baseline on the extended set
+      - run: python evals/run_public_evals.py --architecture single
+      - run: python evals/run_eval_suite.py --architectures rules --no-traces --out /tmp/eval

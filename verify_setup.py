@@ -17,6 +17,7 @@ REQUIRED_MODULES = [
     "dotenv",
     "streamlit",
     "httpx",
+    "anthropic",
 ]
 
 
@@ -134,15 +135,38 @@ def check_mock_api() -> None:
     ok("Mock vendor-risk API checks passed")
 
 
+def check_copilot() -> None:
+    from src.copilot.fakes import in_process_fetcher
+    from src.copilot.pipeline import analyze
+
+    result = analyze("REQ-1001", architecture="rules", vendor_fetcher=in_process_fetcher())
+    if result.decision.required_approvals != ["Manager"] or not result.decision.evidence:
+        fail("Copilot deterministic pipeline returned an unexpected result for REQ-1001")
+    ok(f"Copilot pipeline works (REQ-1001 -> {result.guardrails.final_status}, {len(result.decision.evidence)} evidence items)")
+
+
+def report_llm() -> None:
+    from src.config import get_settings
+
+    s = get_settings()
+    if s.llm_enabled:
+        ok(f"LLM provider configured: {s.llm_provider} / {s.model_name} (effort {s.llm_effort})")
+    else:
+        print("[INFO] No LLM key found - the app runs in deterministic fallback mode. "
+              "Add ANTHROPIC_API_KEY (or OPENAI_API_KEY) to .env for Architectures A/B.")
+
+
 def main() -> None:
-    print("FDE Assessment 3 - starter pack pre-flight\n")
+    print("FDE Assessment 3 - pre-flight\n")
     check_python()
     check_imports()
     check_data()
     check_contract_and_evals()
     check_mock_api()
+    check_copilot()
+    report_llm()
     print("\nPRE-FLIGHT PASSED")
-    print("Next: copy .env.example to .env, add your model credentials, then run: python run_local.py")
+    print("Next: python run_local.py   (UI at http://127.0.0.1:8501)")
 
 
 if __name__ == "__main__":
