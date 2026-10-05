@@ -1,39 +1,22 @@
+"""One-command local start: vendor-risk mock API + Procurement Copilot UI.
+
+    python run_local.py            # API on :8001 + UI on :8501
+    python run_local.py --no-ui    # API only
+"""
 from __future__ import annotations
 
+import argparse
 import signal
+import socket
 import subprocess
 import sys
 import time
 from pathlib import Path
 
-import requests
 from dotenv import load_dotenv
 
 ROOT = Path(__file__).resolve().parent
 load_dotenv(ROOT / ".env", override=False)
-
-
-def start(cmd: list[str]) -> subprocess.Popen:
-    return subprocess.Popen(cmd, cwd=ROOT)
-
-
-def wait_for_api(url: str, proc: subprocess.Popen, timeout_seconds: float = 10.0) -> None:
-    """Wait until the mock API is reachable or fail with a useful message."""
-    deadline = time.monotonic() + timeout_seconds
-    while time.monotonic() < deadline:
-        if proc.poll() is not None:
-            raise RuntimeError(
-                f"Vendor-risk API exited during startup with code {proc.returncode}. "
-                "Check the terminal output above (a port conflict is a common cause)."
-            )
-        try:
-            response = requests.get(url, timeout=0.5)
-            if response.ok:
-                return
-        except requests.RequestException:
-            pass
-        time.sleep(0.25)
-    raise RuntimeError(f"Vendor-risk API did not become ready within {timeout_seconds:.0f}s: {url}")
 
 
 def _handle_termination(signum: int, frame: object) -> None:
@@ -41,47 +24,43 @@ def _handle_termination(signum: int, frame: object) -> None:
     raise KeyboardInterrupt
 
 
+def _port_free(port: int) -> bool:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        return s.connect_ex(("127.0.0.1", port)) != 0
+
+
 def main() -> None:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--no-ui", action="store_true")
+    ap.add_argument("--ui-port", type=int, default=8501)
+    args = ap.parse_args()
+
+    from src.config import get_settings
+    from src.mock_service import start_mock_api, stop
+
+    settings = get_settings()
     signal.signal(signal.SIGTERM, _handle_termination)
     procs: list[subprocess.Popen] = []
     try:
-        print("Starting vendor-risk API on http://127.0.0.1:8001 ...")
-        api_proc = start(
-            [
-                sys.executable,
-                "-m",
-                "uvicorn",
-                "mock_api.app:app",
-                "--host",
-                "127.0.0.1",
-                "--port",
-                "8001",
-            ]
-        )
-        procs.append(api_proc)
-        wait_for_api("http://127.0.0.1:8001/health", api_proc)
-        print("Vendor-risk API is ready.")
+        print(f"Vendor-risk API: {settings.vendor_risk_base_url} ...")
+        api = start_mock_api(settings.vendor_risk_base_url)
+        print("Vendor-risk API is ready." + ("" if api else " (already running - reusing it)"))
+        if api:
+            procs.append(api)
 
-        try:
-            __import__("streamlit")
-        except ImportError:
-            print("Streamlit is not installed. Run: pip install -r requirements.txt")
-            print("The mock API is still running. Press Ctrl+C to stop.")
-        else:
-            print("Starting starter UI on http://127.0.0.1:8501 ...")
-            procs.append(
-                start(
-                    [
-                        sys.executable,
-                        "-m",
-                        "streamlit",
-                        "run",
-                        "app.py",
-                        "--server.port",
-                        "8501",
-                    ]
-                )
-            )
+        mode = (f"LLM provider: {settings.llm_provider} / {settings.model_name}" if settings.llm_enabled
+                else "No LLM key found - running in deterministic fallback mode (add ANTHROPIC_API_KEY to .env)")
+        print(mode)
+
+        if not args.no_ui:
+            if not _port_free(args.ui_port):
+                raise RuntimeError(f"Port {args.ui_port} is already in use. Stop the other process or pass --ui-port.")
+            print(f"Starting Procurement Copilot UI on http://127.0.0.1:{args.ui_port} ...")
+            # Starter-pack fix: without --server.headless Streamlit blocks on a first-run e-mail prompt.
+            procs.append(subprocess.Popen(
+                [sys.executable, "-m", "streamlit", "run", "app.py", "--server.port", str(args.ui_port),
+                 "--server.headless", "true", "--browser.gatherUsageStats", "false"], cwd=ROOT))
+            print(f"\n  Open http://127.0.0.1:{args.ui_port}   (Ctrl+C to stop)\n")
 
         while True:
             time.sleep(1)
@@ -90,15 +69,12 @@ def main() -> None:
                     raise RuntimeError(f"A local process exited with code {proc.returncode}")
     except KeyboardInterrupt:
         print("\nStopping local services ...")
+    except RuntimeError as exc:
+        print(f"\nERROR: {exc}")
+        sys.exit(1)
     finally:
         for proc in procs:
-            if proc.poll() is None:
-                proc.terminate()
-        for proc in procs:
-            try:
-                proc.wait(timeout=5)
-            except subprocess.TimeoutExpired:
-                proc.kill()
+            stop(proc)
 
 
 if __name__ == "__main__":
