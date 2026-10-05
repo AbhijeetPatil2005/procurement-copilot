@@ -1,0 +1,66 @@
+{
+  "meta": {
+    "generated_at": "2026-10-05 23:22",
+    "cases": 33,
+    "repeats": 1,
+    "provider": "none",
+    "model": "",
+    "effort": "medium"
+  },
+  "summary": {
+    "rules": {
+      "runs": 33,
+      "errors": 0,
+      "modes": {
+        "rules_only": 33
+      },
+      "pass_rate": 90.9,
+      "public_min_checks_pass": "6/6",
+      "status_accuracy": 97.0,
+      "approvals_correct": 97.0,
+      "approvals_exact": 97.0,
+      "risk_flags_correct": 90.9,
+      "missing_info_correct": 100.0,
+      "safe_language": 100.0,
+      "human_review_correct": 100.0,
+      "raw_llm_policy_compliance": null,
+      "llm_status_overridden": 0,
+      "guardrail_corrections": 0,
+      "agent_evidence_claims": 0,
+      "grounding_rate": null,
+      "ungrounded_claims_dropped": 0,
+      "avg_latency_ms": 11.53,
+      "p50_latency_ms": 10.2,
+      "p95_latency_ms": 34.8,
+      "avg_llm_calls": 0.0,
+      "avg_tool_calls": 7.0,
+      "avg_input_tokens": 0.0,
+      "avg_output_tokens": 0.0,
+      "avg_cost_usd": 0.0,
+      "consistency_across_repeats": null,
+      "pass_rate_by_edge_case": {
+        "ambiguous_request": "1/1",
+        "approval_threshold": "7/7",
+        "baseline": "2/2",
+        "budget_unverifiable": "1/1",
+        "conflicting_vendor_info": "2/2",
+        "existing_tool_overlap": "3/3",
+        "incomplete_and_injection": "1/1",
+        "incomplete_request": "1/1",
+        "prompt_injection": "2/2",
+        "security_sensitive": "4/4",
+        "semantic_data_risk": "0/1",
+        "semantic_injection": "0/1",
+        "semantic_overlap": "0/1",
+        "stale_vendor_info": "2/2",
+        "tool_unavailable": "3/3",
+        "unknown_vendor": "1/1"
+      },
+      "failed_cases": [
+        "EXT-31",
+        "EXT-32",
+        "EXT-33"
+      ]
+    }
+  }
+}

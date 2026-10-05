@@ -62,52 +62,63 @@ def evaluate(decision: ProcurementDecision, expectations: dict) -> list[str]:
     return failures
 
 
+def run_case(case: dict, architecture: str) -> dict:
+    start = time.perf_counter()
+    try:
+        raw = handle_request(case['request_id'], architecture=architecture)
+        decision = raw if isinstance(raw, ProcurementDecision) else ProcurementDecision.model_validate(raw)
+        latency_ms = (time.perf_counter() - start) * 1000
+        failures = evaluate(decision, case['expectations'])
+        passed = not failures
+        tel = decision.telemetry
+        print(f"{'PASS' if passed else 'FAIL'}  {case['case_id']}  {case['title']}  ({latency_ms:.0f} ms)")
+        for f in failures:
+            print(f"      - {f}")
+        return {
+            'case_id': case['case_id'], 'request_id': case['request_id'], 'architecture': architecture,
+            'passed_minimum_checks': passed, 'latency_ms': round(latency_ms, 1),
+            'llm_calls': tel.llm_calls if tel else '', 'tool_calls': tel.tool_calls if tel else '',
+            'failures': ' | '.join(failures)
+        }
+    except Exception as exc:
+        latency_ms = (time.perf_counter() - start) * 1000
+        print(f"ERROR {case['case_id']}  {type(exc).__name__}: {exc}")
+        return {
+            'case_id': case['case_id'], 'request_id': case['request_id'], 'architecture': architecture,
+            'passed_minimum_checks': False, 'latency_ms': round(latency_ms, 1),
+            'llm_calls': '', 'tool_calls': '', 'failures': f"ERROR: {type(exc).__name__}: {exc}"
+        }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument('--architecture', choices=['single','staged'], default='single')
+    parser.add_argument('--architecture', choices=['single', 'staged'], default='single')
     args = parser.parse_args()
 
     cases = json.loads((ROOT/'evals'/'public_cases.json').read_text(encoding='utf-8'))
-    rows = []
     print(f"\nPublic evaluation - architecture={args.architecture}\n")
 
-    for case in cases:
-        start = time.perf_counter()
-        try:
-            raw = handle_request(case['request_id'], architecture=args.architecture)
-            decision = raw if isinstance(raw, ProcurementDecision) else ProcurementDecision.model_validate(raw)
-            latency_ms = (time.perf_counter() - start) * 1000
-            failures = evaluate(decision, case['expectations'])
-            passed = not failures
-            tel = decision.telemetry
-            print(f"{'PASS' if passed else 'FAIL'}  {case['case_id']}  {case['title']}  ({latency_ms:.0f} ms)")
-            for f in failures:
-                print(f"      - {f}")
-            rows.append({
-                'case_id':case['case_id'], 'request_id':case['request_id'], 'architecture':args.architecture,
-                'passed_minimum_checks':passed, 'latency_ms':round(latency_ms,1),
-                'llm_calls': tel.llm_calls if tel else '', 'tool_calls': tel.tool_calls if tel else '',
-                'failures':' | '.join(failures)
-            })
-        except NotImplementedError as exc:
-            print(f"STOP  {exc}")
-            return
-        except Exception as exc:
-            latency_ms = (time.perf_counter() - start) * 1000
-            print(f"ERROR {case['case_id']}  {type(exc).__name__}: {exc}")
-            rows.append({
-                'case_id':case['case_id'], 'request_id':case['request_id'], 'architecture':args.architecture,
-                'passed_minimum_checks':False, 'latency_ms':round(latency_ms,1),
-                'llm_calls':'', 'tool_calls':'', 'failures':f"ERROR: {type(exc).__name__}: {exc}"
-            })
+    # Starter-pack fix: the runner called handle_request without the vendor-risk API running,
+    # so every case silently degraded to "vendor-risk unavailable". Start (or reuse) it here.
+    from src.mock_service import mock_api_running
+    with mock_api_running():
+        rows = [run_case(case, args.architecture) for case in cases]
 
     if rows:
-        out = ROOT/'evals'/f"results_{args.architecture}.csv"
+        # Starter-pack fix: evals/results_*.csv was git-ignored although results are a required deliverable.
+        out_dir = ROOT/'evals'/'results'
+        out_dir.mkdir(parents=True, exist_ok=True)
+        out = out_dir/f"public_{args.architecture}.csv"
         with out.open('w', newline='', encoding='utf-8') as f:
             writer = csv.DictWriter(f, fieldnames=rows[0].keys())
             writer.writeheader(); writer.writerows(rows)
         passed = sum(1 for r in rows if r['passed_minimum_checks'])
+        lat = [r['latency_ms'] for r in rows]
+        llm = [r['llm_calls'] for r in rows if r['llm_calls'] != '']
+        tools = [r['tool_calls'] for r in rows if r['tool_calls'] != '']
         print(f"\nMinimum checks passed: {passed}/{len(rows)}")
+        print(f"Avg latency: {sum(lat)/len(lat):.0f} ms | avg LLM calls: {sum(llm)/max(1, len(llm)):.1f} | "
+              f"avg tool calls: {sum(tools)/max(1, len(tools)):.1f}")
         print(f"Results written to: {out.relative_to(ROOT)}")
 
 
