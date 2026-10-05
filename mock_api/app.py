@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from urllib.parse import unquote
 
 from fastapi import FastAPI, HTTPException
 
@@ -17,12 +16,14 @@ def health() -> dict:
     return {"status": "ok"}
 
 
-@app.get("/vendor-risk/{vendor_name}")
+# `:path` lets vendor names containing an encoded "/" route correctly. FastAPI
+# already percent-decodes path parameters, so the value is NOT unquoted again
+# (the starter double-decoded it, corrupting names that contain "%").
+@app.get("/vendor-risk/{vendor_name:path}")
 def vendor_risk(vendor_name: str) -> dict:
-    name = unquote(vendor_name)
-    record = DATA.get(name)
+    record = DATA.get(vendor_name)
     if record is None:
-        raise HTTPException(status_code=404, detail=f"No vendor-risk record for '{name}'")
+        raise HTTPException(status_code=404, detail=f"No vendor-risk record for '{vendor_name}'")
     if record.get("force_error"):
         raise HTTPException(status_code=503, detail=record.get("error_message", "Vendor-risk service unavailable"))
-    return {"vendor_name": name, **record}
+    return {"vendor_name": vendor_name, **record}

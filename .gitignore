@@ -4,4 +4,7 @@ __pycache__/
 .env
 .DS_Store
 .pytest_cache/
-evals/results_*.csv
+runtime/
+# Starter-pack fix: evaluation results are a required deliverable, so they are no longer ignored.
+# Full per-run traces are large; regenerate them locally with run_eval_suite.py.
+evals/results/traces/
