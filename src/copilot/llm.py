@@ -11,6 +11,7 @@ pipeline can degrade to the deterministic path instead of crashing.
 from __future__ import annotations
 
 import json
+import os
 import time
 from dataclasses import dataclass, field
 from typing import Any, Callable, Protocol
@@ -160,6 +161,8 @@ class OpenAISession:
             kwargs: dict[str, Any] = {"timeout": settings.llm_timeout_s, "max_retries": 2}
             if settings.openai_base_url:
                 kwargs["base_url"] = settings.openai_base_url
+            if settings.openai_auth_header:  # some gateways (e.g. YepAPI) authenticate with x-api-key, not Bearer
+                kwargs["default_headers"] = {settings.openai_auth_header: os.getenv("OPENAI_API_KEY", "")}
             client = openai.OpenAI(**kwargs)
         self.client = client
         self.model = settings.model_name
@@ -177,18 +180,19 @@ class OpenAISession:
         except openai.AuthenticationError as exc:
             raise LLMUnavailable("OpenAI authentication failed - check OPENAI_API_KEY") from exc
         except openai.APIStatusError as exc:
-            raise LLMUnavailable(f"OpenAI API error {exc.status_code}") from exc
+            raise LLMUnavailable(f"OpenAI API error {exc.status_code}: {str(exc.message)[:200]}") from exc
         except openai.APIConnectionError as exc:
             raise LLMUnavailable("Could not reach the OpenAI-compatible endpoint") from exc
         latency = round((time.perf_counter() - start) * 1000, 1)
         choice = resp.choices[0]
         msg = choice.message
-        assistant: dict[str, Any] = {"role": "assistant", "content": msg.content or ""}
+        # Echo the assistant message back unchanged: some providers attach extra fields to tool
+        # calls (e.g. Gemini 3 thought signatures) that must be returned on the next turn.
+        assistant: dict[str, Any] = msg.model_dump(exclude_none=True)
+        assistant["role"] = "assistant"
+        assistant.setdefault("content", "")
         uses: list[ToolUse] = []
         if msg.tool_calls:
-            assistant["tool_calls"] = [{"id": tc.id, "type": "function",
-                                        "function": {"name": tc.function.name, "arguments": tc.function.arguments}}
-                                       for tc in msg.tool_calls]
             for tc in msg.tool_calls:
                 try:
                     args = json.loads(tc.function.arguments or "{}")

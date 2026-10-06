@@ -72,6 +72,7 @@ class Settings:
     max_agent_turns: int
     anthropic_fallbacks: bool
     openai_base_url: str
+    openai_auth_header: str      # e.g. "x-api-key" for gateways that don't accept Bearer auth
 
     @property
     def llm_enabled(self) -> bool:
@@ -103,4 +104,5 @@ def get_settings() -> Settings:
         max_agent_turns=int(_env("MAX_AGENT_TURNS", "10") or 10),
         anthropic_fallbacks=_env("ANTHROPIC_FALLBACKS", "default").lower() not in {"off", "false", "0", "none"},
         openai_base_url=_env("OPENAI_BASE_URL"),
+        openai_auth_header=_env("OPENAI_AUTH_HEADER"),
     )
