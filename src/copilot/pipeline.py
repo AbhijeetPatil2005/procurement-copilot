@@ -158,7 +158,8 @@ def analyze(
     return CaseResult(
         decision=decision, architecture=architecture, mode=mode, assessment=assessment, guardrails=report,
         tool_log=list(ctx.calls), agent_runs=runs, evidence_pack=pack.model_dump() if pack else None,
-        draft=draft.model_dump() if draft else None, latency_ms=_ms(start), fallback_reason=fallback_reason,
+        draft=draft.model_dump() if draft else None,
+        latency_ms=round(_ms(start) - sum(r.wait_ms for r in runs), 1), fallback_reason=fallback_reason,
         provider=provider if mode == "llm" else ("none" if architecture == "rules" else provider), model=model,
     )
 

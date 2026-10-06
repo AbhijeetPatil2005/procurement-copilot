@@ -36,6 +36,7 @@ class AgentRun:
     usage: dict = field(default_factory=lambda: {"input_tokens": 0, "output_tokens": 0,
                                                  "cache_read_input_tokens": 0, "cache_creation_input_tokens": 0})
     llm_latency_ms: float = 0.0
+    wait_ms: float = 0.0  # throttling / rate-limit backoff, excluded from reported latency
     transcript: list[dict] = field(default_factory=list)
     validation_errors: int = 0
 
@@ -68,6 +69,7 @@ def run_agent(
             run.llm_calls += 1
             run.add_usage(turn.usage)
             run.llm_latency_ms += turn.latency_ms
+            run.wait_ms += getattr(turn, "wait_ms", 0.0)
             run.transcript.append({"type": "llm", "text": turn.text[:2000], "stop_reason": turn.stop_reason,
                                    "tool_uses": [{"name": u.name, "input": u.input} for u in turn.tool_uses],
                                    "usage": turn.usage, "latency_ms": turn.latency_ms})

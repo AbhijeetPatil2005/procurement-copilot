@@ -12,6 +12,8 @@ from __future__ import annotations
 
 import json
 import os
+import re
+import threading
 import time
 from dataclasses import dataclass, field
 from typing import Any, Callable, Protocol
@@ -37,6 +39,23 @@ class TurnResult:
     stop_reason: str
     usage: dict = field(default_factory=dict)
     latency_ms: float = 0.0
+    wait_ms: float = 0.0          # client-side throttling / rate-limit backoff (excluded from latency)
+
+
+_PACE_LOCK = threading.Lock()
+_LAST_REQUEST = [0.0]
+
+
+def _pace(min_interval_s: float) -> float:
+    """Space requests at least `min_interval_s` apart across threads (free-tier RPM limits). Returns ms waited."""
+    if min_interval_s <= 0:
+        return 0.0
+    with _PACE_LOCK:
+        wait = _LAST_REQUEST[0] + min_interval_s - time.monotonic()
+        if wait > 0:
+            time.sleep(wait)
+        _LAST_REQUEST[0] = time.monotonic()
+    return max(0.0, wait) * 1000
 
 
 class ChatSession(Protocol):
@@ -158,7 +177,8 @@ class OpenAISession:
                 import openai
             except ImportError as exc:  # pragma: no cover
                 raise LLMUnavailable("openai SDK not installed (pip install openai)") from exc
-            kwargs: dict[str, Any] = {"timeout": settings.llm_timeout_s, "max_retries": 2}
+            # Retries on 429/5xx are handled in send() so throttling waits can be measured and excluded from latency.
+            kwargs: dict[str, Any] = {"timeout": settings.llm_timeout_s, "max_retries": 0}
             if settings.openai_base_url:
                 kwargs["base_url"] = settings.openai_base_url
             if settings.openai_auth_header:  # some gateways (e.g. YepAPI) authenticate with x-api-key, not Bearer
@@ -166,24 +186,44 @@ class OpenAISession:
             client = openai.OpenAI(**kwargs)
         self.client = client
         self.model = settings.model_name
+        self.min_interval_s = settings.llm_min_interval_s
+        self.retries = settings.llm_rate_limit_retries
         self.tools = [{"type": "function", "function": {"name": t["name"], "description": t["description"],
                                                          "parameters": t["input_schema"]}} for t in tools]
         self.messages: list[dict] = [{"role": "system", "content": system}, {"role": "user", "content": user_text}]
+
+    def _create(self) -> tuple[Any, float]:
+        """Call the endpoint with pacing and backoff on 429/5xx. Returns (response, ms spent waiting)."""
+        import openai
+
+        waited = _pace(self.min_interval_s)
+        for attempt in range(self.retries + 1):
+            try:
+                resp = self.client.chat.completions.create(model=self.model, messages=self.messages, tools=self.tools,
+                                                           tool_choice="auto", temperature=0)
+                return resp, waited
+            except (openai.RateLimitError, openai.InternalServerError, openai.APIConnectionError) as exc:
+                if attempt >= self.retries:
+                    raise
+                hint = re.search(r"retryDelay'?\"?:\s*'?\"?(\d+(?:\.\d+)?)s", str(exc))
+                delay = min(90.0, float(hint.group(1)) + 1 if hint else 5.0 * 2 ** attempt)
+                time.sleep(delay)
+                waited += delay * 1000 + _pace(self.min_interval_s)
+        raise AssertionError("unreachable")
 
     def send(self) -> TurnResult:
         import openai
 
         start = time.perf_counter()
         try:
-            resp = self.client.chat.completions.create(model=self.model, messages=self.messages, tools=self.tools,
-                                                       tool_choice="auto", temperature=0)
+            resp, waited_ms = self._create()
         except openai.AuthenticationError as exc:
             raise LLMUnavailable("OpenAI authentication failed - check OPENAI_API_KEY") from exc
         except openai.APIStatusError as exc:
             raise LLMUnavailable(f"OpenAI API error {exc.status_code}: {str(exc.message)[:200]}") from exc
         except openai.APIConnectionError as exc:
             raise LLMUnavailable("Could not reach the OpenAI-compatible endpoint") from exc
-        latency = round((time.perf_counter() - start) * 1000, 1)
+        latency = round((time.perf_counter() - start) * 1000 - waited_ms, 1)
         choice = resp.choices[0]
         msg = choice.message
         # Echo the assistant message back unchanged: some providers attach extra fields to tool
@@ -202,7 +242,7 @@ class OpenAISession:
         self.messages.append(assistant)
         u = resp.usage
         usage = {"input_tokens": getattr(u, "prompt_tokens", 0) or 0, "output_tokens": getattr(u, "completion_tokens", 0) or 0}
-        return TurnResult(msg.content or "", uses, choice.finish_reason or "", usage, latency)
+        return TurnResult(msg.content or "", uses, choice.finish_reason or "", usage, latency, wait_ms=round(waited_ms, 1))
 
     def add_tool_results(self, results: list[tuple[str, str, bool]]) -> None:
         for tid, content, _err in results:

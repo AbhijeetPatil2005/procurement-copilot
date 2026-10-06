@@ -73,6 +73,8 @@ class Settings:
     anthropic_fallbacks: bool
     openai_base_url: str
     openai_auth_header: str      # e.g. "x-api-key" for gateways that don't accept Bearer auth
+    llm_min_interval_s: float    # client-side spacing between LLM requests (free-tier RPM limits)
+    llm_rate_limit_retries: int  # retries with backoff on 429 / 5xx for OpenAI-compatible endpoints
 
     @property
     def llm_enabled(self) -> bool:
@@ -105,4 +107,6 @@ def get_settings() -> Settings:
         anthropic_fallbacks=_env("ANTHROPIC_FALLBACKS", "default").lower() not in {"off", "false", "0", "none"},
         openai_base_url=_env("OPENAI_BASE_URL"),
         openai_auth_header=_env("OPENAI_AUTH_HEADER"),
+        llm_min_interval_s=float(_env("LLM_MIN_INTERVAL_S", "0") or 0),
+        llm_rate_limit_retries=int(_env("LLM_RATE_LIMIT_RETRIES", "3") or 3),
     )
