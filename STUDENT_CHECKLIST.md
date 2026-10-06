@@ -14,7 +14,7 @@ Before submitting, confirm that:
 - [x] Prompt injection inside business data does not override system behavior (scan + delimiting + escalate-only guardrails; tested).
 - [x] Date-based checks use the policy's data snapshot / reference date (parsed from `procurement_policy.md`).
 - [x] The same evaluation cases were run on both architectures (`evals/run_eval_suite.py`, 33 cases).
-- [ ] **Latency and LLM/tool-call counts are reported with a live model**: run `python evals/run_eval_suite.py --repeats 3 --update-docs` with `ANTHROPIC_API_KEY` set.
+- [x] Latency and LLM/tool-call counts are reported (live run on `gemini-3.1-flash-lite`: 66 LLM runs + 33 rules runs, `evals/results/`).
 - [x] The decision memo is <= 500 words and supported by evaluation evidence (the table fills automatically on the run above).
 - [x] Setup instructions work from a clean environment.
 - [x] Any LLM/provider SDK you added is present in `requirements.txt` (`anthropic`, `openai`).

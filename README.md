@@ -178,20 +178,63 @@ What each metric measures:
 Outputs are written to `evals/results/`: `runs_<arch>.csv`, `evaluation_results.csv` (template format), `summary.json`, `comparison.md`, plus local JSON traces for qualitative review.
 
 <!-- EVAL_RESULTS_START -->
-_Results pending a run with an API key. Run `python evals/run_eval_suite.py --repeats 3 --update-docs` to fill this section._
+_Generated 2026-10-06 22:39 · 33 cases × 1 repeat(s) · provider `openai` · model `gemini-3.1-flash-lite`_
 
-Deterministic reference, available without a key: the rules-only baseline passes **30/33** cases and **6/6** public minimum checks. Its only failures are the 3 semantic cases (EXT-31 paraphrased injection, EXT-32 customer PII revealed only in the text, EXT-33 overlap under a different category name). Those are exactly the cases that need language understanding.
+| Metric | A · Single agent | B · Staged 2-agent | Rules-only baseline |
+|---|---:|---:|---:|
+| Cases passing all quality checks | 93.9% | 78.8% | 90.9% |
+| Public minimum checks | 6/6 | 5/6 | 6/6 |
+| Correct next action (status) | 97.0% | 78.8% | 97.0% |
+| Required approvals correct | 97.0% | 100.0% | 97.0% |
+| Approvals exact (no over-escalation) | 97.0% | 100.0% | 97.0% |
+| Risk flags correct | 93.9% | 100.0% | 90.9% |
+| Missing-info handling correct | 100.0% | 90.9% | 100.0% |
+| Human review correct | 100.0% | 100.0% | 100.0% |
+| Raw LLM policy compliance (pre-guardrail) | 100.0% | 100.0% | n/a |
+| Guardrail corrections (total) | 1 | 11 | 0 |
+| Agent evidence grounding rate | 98.6% | 86.8% | n/a |
+| Ungrounded claims dropped | 2 | 32 | 0 |
+| Avg latency (ms) | 37604.88 | 29110.91 | 16.47 |
+| p95 latency (ms) | 71581.4 | 42783.7 | 49.3 |
+| Avg LLM calls | 5.42 | 4.12 | 0.0 |
+| Avg tool calls | 8.88 | 8.97 | 7.0 |
+| Avg input / output tokens | 17264 / 705 | 9930 / 1404 | 0 / 0 |
+| Avg cost per request (USD) | 0.0 | 0.0 | 0.0 |
+| Consistency across repeats | n/a | n/a | n/a |
+| Execution mode | llm: 33 | llm: 33 | rules_only: 33 |
+
+- **A · Single agent** failed: EXT-31, EXT-32
+- **B · Staged 2-agent** failed: EXT-01, EXT-03, EXT-10, EXT-11, EXT-12, EXT-13, EXT-15
+- **Rules-only baseline** failed: EXT-31, EXT-32, EXT-33
+
+**Pre-registered decision rule → ship A · Single agent:** B's pass rate differs by -15.1 pts (threshold +5); B was 23% faster with -1.3 LLM calls per request, which does not offset the quality gap.
 <!-- EVAL_RESULTS_END -->
 
-The public runner (`python evals/run_public_evals.py`) passes **6/6** on both architectures.
+All 66 LLM runs used the model; none fell back to rules. Cost shows $0 because they ran on Gemini's free tier. Latency excludes free-tier throttling waits. The official public runner (`python evals/run_public_evals.py`) agrees with this table: **6/6 for A** and **5/6 for B**, which over-asks on PUB-01.
+
+**What the results show:**
+- **A** chose the correct next action on 32 of 33 cases. It missed 2 semantic cases: a paraphrased injection (EXT-31) and customer personal data mentioned only in the justification (EXT-32).
+- **B** caught all 3 semantic cases. It failed 7 routine cases by asking for clarification on complete requests: the Analyst's speculative "open questions" became blocking questions at the handoff.
+- **B's grounding rate is lower** because its Reviewer cited a policy-lookup tool it never called (32 claims). The facts were real, but the attribution was wrong.
+- **Rules-only** fails exactly the 3 semantic cases. With an LLM, A recovers one and B recovers all three.
 
 ---
 
 ## Architecture comparison and ship decision
 
-**Ship A, the single agent**, unless B beats it by at least 5 points on the same cases without failing a safety check. This rule was fixed before any LLM results were collected and is applied automatically by the eval script. The full reasoning, trade-offs, and production risks are in [docs/ARCHITECTURE_DECISION.md](docs/ARCHITECTURE_DECISION.md) (under 500 words).
+**Decision: ship A, the single agent.** The rule was fixed before any LLM results were collected: ship B only if it passes at least 5 points more cases without failing a safety check. B passed **15 points fewer** (78.8% vs 93.9%). The eval script applies this rule automatically. The full reasoning, trade-offs and production risks are in [docs/ARCHITECTURE_DECISION.md](docs/ARCHITECTURE_DECISION.md) (under 500 words).
 
-In short: policy correctness comes from code that both architectures share. B's separation of duties mostly duplicates controls that are already deterministic, and it costs at least two extra sequential LLM turns. The LLM's real job (judging whether the stated gap is credible, catching what the form omits, writing an actionable next step) fits a single agent.
+**The two architectures fail in opposite directions:**
+- **A under-escalates, rarely.** On EXT-32 it did not route Security and Privacy review. That is the riskier error, though nothing was approved and a human still reviews every case.
+- **B over-escalates, often.** It stalled about 1 in 5 requests with unnecessary questions.
+
+Policy correctness (approval tiers, budget, review dates, triggers) comes from code both architectures share, so B's extra stage mostly added friction.
+
+**Recommended next steps:**
+- Close A's gap with targeted checks for personal data mentioned in the justification and for paraphrased injections.
+- Keep B's Reviewer as an optional second opinion for high-risk requests.
+
+B was actually faster with this model (A took more turns), so cost and latency were not what decided it. Quality was.
 
 ---
 
@@ -211,7 +254,8 @@ The full list of 12 is in [docs/ARCHITECTURE.md §9](docs/ARCHITECTURE.md#9-assu
 ## Known limitations
 
 - **Evaluation labels** are my reading of the policy and need sign-off from a procurement lead. 33 cases (3 of them semantic) is a small sample.
-- **The injection regex** catches known phrasing only. Paraphrases depend on the LLM, and guardrails limit the impact either way, not the detection.
+- **One repeat on a lite model.** The comparison ran once on `gemini-3.1-flash-lite`, because free-tier daily quotas ruled out stronger models and repeats. A 2-case difference is directional. Re-run with `--repeats 3` and a stronger model (only `.env` changes) before treating the gap as settled.
+- **The injection regex** catches known phrasing only. Paraphrases depend on the LLM: A missed one (EXT-31) and B caught it. Guardrails limit the impact either way, not the detection.
 - **No seat-utilisation data**, so "unused capacity" is raised as an open item rather than measured.
 - **Requested integrations** are classified with pattern lists. Unusual system names depend on the LLM to recognise them.
 - **Single-process demo.** The audit log is local JSONL. There is no authentication, SSO, or role-based access, and no write-back to a procurement system.
