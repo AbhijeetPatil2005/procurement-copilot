@@ -276,8 +276,9 @@ def ship_decision(summary: dict) -> str:
     elif safe(b) and gain >= SHIP_MARGIN_PTS:
         choice, why = "B · Staged 2-agent", f"B passes {gain:+.1f} pts more cases (threshold +{SHIP_MARGIN_PTS:.0f})"
     else:
-        choice, why = "A · Single agent", (f"B's quality difference is {gain:+.1f} pts (below the +{SHIP_MARGIN_PTS:.0f} pt "
-                                            f"threshold) while costing {lat:+.0f}% latency and {calls:+.1f} LLM calls per request")
+        speed = f"{abs(lat):.0f}% {'slower' if lat >= 0 else 'faster'}"
+        choice, why = "A · Single agent", (f"B's pass rate differs by {gain:+.1f} pts (threshold +{SHIP_MARGIN_PTS:.0f}); "
+                                            f"B was {speed} with {calls:+.1f} LLM calls per request, which does not offset the quality gap")
     return f"**Pre-registered decision rule → ship {choice}:** {why}."
 
 
@@ -285,9 +286,9 @@ def compact_markdown(summary: dict, meta: dict) -> str:
     """Short table for the 500-word decision memo."""
     archs = [a for a in ("single", "staged", "rules") if a in summary]
     names = {"single": "Single (A)", "staged": "Staged (B)", "rules": "Rules only"}
-    rows = [("Cases passing quality criteria", "pass_rate", "%"), ("Raw LLM policy compliance", "raw_llm_policy_compliance", "%"),
+    rows = [("Cases passing quality criteria", "pass_rate", "%"),
             ("Evidence grounding rate", "grounding_rate", "%"), ("Avg latency (s)", "avg_latency_ms", "s"),
-            ("Avg LLM calls", "avg_llm_calls", ""), ("Avg tool calls", "avg_tool_calls", ""), ("Avg cost (USD)", "avg_cost_usd", "")]
+            ("Avg LLM calls", "avg_llm_calls", "")]
     out = [f"_{meta['cases']} cases x {meta['repeats']} repeat(s), {meta['provider']} {meta['model'] or ''}_", "",
            "| Metric | " + " | ".join(names[a] for a in archs) + " |", "|---|" + "---:|" * len(archs)]
     for label, key, unit in rows:
@@ -323,6 +324,9 @@ def main() -> None:
     ap.add_argument("--out", default=str(OUT_DIR))
     ap.add_argument("--update-docs", action="store_true")
     ap.add_argument("--no-traces", action="store_true")
+    ap.add_argument("--fresh", action="store_true", help="Ignore the checkpoint and re-run everything")
+    ap.add_argument("--retry-fallbacks", action="store_true",
+                    help="On resume, re-run single/staged runs that fell back to rules (e.g. after rate limits)")
     args = ap.parse_args()
 
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # type: ignore[attr-defined]
@@ -335,28 +339,54 @@ def main() -> None:
         print("WARNING: no LLM provider configured - single/staged will run in deterministic fallback mode.\n"
               "         Set ANTHROPIC_API_KEY (or OPENAI_API_KEY) in .env for the real comparison.\n")
 
-    jobs = [(c, a, r) for r in range(args.repeats) for a in args.architectures for c in cases]
-    print(f"Running {len(jobs)} runs ({len(cases)} cases × {len(args.architectures)} architectures × {args.repeats} repeats) "
-          f"provider={settings.llm_provider} model={settings.model_name or 'n/a'}\n")
-    runs: list[dict] = []
-    with ThreadPoolExecutor(max_workers=max(1, args.workers)) as pool:
+    out = Path(args.out)
+    out.mkdir(parents=True, exist_ok=True)
+
+    # Checkpoint: every finished run is appended immediately, so an interrupted evaluation
+    # (free-tier rate limits can make it slow) resumes instead of starting over.
+    checkpoint = out / "checkpoint.jsonl"
+    done: dict[tuple, dict] = {}
+    if checkpoint.exists() and not args.fresh:
+        for line in checkpoint.read_text(encoding="utf-8").splitlines():
+            row = json.loads(line)
+            if args.retry_fallbacks and row.get("mode") == "rules_fallback":
+                continue
+            done[(row["case_id"], row["architecture"], row["repeat"])] = row
+    elif checkpoint.exists():
+        checkpoint.unlink()
+
+    all_jobs = [(c, a, r) for r in range(args.repeats) for a in args.architectures for c in cases]
+    jobs = [j for j in all_jobs if (j[0]["case_id"], j[1], j[2]) not in done]
+    print(f"Running {len(jobs)} of {len(all_jobs)} runs ({len(cases)} cases × {len(args.architectures)} architectures × "
+          f"{args.repeats} repeats; {len(done)} already in checkpoint) provider={settings.llm_provider} "
+          f"model={settings.model_name or 'n/a'}\n", flush=True)
+    finished = len(done)
+    with ThreadPoolExecutor(max_workers=max(1, args.workers)) as pool, checkpoint.open("a", encoding="utf-8") as ck:
         futures = [pool.submit(run_one, *j) for j in jobs]
         for fut in as_completed(futures):
             run = fut.result()
-            runs.append(run)
             row = score(run, public)
+            done[(row["case_id"], row["architecture"], row["repeat"])] = row
+            ck.write(json.dumps(row, default=str) + "\n")
+            ck.flush()
+            if not args.no_traces and run["result"] is not None:
+                tdir = out / "traces" / run["architecture"]
+                tdir.mkdir(parents=True, exist_ok=True)
+                payload = {"case_id": run["case"]["case_id"], "decision": run["result"].decision.model_dump(),
+                           "trace": run["result"].trace()}
+                (tdir / f"{run['case']['case_id']}_r{run['repeat']}.json").write_text(json.dumps(payload, indent=2, default=str), encoding="utf-8")
+            finished += 1
             mark = "PASS" if row.get("passed") else ("ERR " if run["error"] else "FAIL")
-            print(f"{mark} {row['architecture']:<6} {row['case_id']}  r{row['repeat']}  {row.get('final_status', '-'):<27} "
-                  f"{row.get('latency_ms', 0):>8.0f} ms  llm={row.get('llm_calls', '-')} tools={row.get('tool_calls', '-')}"
-                  + (f"  [{run['error']}]" if run["error"] else ""))
+            print(f"[{finished}/{len(all_jobs)}] {mark} {row['architecture']:<6} {row['case_id']}  r{row['repeat']}  "
+                  f"{row.get('final_status', '-'):<27} {row.get('latency_ms', 0):>8.0f} ms  llm={row.get('llm_calls', '-')} "
+                  f"tools={row.get('tool_calls', '-')}  mode={row.get('mode', '-')}"
+                  + (f"  [{run['error']}]" if run["error"] else ""), flush=True)
 
-    rows = sorted((score(r, public) for r in runs), key=lambda r: (r["architecture"], r["case_id"], r["repeat"]))
+    wanted = {(c["case_id"], a, r) for c, a, r in all_jobs}
+    rows = sorted((row for key, row in done.items() if key in wanted), key=lambda r: (r["architecture"], r["case_id"], r["repeat"]))
     summary = summarize(rows)
     meta = {"generated_at": time.strftime("%Y-%m-%d %H:%M"), "cases": len(cases), "repeats": args.repeats,
             "provider": settings.llm_provider, "model": settings.model_name, "effort": settings.llm_effort}
-
-    out = Path(args.out)
-    out.mkdir(parents=True, exist_ok=True)
     for arch in args.architectures:
         arch_rows = [r for r in rows if r["architecture"] == arch]
         if arch_rows:
@@ -381,15 +411,6 @@ def main() -> None:
     (out / "summary.json").write_text(json.dumps({"meta": meta, "summary": summary}, indent=2), encoding="utf-8")
     md = comparison_markdown(summary, meta)
     (out / "comparison.md").write_text(md, encoding="utf-8")
-    if not args.no_traces:
-        for run in runs:
-            if run["result"] is not None:
-                tdir = out / "traces" / run["architecture"]
-                tdir.mkdir(parents=True, exist_ok=True)
-                payload = {"case_id": run["case"]["case_id"], "decision": run["result"].decision.model_dump(),
-                           "trace": run["result"].trace()}
-                (tdir / f"{run['case']['case_id']}_r{run['repeat']}.json").write_text(json.dumps(payload, indent=2, default=str), encoding="utf-8")
-
     print("\n" + md)
     print(f"Results written to {out.relative_to(ROOT) if out.is_relative_to(ROOT) else out}")
     if args.update_docs:
