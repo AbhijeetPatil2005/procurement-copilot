@@ -203,7 +203,8 @@ class OpenAISession:
                                                            tool_choice="auto", temperature=0)
                 return resp, waited
             except (openai.RateLimitError, openai.InternalServerError, openai.APIConnectionError) as exc:
-                if attempt >= self.retries:
+                # A daily quota will not reset within any reasonable backoff - fail fast instead of waiting.
+                if attempt >= self.retries or re.search(r"PerDay|per day|daily", str(exc), re.IGNORECASE):
                     raise
                 hint = re.search(r"retryDelay'?\"?:\s*'?\"?(\d+(?:\.\d+)?)s", str(exc))
                 delay = min(90.0, float(hint.group(1)) + 1 if hint else 5.0 * 2 ** attempt)
