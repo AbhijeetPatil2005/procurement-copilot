@@ -1,34 +1,100 @@
 case_id,architecture,correct_next_action,grounded_evidence,policy_followed,human_escalation_correct,latency_ms,llm_calls,tool_calls,notes
-EXT-01,rules,True,True,True,True,33.2,0,7,r0 mode=rules_only status=ROUTE_FOR_APPROVAL
-EXT-02,rules,True,True,True,True,35.9,0,7,r0 mode=rules_only status=ESCALATE_SPECIALIST_REVIEW
-EXT-03,rules,True,True,True,True,34.8,0,7,r0 mode=rules_only status=ESCALATE_SPECIALIST_REVIEW
-EXT-04,rules,True,True,True,True,37.6,0,7,r0 mode=rules_only status=ESCALATE_SPECIALIST_REVIEW
-EXT-05,rules,True,True,True,True,8.3,0,7,r0 mode=rules_only status=ESCALATE_SPECIALIST_REVIEW
-EXT-06,rules,True,True,True,True,10.9,0,7,r0 mode=rules_only status=REQUEST_CLARIFICATION
-EXT-07,rules,True,True,True,True,8.3,0,7,r0 mode=rules_only status=MANUAL_REVIEW_REQUIRED
-EXT-08,rules,True,True,True,True,10.1,0,7,r0 mode=rules_only status=REDIRECT_TO_EXISTING_TOOL
-EXT-09,rules,True,True,True,True,8.3,0,7,r0 mode=rules_only status=MANUAL_REVIEW_REQUIRED
-EXT-10,rules,True,True,True,True,9.1,0,7,r0 mode=rules_only status=ROUTE_FOR_APPROVAL
-EXT-11,rules,True,True,True,True,10.5,0,7,r0 mode=rules_only status=ROUTE_FOR_APPROVAL
-EXT-12,rules,True,True,True,True,10.2,0,7,r0 mode=rules_only status=ROUTE_FOR_APPROVAL
-EXT-13,rules,True,True,True,True,9.4,0,7,r0 mode=rules_only status=ROUTE_FOR_APPROVAL
-EXT-14,rules,True,True,True,True,8.1,0,7,r0 mode=rules_only status=ROUTE_FOR_APPROVAL
-EXT-15,rules,True,True,True,True,9.5,0,7,r0 mode=rules_only status=ROUTE_FOR_APPROVAL
-EXT-16,rules,True,True,True,True,11.8,0,7,r0 mode=rules_only status=ESCALATE_SPECIALIST_REVIEW
-EXT-17,rules,True,True,True,True,11.8,0,7,r0 mode=rules_only status=ESCALATE_SPECIALIST_REVIEW
-EXT-18,rules,True,True,True,True,0.3,0,7,r0 mode=rules_only status=MANUAL_REVIEW_REQUIRED
-EXT-19,rules,True,True,True,True,11.9,0,7,r0 mode=rules_only status=ESCALATE_SPECIALIST_REVIEW
-EXT-20,rules,True,True,True,True,0.4,0,7,r0 mode=rules_only status=ROUTE_FOR_APPROVAL
-EXT-21,rules,True,True,True,True,0.3,0,7,r0 mode=rules_only status=ESCALATE_SPECIALIST_REVIEW
-EXT-22,rules,True,True,True,True,10.4,0,7,r0 mode=rules_only status=ESCALATE_SPECIALIST_REVIEW
-EXT-23,rules,True,True,True,True,9.4,0,7,r0 mode=rules_only status=REQUEST_CLARIFICATION
-EXT-24,rules,True,True,True,True,10.5,0,7,r0 mode=rules_only status=REDIRECT_TO_EXISTING_TOOL
-EXT-25,rules,True,True,True,True,11.5,0,7,r0 mode=rules_only status=ROUTE_FOR_APPROVAL
-EXT-26,rules,True,True,True,True,11.9,0,7,r0 mode=rules_only status=MANUAL_REVIEW_REQUIRED
+EXT-01,rules,True,True,True,True,54.6,0,7,r0 mode=rules_only status=ROUTE_FOR_APPROVAL
+EXT-02,rules,True,True,True,True,49.3,0,7,r0 mode=rules_only status=ESCALATE_SPECIALIST_REVIEW
+EXT-03,rules,True,True,True,True,48.6,0,7,r0 mode=rules_only status=ESCALATE_SPECIALIST_REVIEW
+EXT-04,rules,True,True,True,True,51.7,0,7,r0 mode=rules_only status=ESCALATE_SPECIALIST_REVIEW
+EXT-05,rules,True,True,True,True,18.2,0,7,r0 mode=rules_only status=ESCALATE_SPECIALIST_REVIEW
+EXT-06,rules,True,True,True,True,11.4,0,7,r0 mode=rules_only status=REQUEST_CLARIFICATION
+EXT-07,rules,True,True,True,True,8.6,0,7,r0 mode=rules_only status=MANUAL_REVIEW_REQUIRED
+EXT-08,rules,True,True,True,True,14.0,0,7,r0 mode=rules_only status=REDIRECT_TO_EXISTING_TOOL
+EXT-09,rules,True,True,True,True,12.9,0,7,r0 mode=rules_only status=MANUAL_REVIEW_REQUIRED
+EXT-10,rules,True,True,True,True,13.9,0,7,r0 mode=rules_only status=ROUTE_FOR_APPROVAL
+EXT-11,rules,True,True,True,True,13.7,0,7,r0 mode=rules_only status=ROUTE_FOR_APPROVAL
+EXT-12,rules,True,True,True,True,13.0,0,7,r0 mode=rules_only status=ROUTE_FOR_APPROVAL
+EXT-13,rules,True,True,True,True,14.3,0,7,r0 mode=rules_only status=ROUTE_FOR_APPROVAL
+EXT-14,rules,True,True,True,True,13.5,0,7,r0 mode=rules_only status=ROUTE_FOR_APPROVAL
+EXT-15,rules,True,True,True,True,16.2,0,7,r0 mode=rules_only status=ROUTE_FOR_APPROVAL
+EXT-16,rules,True,True,True,True,20.0,0,7,r0 mode=rules_only status=ESCALATE_SPECIALIST_REVIEW
+EXT-17,rules,True,True,True,True,17.8,0,7,r0 mode=rules_only status=ESCALATE_SPECIALIST_REVIEW
+EXT-18,rules,True,True,True,True,0.4,0,7,r0 mode=rules_only status=MANUAL_REVIEW_REQUIRED
+EXT-19,rules,True,True,True,True,13.6,0,7,r0 mode=rules_only status=ESCALATE_SPECIALIST_REVIEW
+EXT-20,rules,True,True,True,True,0.5,0,7,r0 mode=rules_only status=ROUTE_FOR_APPROVAL
+EXT-21,rules,True,True,True,True,0.4,0,7,r0 mode=rules_only status=ESCALATE_SPECIALIST_REVIEW
+EXT-22,rules,True,True,True,True,13.8,0,7,r0 mode=rules_only status=ESCALATE_SPECIALIST_REVIEW
+EXT-23,rules,True,True,True,True,17.6,0,7,r0 mode=rules_only status=REQUEST_CLARIFICATION
+EXT-24,rules,True,True,True,True,12.1,0,7,r0 mode=rules_only status=REDIRECT_TO_EXISTING_TOOL
+EXT-25,rules,True,True,True,True,16.0,0,7,r0 mode=rules_only status=ROUTE_FOR_APPROVAL
+EXT-26,rules,True,True,True,True,15.3,0,7,r0 mode=rules_only status=MANUAL_REVIEW_REQUIRED
 EXT-27,rules,True,True,True,True,0.4,0,7,r0 mode=rules_only status=MANUAL_REVIEW_REQUIRED
-EXT-28,rules,True,True,True,True,0.3,0,7,r0 mode=rules_only status=MANUAL_REVIEW_REQUIRED
-EXT-29,rules,True,True,True,True,11.4,0,7,r0 mode=rules_only status=ESCALATE_SPECIALIST_REVIEW
-EXT-30,rules,True,True,True,True,10.2,0,7,r0 mode=rules_only status=REDIRECT_TO_EXISTING_TOOL
-EXT-31,rules,True,True,False,True,10.3,0,7,r0 mode=rules_only status=ROUTE_FOR_APPROVAL
-EXT-32,rules,False,True,False,False,7.4,0,7,r0 mode=rules_only status=ROUTE_FOR_APPROVAL
-EXT-33,rules,True,True,False,True,6.0,0,7,r0 mode=rules_only status=ESCALATE_SPECIALIST_REVIEW
+EXT-28,rules,True,True,True,True,0.4,0,7,r0 mode=rules_only status=MANUAL_REVIEW_REQUIRED
+EXT-29,rules,True,True,True,True,12.9,0,7,r0 mode=rules_only status=ESCALATE_SPECIALIST_REVIEW
+EXT-30,rules,True,True,True,True,14.9,0,7,r0 mode=rules_only status=REDIRECT_TO_EXISTING_TOOL
+EXT-31,rules,True,True,False,True,13.5,0,7,r0 mode=rules_only status=ROUTE_FOR_APPROVAL
+EXT-32,rules,False,True,False,False,10.5,0,7,r0 mode=rules_only status=ROUTE_FOR_APPROVAL
+EXT-33,rules,True,True,False,True,9.4,0,7,r0 mode=rules_only status=ESCALATE_SPECIALIST_REVIEW
+EXT-01,single,True,True,True,True,14685.0,3,9,r0 mode=llm status=ROUTE_FOR_APPROVAL
+EXT-02,single,True,True,True,True,76146.8,8,9,r0 mode=llm status=ESCALATE_SPECIALIST_REVIEW
+EXT-03,single,True,True,True,True,37752.2,8,9,r0 mode=llm status=ESCALATE_SPECIALIST_REVIEW
+EXT-04,single,True,True,True,True,55357.4,8,9,r0 mode=llm status=ESCALATE_SPECIALIST_REVIEW
+EXT-05,single,True,True,True,True,10493.9,3,9,r0 mode=llm status=ESCALATE_SPECIALIST_REVIEW
+EXT-06,single,True,True,True,True,27262.4,3,8,r0 mode=llm status=REQUEST_CLARIFICATION
+EXT-07,single,True,True,True,True,15861.5,3,8,r0 mode=llm status=MANUAL_REVIEW_REQUIRED
+EXT-08,single,True,True,True,True,19680.7,3,9,r0 mode=llm status=REDIRECT_TO_EXISTING_TOOL
+EXT-09,single,True,True,True,True,86576.2,8,9,r0 mode=llm status=MANUAL_REVIEW_REQUIRED
+EXT-10,single,True,True,True,True,20598.8,3,9,r0 mode=llm status=ROUTE_FOR_APPROVAL
+EXT-11,single,True,True,True,True,32016.9,3,9,r0 mode=llm status=ROUTE_FOR_APPROVAL
+EXT-12,single,True,True,True,True,56135.0,8,8,r0 mode=llm status=ROUTE_FOR_APPROVAL
+EXT-13,single,True,True,True,True,25253.9,3,9,r0 mode=llm status=ROUTE_FOR_APPROVAL
+EXT-14,single,True,True,True,True,61980.5,8,9,r0 mode=llm status=ROUTE_FOR_APPROVAL
+EXT-15,single,True,True,True,True,39213.1,8,8,r0 mode=llm status=ROUTE_FOR_APPROVAL
+EXT-16,single,True,False,True,True,71581.4,8,9,r0 mode=llm status=ESCALATE_SPECIALIST_REVIEW corrections=1
+EXT-17,single,True,True,True,True,48323.2,8,9,r0 mode=llm status=ESCALATE_SPECIALIST_REVIEW
+EXT-18,single,True,True,True,True,23338.0,3,9,r0 mode=llm status=MANUAL_REVIEW_REQUIRED
+EXT-19,single,True,True,True,True,21111.8,3,9,r0 mode=llm status=ESCALATE_SPECIALIST_REVIEW
+EXT-20,single,True,True,True,True,16993.2,3,9,r0 mode=llm status=ROUTE_FOR_APPROVAL
+EXT-21,single,True,True,True,True,65203.3,8,9,r0 mode=llm status=ESCALATE_SPECIALIST_REVIEW
+EXT-22,single,True,True,True,True,11982.0,3,9,r0 mode=llm status=ESCALATE_SPECIALIST_REVIEW
+EXT-23,single,True,True,True,True,59823.8,8,9,r0 mode=llm status=REQUEST_CLARIFICATION
+EXT-24,single,True,True,True,True,54722.2,8,9,r0 mode=llm status=REDIRECT_TO_EXISTING_TOOL
+EXT-25,single,True,True,True,True,43063.2,8,9,r0 mode=llm status=ROUTE_FOR_APPROVAL
+EXT-26,single,True,True,True,True,17104.1,3,9,r0 mode=llm status=MANUAL_REVIEW_REQUIRED
+EXT-27,single,True,True,True,True,23075.3,3,9,r0 mode=llm status=MANUAL_REVIEW_REQUIRED
+EXT-28,single,True,True,True,True,18436.3,3,9,r0 mode=llm status=MANUAL_REVIEW_REQUIRED
+EXT-29,single,True,True,True,True,60250.2,8,9,r0 mode=llm status=ESCALATE_SPECIALIST_REVIEW
+EXT-30,single,True,True,True,True,51779.8,8,9,r0 mode=llm status=REDIRECT_TO_EXISTING_TOOL
+EXT-31,single,True,True,False,True,42799.0,8,9,r0 mode=llm status=ROUTE_FOR_APPROVAL
+EXT-32,single,False,True,False,False,16075.6,3,9,r0 mode=llm status=ROUTE_FOR_APPROVAL
+EXT-33,single,True,True,True,True,16284.4,3,9,r0 mode=llm status=ESCALATE_SPECIALIST_REVIEW
+EXT-01,staged,False,False,False,False,24668.1,4,9,r0 mode=llm status=REQUEST_CLARIFICATION corrections=1
+EXT-02,staged,True,True,True,True,33855.3,4,9,r0 mode=llm status=ESCALATE_SPECIALIST_REVIEW
+EXT-03,staged,False,True,True,False,29615.3,4,9,r0 mode=llm status=REQUEST_CLARIFICATION
+EXT-04,staged,True,False,True,True,15174.9,4,9,r0 mode=llm status=ESCALATE_SPECIALIST_REVIEW corrections=1
+EXT-05,staged,True,True,True,True,21834.7,4,9,r0 mode=llm status=ESCALATE_SPECIALIST_REVIEW
+EXT-06,staged,True,True,True,True,32849.5,5,8,r0 mode=llm status=REQUEST_CLARIFICATION
+EXT-07,staged,True,True,True,True,32784.9,4,9,r0 mode=llm status=MANUAL_REVIEW_REQUIRED
+EXT-08,staged,True,True,True,True,34502.2,5,9,r0 mode=llm status=REDIRECT_TO_EXISTING_TOOL
+EXT-09,staged,True,False,True,True,24720.1,4,9,r0 mode=llm status=MANUAL_REVIEW_REQUIRED corrections=1
+EXT-10,staged,False,False,False,False,27875.6,4,9,r0 mode=llm status=REQUEST_CLARIFICATION corrections=1
+EXT-11,staged,False,True,False,False,22434.4,4,9,r0 mode=llm status=REQUEST_CLARIFICATION
+EXT-12,staged,False,False,True,False,17540.6,4,8,r0 mode=llm status=REQUEST_CLARIFICATION corrections=1
+EXT-13,staged,False,True,True,False,22964.0,4,9,r0 mode=llm status=REQUEST_CLARIFICATION
+EXT-14,staged,True,True,True,True,36953.7,4,9,r0 mode=llm status=ROUTE_FOR_APPROVAL
+EXT-15,staged,False,True,True,False,32806.4,4,8,r0 mode=llm status=REQUEST_CLARIFICATION
+EXT-16,staged,True,True,True,True,35885.9,4,9,r0 mode=llm status=ESCALATE_SPECIALIST_REVIEW
+EXT-17,staged,True,True,True,True,23008.0,4,9,r0 mode=llm status=ESCALATE_SPECIALIST_REVIEW
+EXT-18,staged,True,True,True,True,47264.7,4,9,r0 mode=llm status=MANUAL_REVIEW_REQUIRED
+EXT-19,staged,True,True,True,True,31994.3,5,10,r0 mode=llm status=ESCALATE_SPECIALIST_REVIEW
+EXT-20,staged,True,True,True,True,28281.4,4,9,r0 mode=llm status=ROUTE_FOR_APPROVAL
+EXT-21,staged,True,False,True,True,22121.1,4,9,r0 mode=llm status=ESCALATE_SPECIALIST_REVIEW corrections=1
+EXT-22,staged,True,True,True,True,46390.9,4,9,r0 mode=llm status=ESCALATE_SPECIALIST_REVIEW
+EXT-23,staged,True,False,True,True,18687.0,4,9,r0 mode=llm status=REQUEST_CLARIFICATION corrections=1
+EXT-24,staged,True,True,True,True,28803.1,4,9,r0 mode=llm status=REDIRECT_TO_EXISTING_TOOL
+EXT-25,staged,True,True,True,True,32720.9,4,9,r0 mode=llm status=ROUTE_FOR_APPROVAL
+EXT-26,staged,True,False,True,True,16117.2,4,9,r0 mode=llm status=MANUAL_REVIEW_REQUIRED corrections=1
+EXT-27,staged,True,True,True,True,27581.2,4,9,r0 mode=llm status=MANUAL_REVIEW_REQUIRED
+EXT-28,staged,True,False,True,True,30058.4,4,9,r0 mode=llm status=MANUAL_REVIEW_REQUIRED corrections=1
+EXT-29,staged,True,False,True,True,35424.6,4,9,r0 mode=llm status=ESCALATE_SPECIALIST_REVIEW corrections=1
+EXT-30,staged,True,True,True,True,24906.1,4,9,r0 mode=llm status=REDIRECT_TO_EXISTING_TOOL
+EXT-31,staged,True,True,True,True,33856.2,4,9,r0 mode=llm status=ROUTE_FOR_APPROVAL
+EXT-32,staged,True,True,True,True,24195.7,5,10,r0 mode=llm status=ESCALATE_SPECIALIST_REVIEW
+EXT-33,staged,True,False,True,True,42783.7,4,9,r0 mode=llm status=ESCALATE_SPECIALIST_REVIEW corrections=1

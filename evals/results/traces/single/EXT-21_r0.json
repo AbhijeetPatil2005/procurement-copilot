@@ -1,0 +1,730 @@
+{
+  "case_id": "EXT-21",
+  "decision": {
+    "request_id": "SYN-1021",
+    "recommendation": "Escalate for specialist review: ESCALATE_SPECIALIST_REVIEW",
+    "evidence": [
+      {
+        "source": "get_purchase_request",
+        "finding": "PixelCraft Pro Additional Seats from PixelCraft (Design & Creative): annual cost $4,000, users 8, data access 'internal_marketing', integrations: none, urgency 'normal'.",
+        "reference": "requests.json:SYN-1021"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Sarah Lee (E001), Marketing, IC4; manager David Chen (E009); department head David Chen (E009).",
+        "reference": "employees.csv:E001"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Requested $4,000 is within Marketing available budget of $15,000 ($11,000 would remain).",
+        "reference": "department_budgets.csv:Marketing"
+      },
+      {
+        "source": "search_existing_software",
+        "finding": "Catalog SW001 PixelCraft Pro (PixelCraft, Design & Creative) is 'Approved', scope Company-wide, 65 seats, $32,000/yr; relation: same vendor extension. Notes: Design and prototyping.",
+        "reference": "software_catalog.csv:SW001"
+      },
+      {
+        "source": "search_existing_software",
+        "finding": "Catalog SW002 CreativeSuite (CreativeSuite Labs, Design & Creative) is 'Approved', scope Marketing, 40 seats, $27,000/yr; relation: same category. Notes: Creative production suite.",
+        "reference": "software_catalog.csv:SW002"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Registry V001 PixelCraft: procurement 'Approved', security 'Approved' (review date 2025-09-29), legal terms 'Approved'.",
+        "reference": "vendors.csv:V001"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor-risk service: risk 'low', security review 'approved' (last review 2025-09-29), processes personal data: False, stores data outside region: False.",
+        "reference": "GET /vendor-risk/PixelCraft"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Annual amount $4,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+        "reference": "Policy \u00a74"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Vendor security assessment is expired: registry review 2025-09-29 is 366 days old (> 365); vendor-risk service reports 'approved' (review 2025-09-29).",
+        "reference": "Policy \u00a75"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Request extends an existing approved product/agreement (PixelCraft Pro); not a duplicate purchase.",
+        "reference": "Policy \u00a73"
+      },
+      {
+        "source": "get_purchase_request (agent)",
+        "finding": "The request is for 8 additional seats of PixelCraft Pro, an existing approved tool.",
+        "reference": "requests.json:SYN-1021"
+      },
+      {
+        "source": "check_department_budget (agent)",
+        "finding": "The annual cost of $4,000 is within the Marketing department's available budget of $15,000.",
+        "reference": "department_budgets.csv:Marketing"
+      },
+      {
+        "source": "evaluate_procurement_policy (agent)",
+        "finding": "The vendor's security assessment (last reviewed 2025-09-29) is 366 days old, exceeding the 365-day validity period.",
+        "reference": "procurement_policy.md v2026.09: Policy \u00a75"
+      },
+      {
+        "source": "evaluate_procurement_policy (agent)",
+        "finding": "The request requires Department Head, Procurement, and Security approvals due to the cost tier and expired security review.",
+        "reference": "procurement_policy.md v2026.09: Policy \u00a74, \u00a75"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Security"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "security_review_required",
+      "vendor_review_expired"
+    ],
+    "next_step": "Route to Security for a refreshed vendor assessment, then to Procurement and the Department Head (David Chen) for approval.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 8,
+      "tool_calls": 9,
+      "tool_names": [
+        "get_purchase_request",
+        "get_requester_profile",
+        "check_department_budget",
+        "search_existing_software",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_department_budget",
+        "search_existing_software",
+        "evaluate_procurement_policy"
+      ]
+    }
+  },
+  "trace": {
+    "architecture": "single",
+    "mode": "llm",
+    "provider": "openai",
+    "model": "gemini-3.1-flash-lite",
+    "fallback_reason": null,
+    "latency_ms": 65203.3,
+    "usage": {
+      "input_tokens": 26054,
+      "output_tokens": 647,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 0
+    },
+    "cost_usd": null,
+    "guardrails": {
+      "corrections": [],
+      "omitted_approvals": [],
+      "omitted_flags": [],
+      "added_by_llm_approvals": [],
+      "added_by_llm_flags": [],
+      "status_overridden": false,
+      "llm_status": "ESCALATE_SPECIALIST_REVIEW",
+      "final_status": "ESCALATE_SPECIALIST_REVIEW",
+      "grounded_claims": 4,
+      "ungrounded_claims": [],
+      "unsafe_language_blocked": false,
+      "raw_policy_compliant": true
+    },
+    "tool_log": [
+      {
+        "name": "get_purchase_request",
+        "caller": "single_agent",
+        "args": {
+          "request_id": "SYN-1021"
+        },
+        "ok": true,
+        "latency_ms": 0.1,
+        "cached": false
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "single_agent",
+        "args": {
+          "employee_id": "E001"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "single_agent",
+        "args": {
+          "annual_cost_usd": 4000,
+          "department": "Marketing"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "single_agent",
+        "args": {
+          "category": "Design & Creative",
+          "product_name": "PixelCraft Pro Additional Seats",
+          "use_case_keywords": [
+            "design tool",
+            "campaign production"
+          ],
+          "vendor_name": "PixelCraft"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "single_agent",
+        "args": {
+          "vendor_name": "PixelCraft"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "single_agent",
+        "args": {
+          "vendor_name": "PixelCraft"
+        },
+        "ok": true,
+        "latency_ms": 0.1,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1021"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "system",
+        "args": {
+          "employee_id": "E001"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "system",
+        "args": {
+          "department": "Marketing",
+          "annual_cost_usd": 4000.0
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "system",
+        "args": {
+          "product_name": "PixelCraft Pro Additional Seats",
+          "vendor_name": "PixelCraft",
+          "category": "Design & Creative"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "system",
+        "args": {
+          "vendor_name": "PixelCraft"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "system",
+        "args": {
+          "vendor_name": "PixelCraft"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "single_agent",
+        "args": {
+          "request_id": "SYN-1021"
+        },
+        "ok": true,
+        "latency_ms": 0.2,
+        "cached": false
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1021"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      }
+    ],
+    "agent_runs": [
+      {
+        "role": "single_agent",
+        "llm_calls": 8,
+        "tool_calls": 7,
+        "usage": {
+          "input_tokens": 26054,
+          "output_tokens": 647,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 64823.6,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_purchase_request",
+                "input": {
+                  "request_id": "SYN-1021"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2194,
+              "output_tokens": 25
+            },
+            "latency_ms": 5923.6
+          },
+          {
+            "type": "tool",
+            "name": "get_purchase_request",
+            "input": {
+              "request_id": "SYN-1021"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_requester_profile",
+                "input": {
+                  "employee_id": "E001"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2488,
+              "output_tokens": 24
+            },
+            "latency_ms": 4124.7
+          },
+          {
+            "type": "tool",
+            "name": "get_requester_profile",
+            "input": {
+              "employee_id": "E001"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "check_department_budget",
+                "input": {
+                  "annual_cost_usd": 4000,
+                  "department": "Marketing"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2716,
+              "output_tokens": 29
+            },
+            "latency_ms": 3576.1
+          },
+          {
+            "type": "tool",
+            "name": "check_department_budget",
+            "input": {
+              "annual_cost_usd": 4000,
+              "department": "Marketing"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "search_existing_software",
+                "input": {
+                  "category": "Design & Creative",
+                  "product_name": "PixelCraft Pro Additional Seats",
+                  "use_case_keywords": [
+                    "design tool",
+                    "campaign production"
+                  ],
+                  "vendor_name": "PixelCraft"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2894,
+              "output_tokens": 57
+            },
+            "latency_ms": 3858.2
+          },
+          {
+            "type": "tool",
+            "name": "search_existing_software",
+            "input": {
+              "category": "Design & Creative",
+              "product_name": "PixelCraft Pro Additional Seats",
+              "use_case_keywords": [
+                "design tool",
+                "campaign production"
+              ],
+              "vendor_name": "PixelCraft"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_vendor_registry_record",
+                "input": {
+                  "vendor_name": "PixelCraft"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 3389,
+              "output_tokens": 23
+            },
+            "latency_ms": 3896.8
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_registry_record",
+            "input": {
+              "vendor_name": "PixelCraft"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_vendor_risk_assessment",
+                "input": {
+                  "vendor_name": "PixelCraft"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 3608,
+              "output_tokens": 23
+            },
+            "latency_ms": 8855.1
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_risk_assessment",
+            "input": {
+              "vendor_name": "PixelCraft"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "evaluate_procurement_policy",
+                "input": {
+                  "request_id": "SYN-1021"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 3853,
+              "output_tokens": 26
+            },
+            "latency_ms": 24778.3
+          },
+          {
+            "type": "tool",
+            "name": "evaluate_procurement_policy",
+            "input": {
+              "request_id": "SYN-1021"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_decision",
+                "input": {
+                  "overlap_disposition": "no_overlap",
+                  "risk_flags": [
+                    "security_review_required",
+                    "vendor_review_expired"
+                  ],
+                  "rationale": "The request is for additional seats of an already approved tool. While the budget is sufficient, the vendor's security review has expired (366 days old), necessitating a new security review before the purchase can proceed. Standard approval routing applies.",
+                  "missing_information": [],
+                  "recommendation": "ESCALATE_SPECIALIST_REVIEW",
+                  "next_step": "Route to Security for a refreshed vendor assessment, then to Procurement and the Department Head (David Chen) for approval.",
+                  "evidence": [
+                    {
+                      "source": "get_purchase_request",
+                      "reference": "requests.json:SYN-1021",
+                      "finding": "The request is for 8 additional seats of PixelCraft Pro, an existing approved tool."
+                    },
+                    {
+                      "finding": "The annual cost of $4,000 is within the Marketing department's available budget of $15,000.",
+                      "source": "check_department_budget",
+                      "reference": "department_budgets.csv:Marketing"
+                    },
+                    {
+                      "source": "evaluate_procurement_policy",
+                      "finding": "The vendor's security assessment (last reviewed 2025-09-29) is 366 days old, exceeding the 365-day validity period.",
+                      "reference": "procurement_policy.md v2026.09: Policy \u00a75"
+                    },
+                    {
+                      "source": "evaluate_procurement_policy",
+                      "finding": "The request requires Department Head, Procurement, and Security approvals due to the cost tier and expired security review.",
+                      "reference": "procurement_policy.md v2026.09: Policy \u00a74, \u00a75"
+                    }
+                  ],
+                  "required_approvals": [
+                    "Department Head",
+                    "Procurement",
+                    "Security"
+                  ],
+                  "status": "ESCALATE_SPECIALIST_REVIEW",
+                  "clarification_questions": [],
+                  "prompt_injection_observed": false
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 4912,
+              "output_tokens": 440
+            },
+            "latency_ms": 9810.8
+          }
+        ]
+      }
+    ],
+    "evidence_pack": null,
+    "draft": {
+      "status": "ESCALATE_SPECIALIST_REVIEW",
+      "recommendation": "ESCALATE_SPECIALIST_REVIEW",
+      "rationale": "The request is for additional seats of an already approved tool. While the budget is sufficient, the vendor's security review has expired (366 days old), necessitating a new security review before the purchase can proceed. Standard approval routing applies.",
+      "evidence": [
+        {
+          "source": "get_purchase_request",
+          "finding": "The request is for 8 additional seats of PixelCraft Pro, an existing approved tool.",
+          "reference": "requests.json:SYN-1021"
+        },
+        {
+          "source": "check_department_budget",
+          "finding": "The annual cost of $4,000 is within the Marketing department's available budget of $15,000.",
+          "reference": "department_budgets.csv:Marketing"
+        },
+        {
+          "source": "evaluate_procurement_policy",
+          "finding": "The vendor's security assessment (last reviewed 2025-09-29) is 366 days old, exceeding the 365-day validity period.",
+          "reference": "procurement_policy.md v2026.09: Policy \u00a75"
+        },
+        {
+          "source": "evaluate_procurement_policy",
+          "finding": "The request requires Department Head, Procurement, and Security approvals due to the cost tier and expired security review.",
+          "reference": "procurement_policy.md v2026.09: Policy \u00a74, \u00a75"
+        }
+      ],
+      "required_approvals": [
+        "Department Head",
+        "Procurement",
+        "Security"
+      ],
+      "risk_flags": [
+        "security_review_required",
+        "vendor_review_expired"
+      ],
+      "missing_information": [],
+      "clarification_questions": [],
+      "overlap_disposition": "no_overlap",
+      "next_step": "Route to Security for a refreshed vendor assessment, then to Procurement and the Department Head (David Chen) for approval.",
+      "prompt_injection_observed": false
+    },
+    "assessment": {
+      "reference_date": "2026-09-30",
+      "annual_amount_usd": 4000.0,
+      "approval_tier": "$1,000.01 - $10,000",
+      "required_approvals": [
+        "Department Head",
+        "Procurement",
+        "Security"
+      ],
+      "risk_flags": [
+        "security_review_required",
+        "vendor_review_expired"
+      ],
+      "missing_information": [],
+      "missing_fields": [],
+      "rule_hits": [
+        {
+          "rule": "approval_threshold",
+          "section": "Policy \u00a74",
+          "finding": "Annual amount $4,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+          "adds_approvals": [
+            "Department Head",
+            "Procurement"
+          ],
+          "adds_flags": []
+        },
+        {
+          "rule": "budget_within",
+          "section": "Policy \u00a72",
+          "finding": "Cost $4,000 is within Marketing available budget $15,000 ($11,000 remaining). This does not imply approval.",
+          "adds_approvals": [],
+          "adds_flags": []
+        },
+        {
+          "rule": "vendor_review_expired",
+          "section": "Policy \u00a75",
+          "finding": "Vendor security assessment is expired: registry review 2025-09-29 is 366 days old (> 365); vendor-risk service reports 'approved' (review 2025-09-29).",
+          "adds_approvals": [
+            "Security"
+          ],
+          "adds_flags": [
+            "vendor_review_expired",
+            "security_review_required"
+          ]
+        },
+        {
+          "rule": "extends_existing_agreement",
+          "section": "Policy \u00a73",
+          "finding": "Request extends an existing approved product/agreement (PixelCraft Pro); not a duplicate purchase.",
+          "adds_approvals": [],
+          "adds_flags": []
+        }
+      ],
+      "open_items": [],
+      "budget": {
+        "department": "Marketing",
+        "available_usd": 15000.0,
+        "requested_usd": 4000,
+        "remaining_after_usd": 11000.0,
+        "within_budget": true
+      },
+      "vendor_review": {
+        "registry_status": "Approved",
+        "registry_review_date": "2025-09-29",
+        "registry_days_since_review": 366,
+        "api_status": "approved",
+        "api_review_date": "2025-09-29",
+        "api_days_since_review": 366,
+        "api_outcome": "ok",
+        "validity_days": 365,
+        "assessment_current": false,
+        "conflicts": []
+      },
+      "data_sensitivity": {
+        "data_access_level": "internal_marketing",
+        "category": "low",
+        "security_reasons": [],
+        "privacy_reasons": [],
+        "stores_data_outside_region": false
+      },
+      "overlap": {
+        "flagged": false,
+        "gap_stated": false,
+        "exact_duplicate": false,
+        "matches": [],
+        "extends": [
+          {
+            "software_id": "SW001",
+            "product_name": "PixelCraft Pro",
+            "category": "Design & Creative",
+            "vendor_name": "PixelCraft",
+            "status": "Approved",
+            "annual_cost_usd": 32000,
+            "licensed_seats": 65,
+            "scope": "Company-wide",
+            "notes": "Design and prototyping",
+            "relation": "same_vendor_extension",
+            "reference": "software_catalog.csv:SW001"
+          }
+        ]
+      },
+      "injection": {
+        "detected": false,
+        "findings": []
+      },
+      "default_status": "ESCALATE_SPECIALIST_REVIEW",
+      "allowed_statuses": [
+        "ESCALATE_SPECIALIST_REVIEW",
+        "REQUEST_CLARIFICATION",
+        "MANUAL_REVIEW_REQUIRED"
+      ],
+      "status_reasons": [
+        "Security / Privacy / Legal / budget-exception review is required before approval."
+      ],
+      "approver_routing": [
+        {
+          "role": "Department Head",
+          "assignee": "David Chen (E009, Director, Marketing)",
+          "basis": "Director/VP of the requesting department, else first Director/VP in the reporting chain"
+        },
+        {
+          "role": "Procurement",
+          "assignee": "Procurement team queue",
+          "basis": "Functional review queue"
+        },
+        {
+          "role": "Security",
+          "assignee": "Security review queue",
+          "basis": "Functional review queue"
+        }
+      ]
+    }
+  }
+}

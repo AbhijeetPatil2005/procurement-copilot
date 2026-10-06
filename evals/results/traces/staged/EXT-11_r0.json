@@ -1,0 +1,806 @@
+{
+  "case_id": "EXT-11",
+  "decision": {
+    "request_id": "SYN-1011",
+    "recommendation": "Request clarification from the requester regarding existing seat utilization before approving the purchase of additional seats.",
+    "evidence": [
+      {
+        "source": "get_purchase_request",
+        "finding": "SignFlow Extra Seats from SignFlow (E-signature): annual cost $1,000, users 4, data access 'internal_documents', integrations: none, urgency 'normal'.",
+        "reference": "requests.json:SYN-1011"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Noah Williams (E004), Finance, IC4; manager Priya Shah (E006); department head Priya Shah (E006).",
+        "reference": "employees.csv:E004"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Requested $1,000 is within Finance available budget of $29,000 ($28,000 would remain).",
+        "reference": "department_budgets.csv:Finance"
+      },
+      {
+        "source": "search_existing_software",
+        "finding": "Catalog SW010 SignFlow (SignFlow, E-signature) is 'Approved', scope Company-wide, 45 seats, $16,000/yr; relation: same vendor extension. Notes: Electronic signatures.",
+        "reference": "software_catalog.csv:SW010"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Registry V010 SignFlow: procurement 'Approved', security 'Approved' (review date 2026-06-20), legal terms 'Approved'.",
+        "reference": "vendors.csv:V010"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor-risk service: risk 'low', security review 'approved' (last review 2026-06-20), processes personal data: True, stores data outside region: False.",
+        "reference": "GET /vendor-risk/SignFlow"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Annual amount $1,000 falls in tier 'Up to $1,000' -> Manager.",
+        "reference": "Policy \u00a74"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Request extends an existing approved product/agreement (SignFlow); not a duplicate purchase.",
+        "reference": "Policy \u00a73"
+      },
+      {
+        "source": "get_requester_profile (agent)",
+        "finding": "Requester Noah Williams (E004) is in the Finance department.",
+        "reference": "employees.csv:E004"
+      },
+      {
+        "source": "get_purchase_request (agent)",
+        "finding": "The requested annual cost is $1,000.00.",
+        "reference": "requests.json:SYN-1011"
+      },
+      {
+        "source": "check_department_budget (agent)",
+        "finding": "The Finance department has $29,000.00 available in its software budget.",
+        "reference": "department_budgets.csv:Finance"
+      },
+      {
+        "source": "search_existing_software (agent)",
+        "finding": "SignFlow is an existing approved vendor with a company-wide agreement.",
+        "reference": "software_catalog.csv:SW010"
+      },
+      {
+        "source": "get_vendor_registry_record (agent)",
+        "finding": "The vendor SignFlow has an approved procurement and security status.",
+        "reference": "vendors.csv:V010"
+      },
+      {
+        "source": "get_vendor_risk_assessment (agent)",
+        "finding": "The external risk assessment for SignFlow is 'low' and was last reviewed on 2026-06-20.",
+        "reference": "GET /vendor-risk/SignFlow"
+      },
+      {
+        "source": "evaluate_procurement_policy (agent)",
+        "finding": "Annual amount $1,000 falls in tier 'Up to $1,000' -> Manager.",
+        "reference": "Policy \u00a74"
+      }
+    ],
+    "required_approvals": [
+      "Manager"
+    ],
+    "missing_information": [
+      "Confirmation of seat utilization for the existing company-wide SignFlow license."
+    ],
+    "risk_flags": [
+      "existing_tool_overlap",
+      "missing_information"
+    ],
+    "next_step": "Request clarification from the requester regarding the availability of existing unused seats before proceeding with the purchase. Questions for the requester: (1) Are there currently any unused seats available under the existing company-wide SignFlow license that could be reallocated to the audit team?",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 4,
+      "tool_calls": 9,
+      "tool_names": [
+        "get_purchase_request",
+        "get_requester_profile",
+        "check_department_budget",
+        "search_existing_software",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_department_budget",
+        "search_existing_software",
+        "evaluate_procurement_policy"
+      ]
+    }
+  },
+  "trace": {
+    "architecture": "staged",
+    "mode": "llm",
+    "provider": "openai",
+    "model": "gemini-3.1-flash-lite",
+    "fallback_reason": null,
+    "latency_ms": 22434.4,
+    "usage": {
+      "input_tokens": 9176,
+      "output_tokens": 1260,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 0
+    },
+    "cost_usd": null,
+    "guardrails": {
+      "corrections": [],
+      "omitted_approvals": [],
+      "omitted_flags": [],
+      "added_by_llm_approvals": [],
+      "added_by_llm_flags": [
+        "existing_tool_overlap"
+      ],
+      "status_overridden": false,
+      "llm_status": "REQUEST_CLARIFICATION",
+      "final_status": "REQUEST_CLARIFICATION",
+      "grounded_claims": 7,
+      "ungrounded_claims": [],
+      "unsafe_language_blocked": false,
+      "raw_policy_compliant": true
+    },
+    "tool_log": [
+      {
+        "name": "get_purchase_request",
+        "caller": "analyst",
+        "args": {
+          "request_id": "SYN-1011"
+        },
+        "ok": true,
+        "latency_ms": 0.1,
+        "cached": false
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "analyst",
+        "args": {
+          "employee_id": "E004"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "analyst",
+        "args": {
+          "department": "Finance",
+          "annual_cost_usd": 1000
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "analyst",
+        "args": {
+          "category": "E-signature",
+          "product_name": "SignFlow Extra Seats",
+          "use_case_keywords": [
+            "E-signature",
+            "signing seats",
+            "audit team signing"
+          ],
+          "vendor_name": "SignFlow"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "analyst",
+        "args": {
+          "vendor_name": "SignFlow"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "analyst",
+        "args": {
+          "vendor_name": "SignFlow"
+        },
+        "ok": true,
+        "latency_ms": 5.3,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1011"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "system",
+        "args": {
+          "employee_id": "E004"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "system",
+        "args": {
+          "department": "Finance",
+          "annual_cost_usd": 1000.0
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "system",
+        "args": {
+          "product_name": "SignFlow Extra Seats",
+          "vendor_name": "SignFlow",
+          "category": "E-signature"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "system",
+        "args": {
+          "vendor_name": "SignFlow"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "system",
+        "args": {
+          "vendor_name": "SignFlow"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1011"
+        },
+        "ok": true,
+        "latency_ms": 0.2,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1011"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1011"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      }
+    ],
+    "agent_runs": [
+      {
+        "role": "analyst",
+        "llm_calls": 3,
+        "tool_calls": 6,
+        "usage": {
+          "input_tokens": 5944,
+          "output_tokens": 659,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 15920.2,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_purchase_request",
+                "input": {
+                  "request_id": "SYN-1011"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 1365,
+              "output_tokens": 25
+            },
+            "latency_ms": 1884.4
+          },
+          {
+            "type": "tool",
+            "name": "get_purchase_request",
+            "input": {
+              "request_id": "SYN-1011"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_requester_profile",
+                "input": {
+                  "employee_id": "E004"
+                }
+              },
+              {
+                "name": "check_department_budget",
+                "input": {
+                  "department": "Finance",
+                  "annual_cost_usd": 1000
+                }
+              },
+              {
+                "name": "search_existing_software",
+                "input": {
+                  "category": "E-signature",
+                  "product_name": "SignFlow Extra Seats",
+                  "use_case_keywords": [
+                    "E-signature",
+                    "signing seats",
+                    "audit team signing"
+                  ],
+                  "vendor_name": "SignFlow"
+                }
+              },
+              {
+                "name": "get_vendor_registry_record",
+                "input": {
+                  "vendor_name": "SignFlow"
+                }
+              },
+              {
+                "name": "get_vendor_risk_assessment",
+                "input": {
+                  "vendor_name": "SignFlow"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 1659,
+              "output_tokens": 162
+            },
+            "latency_ms": 6955.7
+          },
+          {
+            "type": "tool",
+            "name": "get_requester_profile",
+            "input": {
+              "employee_id": "E004"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "check_department_budget",
+            "input": {
+              "department": "Finance",
+              "annual_cost_usd": 1000
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "search_existing_software",
+            "input": {
+              "category": "E-signature",
+              "product_name": "SignFlow Extra Seats",
+              "use_case_keywords": [
+                "E-signature",
+                "signing seats",
+                "audit team signing"
+              ],
+              "vendor_name": "SignFlow"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_registry_record",
+            "input": {
+              "vendor_name": "SignFlow"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_risk_assessment",
+            "input": {
+              "vendor_name": "SignFlow"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_evidence_pack",
+                "input": {
+                  "need_summary": "Noah Williams (Finance) requests 4 additional seats for the existing SignFlow e-signature tool to support the audit team during year-end close.",
+                  "prompt_injection_observed": false,
+                  "open_questions": [
+                    "Is there any possibility of reallocating existing unused seats from the company-wide SignFlow license instead of purchasing new ones?"
+                  ],
+                  "data_quality_issues": [],
+                  "injection_details": "None detected.",
+                  "overlap_assessment": {
+                    "disposition": "existing_tool_likely_sufficient",
+                    "existing_options": [
+                      "SignFlow (SW010) - Company-wide agreement"
+                    ],
+                    "reasoning": "The company already has a company-wide agreement with SignFlow. The request is for additional seats for an existing tool. It is unclear if the current 45 seats are fully utilized."
+                  },
+                  "facts": [
+                    {
+                      "finding": "Requester Noah Williams (E004) is in the Finance department.",
+                      "source": "get_requester_profile",
+                      "reference": "employees.csv:E004"
+                    },
+                    {
+                      "finding": "The requested annual cost is $1,000.00.",
+                      "source": "get_purchase_request",
+                      "reference": "requests.json:SYN-1011"
+                    },
+                    {
+                      "finding": "The Finance department has $29,000.00 available in its software budget.",
+                      "source": "check_department_budget",
+                      "reference": "department_budgets.csv:Finance"
+                    },
+                    {
+                      "finding": "SignFlow is an existing approved vendor with a company-wide agreement.",
+                      "reference": "software_catalog.csv:SW010",
+                      "source": "search_existing_software"
+                    },
+                    {
+                      "reference": "vendors.csv:V010",
+                      "source": "get_vendor_registry_record",
+                      "finding": "The vendor SignFlow has an approved procurement and security status."
+                    },
+                    {
+                      "source": "get_vendor_risk_assessment",
+                      "reference": "GET /vendor-risk/SignFlow",
+                      "finding": "The external risk assessment for SignFlow is 'low' and was last reviewed on 2026-06-20."
+                    }
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2920,
+              "output_tokens": 472
+            },
+            "latency_ms": 7080.1
+          }
+        ]
+      },
+      {
+        "role": "reviewer",
+        "llm_calls": 1,
+        "tool_calls": 0,
+        "usage": {
+          "input_tokens": 3232,
+          "output_tokens": 601,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 6034.1,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_decision",
+                "input": {
+                  "evidence": [
+                    {
+                      "finding": "Requester Noah Williams (E004) is in the Finance department.",
+                      "reference": "employees.csv:E004",
+                      "source": "get_requester_profile"
+                    },
+                    {
+                      "finding": "The requested annual cost is $1,000.00.",
+                      "source": "get_purchase_request",
+                      "reference": "requests.json:SYN-1011"
+                    },
+                    {
+                      "finding": "The Finance department has $29,000.00 available in its software budget.",
+                      "reference": "department_budgets.csv:Finance",
+                      "source": "check_department_budget"
+                    },
+                    {
+                      "reference": "software_catalog.csv:SW010",
+                      "finding": "SignFlow is an existing approved vendor with a company-wide agreement.",
+                      "source": "search_existing_software"
+                    },
+                    {
+                      "reference": "vendors.csv:V010",
+                      "source": "get_vendor_registry_record",
+                      "finding": "The vendor SignFlow has an approved procurement and security status."
+                    },
+                    {
+                      "reference": "GET /vendor-risk/SignFlow",
+                      "finding": "The external risk assessment for SignFlow is 'low' and was last reviewed on 2026-06-20.",
+                      "source": "get_vendor_risk_assessment"
+                    },
+                    {
+                      "source": "evaluate_procurement_policy",
+                      "finding": "Annual amount $1,000 falls in tier 'Up to $1,000' -> Manager.",
+                      "reference": "Policy \u00a74"
+                    }
+                  ],
+                  "status": "REQUEST_CLARIFICATION",
+                  "next_step": "Request clarification from the requester regarding the availability of existing unused seats before proceeding with the purchase.",
+                  "clarification_questions": [
+                    "Are there currently any unused seats available under the existing company-wide SignFlow license that could be reallocated to the audit team?"
+                  ],
+                  "required_approvals": [
+                    "Manager"
+                  ],
+                  "prompt_injection_observed": false,
+                  "risk_flags": [
+                    "existing_tool_overlap"
+                  ],
+                  "missing_information": [
+                    "Confirmation of seat utilization for the existing company-wide SignFlow license."
+                  ],
+                  "recommendation": "Request clarification from the requester regarding existing seat utilization before approving the purchase of additional seats.",
+                  "rationale": "The request is for additional seats for an existing, approved, and low-risk vendor (SignFlow). While the budget is sufficient and the policy only requires Manager approval, there is a significant overlap concern. The company already maintains a company-wide agreement for this tool. It is standard practice to verify if existing, unused seats can be reallocated before incurring additional costs. Therefore, I am setting the status to REQUEST_CLARIFICATION to ensure efficient use of existing resources.",
+                  "overlap_disposition": "existing_tool_likely_sufficient"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 3232,
+              "output_tokens": 601
+            },
+            "latency_ms": 6034.1
+          }
+        ]
+      }
+    ],
+    "evidence_pack": {
+      "need_summary": "Noah Williams (Finance) requests 4 additional seats for the existing SignFlow e-signature tool to support the audit team during year-end close.",
+      "facts": [
+        {
+          "source": "get_requester_profile",
+          "finding": "Requester Noah Williams (E004) is in the Finance department.",
+          "reference": "employees.csv:E004"
+        },
+        {
+          "source": "get_purchase_request",
+          "finding": "The requested annual cost is $1,000.00.",
+          "reference": "requests.json:SYN-1011"
+        },
+        {
+          "source": "check_department_budget",
+          "finding": "The Finance department has $29,000.00 available in its software budget.",
+          "reference": "department_budgets.csv:Finance"
+        },
+        {
+          "source": "search_existing_software",
+          "finding": "SignFlow is an existing approved vendor with a company-wide agreement.",
+          "reference": "software_catalog.csv:SW010"
+        },
+        {
+          "source": "get_vendor_registry_record",
+          "finding": "The vendor SignFlow has an approved procurement and security status.",
+          "reference": "vendors.csv:V010"
+        },
+        {
+          "source": "get_vendor_risk_assessment",
+          "finding": "The external risk assessment for SignFlow is 'low' and was last reviewed on 2026-06-20.",
+          "reference": "GET /vendor-risk/SignFlow"
+        }
+      ],
+      "overlap_assessment": {
+        "disposition": "existing_tool_likely_sufficient",
+        "existing_options": [
+          "SignFlow (SW010) - Company-wide agreement"
+        ],
+        "reasoning": "The company already has a company-wide agreement with SignFlow. The request is for additional seats for an existing tool. It is unclear if the current 45 seats are fully utilized."
+      },
+      "data_quality_issues": [],
+      "open_questions": [
+        "Is there any possibility of reallocating existing unused seats from the company-wide SignFlow license instead of purchasing new ones?"
+      ],
+      "prompt_injection_observed": false,
+      "injection_details": "None detected."
+    },
+    "draft": {
+      "status": "REQUEST_CLARIFICATION",
+      "recommendation": "Request clarification from the requester regarding existing seat utilization before approving the purchase of additional seats.",
+      "rationale": "The request is for additional seats for an existing, approved, and low-risk vendor (SignFlow). While the budget is sufficient and the policy only requires Manager approval, there is a significant overlap concern. The company already maintains a company-wide agreement for this tool. It is standard practice to verify if existing, unused seats can be reallocated before incurring additional costs. Therefore, I am setting the status to REQUEST_CLARIFICATION to ensure efficient use of existing resources.",
+      "evidence": [
+        {
+          "source": "get_requester_profile",
+          "finding": "Requester Noah Williams (E004) is in the Finance department.",
+          "reference": "employees.csv:E004"
+        },
+        {
+          "source": "get_purchase_request",
+          "finding": "The requested annual cost is $1,000.00.",
+          "reference": "requests.json:SYN-1011"
+        },
+        {
+          "source": "check_department_budget",
+          "finding": "The Finance department has $29,000.00 available in its software budget.",
+          "reference": "department_budgets.csv:Finance"
+        },
+        {
+          "source": "search_existing_software",
+          "finding": "SignFlow is an existing approved vendor with a company-wide agreement.",
+          "reference": "software_catalog.csv:SW010"
+        },
+        {
+          "source": "get_vendor_registry_record",
+          "finding": "The vendor SignFlow has an approved procurement and security status.",
+          "reference": "vendors.csv:V010"
+        },
+        {
+          "source": "get_vendor_risk_assessment",
+          "finding": "The external risk assessment for SignFlow is 'low' and was last reviewed on 2026-06-20.",
+          "reference": "GET /vendor-risk/SignFlow"
+        },
+        {
+          "source": "evaluate_procurement_policy",
+          "finding": "Annual amount $1,000 falls in tier 'Up to $1,000' -> Manager.",
+          "reference": "Policy \u00a74"
+        }
+      ],
+      "required_approvals": [
+        "Manager"
+      ],
+      "risk_flags": [
+        "existing_tool_overlap"
+      ],
+      "missing_information": [
+        "Confirmation of seat utilization for the existing company-wide SignFlow license."
+      ],
+      "clarification_questions": [
+        "Are there currently any unused seats available under the existing company-wide SignFlow license that could be reallocated to the audit team?"
+      ],
+      "overlap_disposition": "existing_tool_likely_sufficient",
+      "next_step": "Request clarification from the requester regarding the availability of existing unused seats before proceeding with the purchase.",
+      "prompt_injection_observed": false
+    },
+    "assessment": {
+      "reference_date": "2026-09-30",
+      "annual_amount_usd": 1000.0,
+      "approval_tier": "Up to $1,000",
+      "required_approvals": [
+        "Manager"
+      ],
+      "risk_flags": [],
+      "missing_information": [],
+      "missing_fields": [],
+      "rule_hits": [
+        {
+          "rule": "approval_threshold",
+          "section": "Policy \u00a74",
+          "finding": "Annual amount $1,000 falls in tier 'Up to $1,000' -> Manager.",
+          "adds_approvals": [
+            "Manager"
+          ],
+          "adds_flags": []
+        },
+        {
+          "rule": "budget_within",
+          "section": "Policy \u00a72",
+          "finding": "Cost $1,000 is within Finance available budget $29,000 ($28,000 remaining). This does not imply approval.",
+          "adds_approvals": [],
+          "adds_flags": []
+        },
+        {
+          "rule": "extends_existing_agreement",
+          "section": "Policy \u00a73",
+          "finding": "Request extends an existing approved product/agreement (SignFlow); not a duplicate purchase.",
+          "adds_approvals": [],
+          "adds_flags": []
+        }
+      ],
+      "open_items": [],
+      "budget": {
+        "department": "Finance",
+        "available_usd": 29000.0,
+        "requested_usd": 1000,
+        "remaining_after_usd": 28000.0,
+        "within_budget": true
+      },
+      "vendor_review": {
+        "registry_status": "Approved",
+        "registry_review_date": "2026-06-20",
+        "registry_days_since_review": 102,
+        "api_status": "approved",
+        "api_review_date": "2026-06-20",
+        "api_days_since_review": 102,
+        "api_outcome": "ok",
+        "validity_days": 365,
+        "assessment_current": true,
+        "conflicts": []
+      },
+      "data_sensitivity": {
+        "data_access_level": "internal_documents",
+        "category": "low",
+        "security_reasons": [],
+        "privacy_reasons": [],
+        "stores_data_outside_region": false
+      },
+      "overlap": {
+        "flagged": false,
+        "gap_stated": false,
+        "exact_duplicate": false,
+        "matches": [],
+        "extends": [
+          {
+            "software_id": "SW010",
+            "product_name": "SignFlow",
+            "category": "E-signature",
+            "vendor_name": "SignFlow",
+            "status": "Approved",
+            "annual_cost_usd": 16000,
+            "licensed_seats": 45,
+            "scope": "Company-wide",
+            "notes": "Electronic signatures",
+            "relation": "same_vendor_extension",
+            "reference": "software_catalog.csv:SW010"
+          }
+        ]
+      },
+      "injection": {
+        "detected": false,
+        "findings": []
+      },
+      "default_status": "ROUTE_FOR_APPROVAL",
+      "allowed_statuses": [
+        "ROUTE_FOR_APPROVAL",
+        "REQUEST_CLARIFICATION",
+        "MANUAL_REVIEW_REQUIRED",
+        "ESCALATE_SPECIALIST_REVIEW"
+      ],
+      "status_reasons": [
+        "Only standard business approvals are triggered."
+      ],
+      "approver_routing": [
+        {
+          "role": "Manager",
+          "assignee": "Priya Shah (E006)",
+          "basis": "Requester's reporting line (employees.csv)"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,835 @@
+{
+  "case_id": "EXT-27",
+  "decision": {
+    "request_id": "SYN-1027",
+    "recommendation": "Manual review required: MANUAL_REVIEW_REQUIRED. The request requires Security review due to expired and conflicting vendor risk data. Marketing must also clarify why existing seats cannot be reallocated.",
+    "evidence": [
+      {
+        "source": "get_purchase_request",
+        "finding": "CreativeSuite Extra Seats from CreativeSuite Labs (Design & Creative): annual cost $3,000, users 5, data access 'internal_marketing', integrations: none, urgency 'normal'.",
+        "reference": "requests.json:SYN-1027"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Sarah Lee (E001), Marketing, IC4; manager David Chen (E009); department head David Chen (E009).",
+        "reference": "employees.csv:E001"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Requested $3,000 is within Marketing available budget of $15,000 ($12,000 would remain).",
+        "reference": "department_budgets.csv:Marketing"
+      },
+      {
+        "source": "search_existing_software",
+        "finding": "Catalog SW001 PixelCraft Pro (PixelCraft, Design & Creative) is 'Approved', scope Company-wide, 65 seats, $32,000/yr; relation: same category. Notes: Design and prototyping.",
+        "reference": "software_catalog.csv:SW001"
+      },
+      {
+        "source": "search_existing_software",
+        "finding": "Catalog SW002 CreativeSuite (CreativeSuite Labs, Design & Creative) is 'Approved', scope Marketing, 40 seats, $27,000/yr; relation: same vendor extension. Notes: Creative production suite.",
+        "reference": "software_catalog.csv:SW002"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Registry V002 CreativeSuite Labs: procurement 'Approved', security 'Approved' (review date 2026-05-01), legal terms 'Approved'.",
+        "reference": "vendors.csv:V002"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor-risk service: risk 'low', security review 'approved' (last review 2025-01-15), processes personal data: False, stores data outside region: False.",
+        "reference": "GET /vendor-risk/CreativeSuite%20Labs"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Annual amount $3,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+        "reference": "Policy \u00a74"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Internal registry and vendor-risk service disagree (registry review date 2026-05-01 vs vendor-risk service 2025-01-15). Not resolved automatically.",
+        "reference": "Policy \u00a75"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Vendor security assessment is expired: vendor-risk service reports 'approved' (review 2025-01-15).",
+        "reference": "Policy \u00a75"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Request extends an existing approved product/agreement (CreativeSuite); not a duplicate purchase.",
+        "reference": "Policy \u00a73"
+      },
+      {
+        "source": "get_requester_profile (agent)",
+        "finding": "Requester Sarah Lee (E001) is in the Marketing department.",
+        "reference": "employees.csv:E001"
+      },
+      {
+        "source": "check_department_budget (agent)",
+        "finding": "The requested annual cost of $3,000 is within the Marketing department's available budget of $15,000.",
+        "reference": "department_budgets.csv:Marketing"
+      },
+      {
+        "source": "search_existing_software (agent)",
+        "finding": "CreativeSuite is already in use by the Marketing department (SW002).",
+        "reference": "software_catalog.csv:SW002"
+      },
+      {
+        "source": "evaluate_procurement_policy (agent)",
+        "finding": "Internal registry and vendor-risk service disagree on security review date (registry 2026-05-01 vs vendor-risk service 2025-01-15).",
+        "reference": "Policy \u00a75"
+      },
+      {
+        "source": "evaluate_procurement_policy (agent)",
+        "finding": "Vendor security assessment is expired (last valid assessment 2025-01-15, which is > 365 days from 2026-09-30).",
+        "reference": "Policy \u00a75"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Security"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "conflicting_vendor_evidence",
+      "existing_tool_overlap",
+      "security_review_required",
+      "vendor_review_expired"
+    ],
+    "next_step": "Route to Security for review of the conflicting and expired vendor assessment, and request seat utilisation confirmation from the Marketing department.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 4,
+      "tool_calls": 9,
+      "tool_names": [
+        "get_purchase_request",
+        "get_requester_profile",
+        "check_department_budget",
+        "search_existing_software",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_department_budget",
+        "search_existing_software",
+        "evaluate_procurement_policy"
+      ]
+    }
+  },
+  "trace": {
+    "architecture": "staged",
+    "mode": "llm",
+    "provider": "openai",
+    "model": "gemini-3.1-flash-lite",
+    "fallback_reason": null,
+    "latency_ms": 27581.2,
+    "usage": {
+      "input_tokens": 9669,
+      "output_tokens": 1209,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 0
+    },
+    "cost_usd": null,
+    "guardrails": {
+      "corrections": [],
+      "omitted_approvals": [],
+      "omitted_flags": [],
+      "added_by_llm_approvals": [],
+      "added_by_llm_flags": [
+        "existing_tool_overlap"
+      ],
+      "status_overridden": false,
+      "llm_status": "MANUAL_REVIEW_REQUIRED",
+      "final_status": "MANUAL_REVIEW_REQUIRED",
+      "grounded_claims": 5,
+      "ungrounded_claims": [],
+      "unsafe_language_blocked": false,
+      "raw_policy_compliant": true
+    },
+    "tool_log": [
+      {
+        "name": "get_purchase_request",
+        "caller": "analyst",
+        "args": {
+          "request_id": "SYN-1027"
+        },
+        "ok": true,
+        "latency_ms": 0.1,
+        "cached": false
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "analyst",
+        "args": {
+          "employee_id": "E001"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "analyst",
+        "args": {
+          "department": "Marketing",
+          "annual_cost_usd": 3000
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "analyst",
+        "args": {
+          "product_name": "CreativeSuite Extra Seats",
+          "category": "Design & Creative",
+          "use_case_keywords": [
+            "creative production",
+            "design software"
+          ],
+          "vendor_name": "CreativeSuite Labs"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "analyst",
+        "args": {
+          "vendor_name": "CreativeSuite Labs"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "analyst",
+        "args": {
+          "vendor_name": "CreativeSuite Labs"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1027"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "system",
+        "args": {
+          "employee_id": "E001"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "system",
+        "args": {
+          "department": "Marketing",
+          "annual_cost_usd": 3000.0
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "system",
+        "args": {
+          "product_name": "CreativeSuite Extra Seats",
+          "vendor_name": "CreativeSuite Labs",
+          "category": "Design & Creative"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "system",
+        "args": {
+          "vendor_name": "CreativeSuite Labs"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "system",
+        "args": {
+          "vendor_name": "CreativeSuite Labs"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1027"
+        },
+        "ok": true,
+        "latency_ms": 0.2,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1027"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1027"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      }
+    ],
+    "agent_runs": [
+      {
+        "role": "analyst",
+        "llm_calls": 3,
+        "tool_calls": 6,
+        "usage": {
+          "input_tokens": 6049,
+          "output_tokens": 619,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 21353.2,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_purchase_request",
+                "input": {
+                  "request_id": "SYN-1027"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 1365,
+              "output_tokens": 25
+            },
+            "latency_ms": 9046.8
+          },
+          {
+            "type": "tool",
+            "name": "get_purchase_request",
+            "input": {
+              "request_id": "SYN-1027"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_requester_profile",
+                "input": {
+                  "employee_id": "E001"
+                }
+              },
+              {
+                "name": "check_department_budget",
+                "input": {
+                  "department": "Marketing",
+                  "annual_cost_usd": 3000
+                }
+              },
+              {
+                "name": "search_existing_software",
+                "input": {
+                  "product_name": "CreativeSuite Extra Seats",
+                  "category": "Design & Creative",
+                  "use_case_keywords": [
+                    "creative production",
+                    "design software"
+                  ],
+                  "vendor_name": "CreativeSuite Labs"
+                }
+              },
+              {
+                "name": "get_vendor_registry_record",
+                "input": {
+                  "vendor_name": "CreativeSuite Labs"
+                }
+              },
+              {
+                "name": "get_vendor_risk_assessment",
+                "input": {
+                  "vendor_name": "CreativeSuite Labs"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 1656,
+              "output_tokens": 158
+            },
+            "latency_ms": 4511.2
+          },
+          {
+            "type": "tool",
+            "name": "get_requester_profile",
+            "input": {
+              "employee_id": "E001"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "check_department_budget",
+            "input": {
+              "department": "Marketing",
+              "annual_cost_usd": 3000
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "search_existing_software",
+            "input": {
+              "product_name": "CreativeSuite Extra Seats",
+              "category": "Design & Creative",
+              "use_case_keywords": [
+                "creative production",
+                "design software"
+              ],
+              "vendor_name": "CreativeSuite Labs"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_registry_record",
+            "input": {
+              "vendor_name": "CreativeSuite Labs"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_risk_assessment",
+            "input": {
+              "vendor_name": "CreativeSuite Labs"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_evidence_pack",
+                "input": {
+                  "need_summary": "Marketing requests 5 additional seats for 'CreativeSuite' to support a holiday campaign. The vendor is already approved and used by the department.",
+                  "prompt_injection_observed": false,
+                  "overlap_assessment": {
+                    "reasoning": "The department already uses CreativeSuite. Adding seats is an extension of an existing tool, but it should be verified if current seats are fully utilised.",
+                    "disposition": "existing_tool_likely_sufficient",
+                    "existing_options": [
+                      "CreativeSuite (SW002)"
+                    ]
+                  },
+                  "open_questions": [
+                    "Can the department confirm if existing seats are fully utilised before adding more?"
+                  ],
+                  "injection_details": "None detected.",
+                  "facts": [
+                    {
+                      "finding": "Requester Sarah Lee (E001) is in the Marketing department.",
+                      "source": "get_requester_profile",
+                      "reference": "employees.csv:E001"
+                    },
+                    {
+                      "source": "check_department_budget",
+                      "reference": "department_budgets.csv:Marketing",
+                      "finding": "The requested annual cost of $3,000 is within the Marketing department's available budget of $15,000."
+                    },
+                    {
+                      "finding": "CreativeSuite Labs is an approved vendor with approved security and legal status.",
+                      "reference": "vendors.csv:V002",
+                      "source": "get_vendor_registry_record"
+                    },
+                    {
+                      "reference": "GET /vendor-risk/CreativeSuite%20Labs",
+                      "source": "get_vendor_risk_assessment",
+                      "finding": "The vendor risk assessment for CreativeSuite Labs is 'low' risk, with a security review date of 2025-01-15."
+                    },
+                    {
+                      "source": "search_existing_software",
+                      "reference": "software_catalog.csv:SW002",
+                      "finding": "CreativeSuite is already in use by the Marketing department (SW002)."
+                    }
+                  ],
+                  "data_quality_issues": [
+                    "Seat utilisation data for the existing CreativeSuite license is not available."
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 3028,
+              "output_tokens": 436
+            },
+            "latency_ms": 7795.2
+          }
+        ]
+      },
+      {
+        "role": "reviewer",
+        "llm_calls": 1,
+        "tool_calls": 0,
+        "usage": {
+          "input_tokens": 3620,
+          "output_tokens": 590,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 5722.1,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_decision",
+                "input": {
+                  "next_step": "Route to Security for review of the conflicting and expired vendor assessment, and request seat utilisation confirmation from the Marketing department.",
+                  "evidence": [
+                    {
+                      "reference": "employees.csv:E001",
+                      "finding": "Requester Sarah Lee (E001) is in the Marketing department.",
+                      "source": "get_requester_profile"
+                    },
+                    {
+                      "reference": "department_budgets.csv:Marketing",
+                      "source": "check_department_budget",
+                      "finding": "The requested annual cost of $3,000 is within the Marketing department's available budget of $15,000."
+                    },
+                    {
+                      "finding": "CreativeSuite is already in use by the Marketing department (SW002).",
+                      "source": "search_existing_software",
+                      "reference": "software_catalog.csv:SW002"
+                    },
+                    {
+                      "finding": "Internal registry and vendor-risk service disagree on security review date (registry 2026-05-01 vs vendor-risk service 2025-01-15).",
+                      "source": "evaluate_procurement_policy",
+                      "reference": "Policy \u00a75"
+                    },
+                    {
+                      "finding": "Vendor security assessment is expired (last valid assessment 2025-01-15, which is > 365 days from 2026-09-30).",
+                      "source": "evaluate_procurement_policy",
+                      "reference": "Policy \u00a75"
+                    }
+                  ],
+                  "overlap_disposition": "existing_tool_likely_sufficient",
+                  "rationale": "The request is for additional seats of an existing tool. While the budget is sufficient, the vendor's security status is flagged as expired and contains conflicting data between the registry and the risk service. Per Policy \u00a75, this requires Security review. Additionally, as the tool is already in use, the department must confirm that existing seats are fully utilised before adding more.",
+                  "status": "MANUAL_REVIEW_REQUIRED",
+                  "required_approvals": [
+                    "Department Head",
+                    "Procurement",
+                    "Security"
+                  ],
+                  "clarification_questions": [
+                    "Can the department confirm if existing seats for CreativeSuite (SW002) are fully utilised, and why additional seats are required rather than reallocating existing ones?"
+                  ],
+                  "risk_flags": [
+                    "existing_tool_overlap",
+                    "security_review_required",
+                    "vendor_review_expired",
+                    "conflicting_vendor_evidence"
+                  ],
+                  "recommendation": "MANUAL_REVIEW_REQUIRED. The request requires Security review due to expired and conflicting vendor risk data. Marketing must also clarify why existing seats cannot be reallocated.",
+                  "prompt_injection_observed": false,
+                  "missing_information": [
+                    "Confirmation of seat utilisation for existing CreativeSuite licenses."
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 3620,
+              "output_tokens": 590
+            },
+            "latency_ms": 5722.1
+          }
+        ]
+      }
+    ],
+    "evidence_pack": {
+      "need_summary": "Marketing requests 5 additional seats for 'CreativeSuite' to support a holiday campaign. The vendor is already approved and used by the department.",
+      "facts": [
+        {
+          "source": "get_requester_profile",
+          "finding": "Requester Sarah Lee (E001) is in the Marketing department.",
+          "reference": "employees.csv:E001"
+        },
+        {
+          "source": "check_department_budget",
+          "finding": "The requested annual cost of $3,000 is within the Marketing department's available budget of $15,000.",
+          "reference": "department_budgets.csv:Marketing"
+        },
+        {
+          "source": "get_vendor_registry_record",
+          "finding": "CreativeSuite Labs is an approved vendor with approved security and legal status.",
+          "reference": "vendors.csv:V002"
+        },
+        {
+          "source": "get_vendor_risk_assessment",
+          "finding": "The vendor risk assessment for CreativeSuite Labs is 'low' risk, with a security review date of 2025-01-15.",
+          "reference": "GET /vendor-risk/CreativeSuite%20Labs"
+        },
+        {
+          "source": "search_existing_software",
+          "finding": "CreativeSuite is already in use by the Marketing department (SW002).",
+          "reference": "software_catalog.csv:SW002"
+        }
+      ],
+      "overlap_assessment": {
+        "disposition": "existing_tool_likely_sufficient",
+        "existing_options": [
+          "CreativeSuite (SW002)"
+        ],
+        "reasoning": "The department already uses CreativeSuite. Adding seats is an extension of an existing tool, but it should be verified if current seats are fully utilised."
+      },
+      "data_quality_issues": [
+        "Seat utilisation data for the existing CreativeSuite license is not available."
+      ],
+      "open_questions": [
+        "Can the department confirm if existing seats are fully utilised before adding more?"
+      ],
+      "prompt_injection_observed": false,
+      "injection_details": "None detected."
+    },
+    "draft": {
+      "status": "MANUAL_REVIEW_REQUIRED",
+      "recommendation": "MANUAL_REVIEW_REQUIRED. The request requires Security review due to expired and conflicting vendor risk data. Marketing must also clarify why existing seats cannot be reallocated.",
+      "rationale": "The request is for additional seats of an existing tool. While the budget is sufficient, the vendor's security status is flagged as expired and contains conflicting data between the registry and the risk service. Per Policy \u00a75, this requires Security review. Additionally, as the tool is already in use, the department must confirm that existing seats are fully utilised before adding more.",
+      "evidence": [
+        {
+          "source": "get_requester_profile",
+          "finding": "Requester Sarah Lee (E001) is in the Marketing department.",
+          "reference": "employees.csv:E001"
+        },
+        {
+          "source": "check_department_budget",
+          "finding": "The requested annual cost of $3,000 is within the Marketing department's available budget of $15,000.",
+          "reference": "department_budgets.csv:Marketing"
+        },
+        {
+          "source": "search_existing_software",
+          "finding": "CreativeSuite is already in use by the Marketing department (SW002).",
+          "reference": "software_catalog.csv:SW002"
+        },
+        {
+          "source": "evaluate_procurement_policy",
+          "finding": "Internal registry and vendor-risk service disagree on security review date (registry 2026-05-01 vs vendor-risk service 2025-01-15).",
+          "reference": "Policy \u00a75"
+        },
+        {
+          "source": "evaluate_procurement_policy",
+          "finding": "Vendor security assessment is expired (last valid assessment 2025-01-15, which is > 365 days from 2026-09-30).",
+          "reference": "Policy \u00a75"
+        }
+      ],
+      "required_approvals": [
+        "Department Head",
+        "Procurement",
+        "Security"
+      ],
+      "risk_flags": [
+        "existing_tool_overlap",
+        "security_review_required",
+        "vendor_review_expired",
+        "conflicting_vendor_evidence"
+      ],
+      "missing_information": [
+        "Confirmation of seat utilisation for existing CreativeSuite licenses."
+      ],
+      "clarification_questions": [
+        "Can the department confirm if existing seats for CreativeSuite (SW002) are fully utilised, and why additional seats are required rather than reallocating existing ones?"
+      ],
+      "overlap_disposition": "existing_tool_likely_sufficient",
+      "next_step": "Route to Security for review of the conflicting and expired vendor assessment, and request seat utilisation confirmation from the Marketing department.",
+      "prompt_injection_observed": false
+    },
+    "assessment": {
+      "reference_date": "2026-09-30",
+      "annual_amount_usd": 3000.0,
+      "approval_tier": "$1,000.01 - $10,000",
+      "required_approvals": [
+        "Department Head",
+        "Procurement",
+        "Security"
+      ],
+      "risk_flags": [
+        "conflicting_vendor_evidence",
+        "security_review_required",
+        "vendor_review_expired"
+      ],
+      "missing_information": [],
+      "missing_fields": [],
+      "rule_hits": [
+        {
+          "rule": "approval_threshold",
+          "section": "Policy \u00a74",
+          "finding": "Annual amount $3,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+          "adds_approvals": [
+            "Department Head",
+            "Procurement"
+          ],
+          "adds_flags": []
+        },
+        {
+          "rule": "budget_within",
+          "section": "Policy \u00a72",
+          "finding": "Cost $3,000 is within Marketing available budget $15,000 ($12,000 remaining). This does not imply approval.",
+          "adds_approvals": [],
+          "adds_flags": []
+        },
+        {
+          "rule": "conflicting_vendor_evidence",
+          "section": "Policy \u00a75",
+          "finding": "Internal registry and vendor-risk service disagree (registry review date 2026-05-01 vs vendor-risk service 2025-01-15). Not resolved automatically.",
+          "adds_approvals": [
+            "Security"
+          ],
+          "adds_flags": [
+            "conflicting_vendor_evidence",
+            "security_review_required"
+          ]
+        },
+        {
+          "rule": "vendor_review_expired",
+          "section": "Policy \u00a75",
+          "finding": "Vendor security assessment is expired: vendor-risk service reports 'approved' (review 2025-01-15).",
+          "adds_approvals": [
+            "Security"
+          ],
+          "adds_flags": [
+            "vendor_review_expired",
+            "security_review_required"
+          ]
+        },
+        {
+          "rule": "extends_existing_agreement",
+          "section": "Policy \u00a73",
+          "finding": "Request extends an existing approved product/agreement (CreativeSuite); not a duplicate purchase.",
+          "adds_approvals": [],
+          "adds_flags": []
+        }
+      ],
+      "open_items": [],
+      "budget": {
+        "department": "Marketing",
+        "available_usd": 15000.0,
+        "requested_usd": 3000,
+        "remaining_after_usd": 12000.0,
+        "within_budget": true
+      },
+      "vendor_review": {
+        "registry_status": "Approved",
+        "registry_review_date": "2026-05-01",
+        "registry_days_since_review": 152,
+        "api_status": "approved",
+        "api_review_date": "2025-01-15",
+        "api_days_since_review": 623,
+        "api_outcome": "ok",
+        "validity_days": 365,
+        "assessment_current": false,
+        "conflicts": [
+          "registry review date 2026-05-01 vs vendor-risk service 2025-01-15"
+        ]
+      },
+      "data_sensitivity": {
+        "data_access_level": "internal_marketing",
+        "category": "low",
+        "security_reasons": [],
+        "privacy_reasons": [],
+        "stores_data_outside_region": false
+      },
+      "overlap": {
+        "flagged": false,
+        "gap_stated": false,
+        "exact_duplicate": false,
+        "matches": [],
+        "extends": [
+          {
+            "software_id": "SW002",
+            "product_name": "CreativeSuite",
+            "category": "Design & Creative",
+            "vendor_name": "CreativeSuite Labs",
+            "status": "Approved",
+            "annual_cost_usd": 27000,
+            "licensed_seats": 40,
+            "scope": "Marketing",
+            "notes": "Creative production suite",
+            "relation": "same_vendor_extension",
+            "reference": "software_catalog.csv:SW002"
+          }
+        ]
+      },
+      "injection": {
+        "detected": false,
+        "findings": []
+      },
+      "default_status": "MANUAL_REVIEW_REQUIRED",
+      "allowed_statuses": [
+        "MANUAL_REVIEW_REQUIRED",
+        "REQUEST_CLARIFICATION"
+      ],
+      "status_reasons": [
+        "Material evidence is unavailable, conflicting, or unverifiable (Policy \u00a75, \u00a710)."
+      ],
+      "approver_routing": [
+        {
+          "role": "Department Head",
+          "assignee": "David Chen (E009, Director, Marketing)",
+          "basis": "Director/VP of the requesting department, else first Director/VP in the reporting chain"
+        },
+        {
+          "role": "Procurement",
+          "assignee": "Procurement team queue",
+          "basis": "Functional review queue"
+        },
+        {
+          "role": "Security",
+          "assignee": "Security review queue",
+          "basis": "Functional review queue"
+        }
+      ]
+    }
+  }
+}

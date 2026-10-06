@@ -1,0 +1,276 @@
+{
+  "case_id": "EXT-10",
+  "decision": {
+    "request_id": "REQ-1010",
+    "recommendation": "Route for approval: standard approval by Manager; no specialist review triggered.",
+    "evidence": [
+      {
+        "source": "get_purchase_request",
+        "finding": "SignFlow Training Pack from SignFlow (Professional Services): annual cost $950, users 12, data access 'none', integrations: none, urgency 'normal'.",
+        "reference": "requests.json:REQ-1010"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Noah Williams (E004), Finance, IC4; manager Priya Shah (E006); department head Priya Shah (E006).",
+        "reference": "employees.csv:E004"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Requested $950 is within Finance available budget of $29,000 ($28,050 would remain).",
+        "reference": "department_budgets.csv:Finance"
+      },
+      {
+        "source": "search_existing_software",
+        "finding": "Catalog SW010 SignFlow (SignFlow, E-signature) is 'Approved', scope Company-wide, 45 seats, $16,000/yr; relation: same vendor extension. Notes: Electronic signatures.",
+        "reference": "software_catalog.csv:SW010"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Registry V010 SignFlow: procurement 'Approved', security 'Approved' (review date 2026-06-20), legal terms 'Approved'.",
+        "reference": "vendors.csv:V010"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor-risk service: risk 'low', security review 'approved' (last review 2026-06-20), processes personal data: True, stores data outside region: False.",
+        "reference": "GET /vendor-risk/SignFlow"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Annual amount $950 falls in tier 'Up to $1,000' -> Manager.",
+        "reference": "Policy \u00a74"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Request extends an existing approved product/agreement (SignFlow); not a duplicate purchase.",
+        "reference": "Policy \u00a73"
+      }
+    ],
+    "required_approvals": [
+      "Manager"
+    ],
+    "missing_information": [],
+    "risk_flags": [],
+    "next_step": "Send to Priya Shah (E006) for approval with this evidence package.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 0,
+      "tool_calls": 7,
+      "tool_names": [
+        "get_purchase_request",
+        "get_requester_profile",
+        "check_department_budget",
+        "search_existing_software",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "evaluate_procurement_policy"
+      ]
+    }
+  },
+  "trace": {
+    "architecture": "rules",
+    "mode": "rules_only",
+    "provider": "none",
+    "model": "gemini-3.1-flash-lite",
+    "fallback_reason": null,
+    "latency_ms": 13.9,
+    "usage": {},
+    "cost_usd": 0.0,
+    "guardrails": {
+      "corrections": [],
+      "omitted_approvals": [],
+      "omitted_flags": [],
+      "added_by_llm_approvals": [],
+      "added_by_llm_flags": [],
+      "status_overridden": false,
+      "llm_status": null,
+      "final_status": "ROUTE_FOR_APPROVAL",
+      "grounded_claims": 0,
+      "ungrounded_claims": [],
+      "unsafe_language_blocked": false,
+      "raw_policy_compliant": true
+    },
+    "tool_log": [
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "REQ-1010"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "system",
+        "args": {
+          "employee_id": "E004"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "system",
+        "args": {
+          "department": "Finance",
+          "annual_cost_usd": 950.0
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "system",
+        "args": {
+          "product_name": "SignFlow Training Pack",
+          "vendor_name": "SignFlow",
+          "category": "Professional Services"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "system",
+        "args": {
+          "vendor_name": "SignFlow"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "system",
+        "args": {
+          "vendor_name": "SignFlow"
+        },
+        "ok": true,
+        "latency_ms": 13.5,
+        "cached": false
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "REQ-1010"
+        },
+        "ok": true,
+        "latency_ms": 13.8,
+        "cached": false
+      }
+    ],
+    "agent_runs": [],
+    "evidence_pack": null,
+    "draft": null,
+    "assessment": {
+      "reference_date": "2026-09-30",
+      "annual_amount_usd": 950.0,
+      "approval_tier": "Up to $1,000",
+      "required_approvals": [
+        "Manager"
+      ],
+      "risk_flags": [],
+      "missing_information": [],
+      "missing_fields": [],
+      "rule_hits": [
+        {
+          "rule": "approval_threshold",
+          "section": "Policy \u00a74",
+          "finding": "Annual amount $950 falls in tier 'Up to $1,000' -> Manager.",
+          "adds_approvals": [
+            "Manager"
+          ],
+          "adds_flags": []
+        },
+        {
+          "rule": "budget_within",
+          "section": "Policy \u00a72",
+          "finding": "Cost $950 is within Finance available budget $29,000 ($28,050 remaining). This does not imply approval.",
+          "adds_approvals": [],
+          "adds_flags": []
+        },
+        {
+          "rule": "extends_existing_agreement",
+          "section": "Policy \u00a73",
+          "finding": "Request extends an existing approved product/agreement (SignFlow); not a duplicate purchase.",
+          "adds_approvals": [],
+          "adds_flags": []
+        }
+      ],
+      "open_items": [],
+      "budget": {
+        "department": "Finance",
+        "available_usd": 29000.0,
+        "requested_usd": 950,
+        "remaining_after_usd": 28050.0,
+        "within_budget": true
+      },
+      "vendor_review": {
+        "registry_status": "Approved",
+        "registry_review_date": "2026-06-20",
+        "registry_days_since_review": 102,
+        "api_status": "approved",
+        "api_review_date": "2026-06-20",
+        "api_days_since_review": 102,
+        "api_outcome": "ok",
+        "validity_days": 365,
+        "assessment_current": true,
+        "conflicts": []
+      },
+      "data_sensitivity": {
+        "data_access_level": "none",
+        "category": "low",
+        "security_reasons": [],
+        "privacy_reasons": [],
+        "stores_data_outside_region": false
+      },
+      "overlap": {
+        "flagged": false,
+        "gap_stated": false,
+        "exact_duplicate": false,
+        "matches": [],
+        "extends": [
+          {
+            "software_id": "SW010",
+            "product_name": "SignFlow",
+            "category": "E-signature",
+            "vendor_name": "SignFlow",
+            "status": "Approved",
+            "annual_cost_usd": 16000,
+            "licensed_seats": 45,
+            "scope": "Company-wide",
+            "notes": "Electronic signatures",
+            "relation": "same_vendor_extension",
+            "reference": "software_catalog.csv:SW010"
+          }
+        ]
+      },
+      "injection": {
+        "detected": false,
+        "findings": []
+      },
+      "default_status": "ROUTE_FOR_APPROVAL",
+      "allowed_statuses": [
+        "ROUTE_FOR_APPROVAL",
+        "REQUEST_CLARIFICATION",
+        "MANUAL_REVIEW_REQUIRED",
+        "ESCALATE_SPECIALIST_REVIEW"
+      ],
+      "status_reasons": [
+        "Only standard business approvals are triggered."
+      ],
+      "approver_routing": [
+        {
+          "role": "Manager",
+          "assignee": "Priya Shah (E006)",
+          "basis": "Requester's reporting line (employees.csv)"
+        }
+      ]
+    }
+  }
+}

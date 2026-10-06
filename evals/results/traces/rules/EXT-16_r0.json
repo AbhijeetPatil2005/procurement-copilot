@@ -1,0 +1,329 @@
+{
+  "case_id": "EXT-16",
+  "decision": {
+    "request_id": "SYN-1016",
+    "recommendation": "Escalate for specialist review: Security review is required before business approval (Department Head, Procurement, Finance, CFO, Security).",
+    "evidence": [
+      {
+        "source": "get_purchase_request",
+        "finding": "CodeMate Additional Seats from CodeMate (Developer AI): annual cost $26,000, users 40, data access 'source_code', integrations: Git repositories, urgency 'normal'.",
+        "reference": "requests.json:SYN-1016"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Arjun Mehta (E002), Engineering, IC5; manager Maya Rao (E008); department head Maya Rao (E008).",
+        "reference": "employees.csv:E002"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Requested $26,000 is within Engineering available budget of $26,000 ($0 would remain).",
+        "reference": "department_budgets.csv:Engineering"
+      },
+      {
+        "source": "search_existing_software",
+        "finding": "Catalog SW008 CodeMate (CodeMate, Developer AI) is 'Approved', scope Engineering, 120 seats, $90,000/yr; relation: same vendor extension. Notes: AI coding assistant.",
+        "reference": "software_catalog.csv:SW008"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Registry V008 CodeMate: procurement 'Approved', security 'Approved' (review date 2026-08-20), legal terms 'Approved'.",
+        "reference": "vendors.csv:V008"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor-risk service: risk 'medium', security review 'approved' (last review 2026-08-20), processes personal data: False, stores data outside region: False.",
+        "reference": "GET /vendor-risk/CodeMate"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Annual amount $26,000 falls in tier 'Above $25,000' -> Department Head, Finance, CFO, Procurement.",
+        "reference": "Policy \u00a74"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Security review required: data access 'source_code'; 'Git repositories' = source-code repository access.",
+        "reference": "Policy \u00a75"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Request extends an existing approved product/agreement (CodeMate); not a duplicate purchase.",
+        "reference": "Policy \u00a73"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "CFO",
+      "Security"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "security_review_required"
+    ],
+    "next_step": "Send the evidence package to Security for review; business approvers (Department Head, Procurement, Finance, CFO) sign off only after those reviews clear.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 0,
+      "tool_calls": 7,
+      "tool_names": [
+        "get_purchase_request",
+        "get_requester_profile",
+        "check_department_budget",
+        "search_existing_software",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "evaluate_procurement_policy"
+      ]
+    }
+  },
+  "trace": {
+    "architecture": "rules",
+    "mode": "rules_only",
+    "provider": "none",
+    "model": "gemini-3.1-flash-lite",
+    "fallback_reason": null,
+    "latency_ms": 20.0,
+    "usage": {},
+    "cost_usd": 0.0,
+    "guardrails": {
+      "corrections": [],
+      "omitted_approvals": [],
+      "omitted_flags": [],
+      "added_by_llm_approvals": [],
+      "added_by_llm_flags": [],
+      "status_overridden": false,
+      "llm_status": null,
+      "final_status": "ESCALATE_SPECIALIST_REVIEW",
+      "grounded_claims": 0,
+      "ungrounded_claims": [],
+      "unsafe_language_blocked": false,
+      "raw_policy_compliant": true
+    },
+    "tool_log": [
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1016"
+        },
+        "ok": true,
+        "latency_ms": 0.1,
+        "cached": false
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "system",
+        "args": {
+          "employee_id": "E002"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "system",
+        "args": {
+          "department": "Engineering",
+          "annual_cost_usd": 26000.0
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "system",
+        "args": {
+          "product_name": "CodeMate Additional Seats",
+          "vendor_name": "CodeMate",
+          "category": "Developer AI"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "system",
+        "args": {
+          "vendor_name": "CodeMate"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "system",
+        "args": {
+          "vendor_name": "CodeMate"
+        },
+        "ok": true,
+        "latency_ms": 19.5,
+        "cached": false
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1016"
+        },
+        "ok": true,
+        "latency_ms": 19.8,
+        "cached": false
+      }
+    ],
+    "agent_runs": [],
+    "evidence_pack": null,
+    "draft": null,
+    "assessment": {
+      "reference_date": "2026-09-30",
+      "annual_amount_usd": 26000.0,
+      "approval_tier": "Above $25,000",
+      "required_approvals": [
+        "Department Head",
+        "Procurement",
+        "Finance",
+        "CFO",
+        "Security"
+      ],
+      "risk_flags": [
+        "security_review_required"
+      ],
+      "missing_information": [],
+      "missing_fields": [],
+      "rule_hits": [
+        {
+          "rule": "approval_threshold",
+          "section": "Policy \u00a74",
+          "finding": "Annual amount $26,000 falls in tier 'Above $25,000' -> Department Head, Finance, CFO, Procurement.",
+          "adds_approvals": [
+            "Department Head",
+            "Finance",
+            "CFO",
+            "Procurement"
+          ],
+          "adds_flags": []
+        },
+        {
+          "rule": "budget_within",
+          "section": "Policy \u00a72",
+          "finding": "Cost $26,000 is within Engineering available budget $26,000 ($0 remaining). This does not imply approval.",
+          "adds_approvals": [],
+          "adds_flags": []
+        },
+        {
+          "rule": "security_data_trigger",
+          "section": "Policy \u00a75",
+          "finding": "Security review required: data access 'source_code'; 'Git repositories' = source-code repository access.",
+          "adds_approvals": [
+            "Security"
+          ],
+          "adds_flags": [
+            "security_review_required"
+          ]
+        },
+        {
+          "rule": "extends_existing_agreement",
+          "section": "Policy \u00a73",
+          "finding": "Request extends an existing approved product/agreement (CodeMate); not a duplicate purchase.",
+          "adds_approvals": [],
+          "adds_flags": []
+        }
+      ],
+      "open_items": [],
+      "budget": {
+        "department": "Engineering",
+        "available_usd": 26000.0,
+        "requested_usd": 26000,
+        "remaining_after_usd": 0.0,
+        "within_budget": true
+      },
+      "vendor_review": {
+        "registry_status": "Approved",
+        "registry_review_date": "2026-08-20",
+        "registry_days_since_review": 41,
+        "api_status": "approved",
+        "api_review_date": "2026-08-20",
+        "api_days_since_review": 41,
+        "api_outcome": "ok",
+        "validity_days": 365,
+        "assessment_current": true,
+        "conflicts": []
+      },
+      "data_sensitivity": {
+        "data_access_level": "source_code",
+        "category": "security",
+        "security_reasons": [
+          "data access 'source_code'",
+          "'Git repositories' = source-code repository access"
+        ],
+        "privacy_reasons": [],
+        "stores_data_outside_region": false
+      },
+      "overlap": {
+        "flagged": false,
+        "gap_stated": false,
+        "exact_duplicate": false,
+        "matches": [],
+        "extends": [
+          {
+            "software_id": "SW008",
+            "product_name": "CodeMate",
+            "category": "Developer AI",
+            "vendor_name": "CodeMate",
+            "status": "Approved",
+            "annual_cost_usd": 90000,
+            "licensed_seats": 120,
+            "scope": "Engineering",
+            "notes": "AI coding assistant",
+            "relation": "same_vendor_extension",
+            "reference": "software_catalog.csv:SW008"
+          }
+        ]
+      },
+      "injection": {
+        "detected": false,
+        "findings": []
+      },
+      "default_status": "ESCALATE_SPECIALIST_REVIEW",
+      "allowed_statuses": [
+        "ESCALATE_SPECIALIST_REVIEW",
+        "REQUEST_CLARIFICATION",
+        "MANUAL_REVIEW_REQUIRED"
+      ],
+      "status_reasons": [
+        "Security / Privacy / Legal / budget-exception review is required before approval."
+      ],
+      "approver_routing": [
+        {
+          "role": "Department Head",
+          "assignee": "Maya Rao (E008, Director, Engineering)",
+          "basis": "Director/VP of the requesting department, else first Director/VP in the reporting chain"
+        },
+        {
+          "role": "Procurement",
+          "assignee": "Procurement team queue",
+          "basis": "Functional review queue"
+        },
+        {
+          "role": "Finance",
+          "assignee": "Finance / FP&A queue",
+          "basis": "Functional review queue"
+        },
+        {
+          "role": "CFO",
+          "assignee": "Office of the CFO (not in employee directory)",
+          "basis": "Functional review queue"
+        },
+        {
+          "role": "Security",
+          "assignee": "Security review queue",
+          "basis": "Functional review queue"
+        }
+      ]
+    }
+  }
+}

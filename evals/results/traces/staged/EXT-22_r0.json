@@ -1,0 +1,903 @@
+{
+  "case_id": "EXT-22",
+  "decision": {
+    "request_id": "SYN-1022",
+    "recommendation": "Escalate for specialist review: ESCALATE_SPECIALIST_REVIEW: The request requires Security and Privacy review due to the integration with Workday HRIS. Department Head approval must be escalated to the next level of leadership to avoid self-approval.",
+    "evidence": [
+      {
+        "source": "get_purchase_request",
+        "finding": "TaskFlow HR Onboarding Add-on from TaskFlow (Project Management): annual cost $5,000, users 15, data access 'internal_documents', integrations: Workday HRIS, urgency 'normal'.",
+        "reference": "requests.json:SYN-1022"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Lisa Park (E010), Operations, VP; manager none on file; department head Lisa Park (E010).",
+        "reference": "employees.csv:E010"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Requested $5,000 is within Operations available budget of $20,000 ($15,000 would remain).",
+        "reference": "department_budgets.csv:Operations"
+      },
+      {
+        "source": "search_existing_software",
+        "finding": "Catalog SW003 TaskFlow (TaskFlow, Project Management) is 'Approved', scope Company-wide, 180 seats, $36,000/yr; relation: same vendor extension. Notes: Project and task management.",
+        "reference": "software_catalog.csv:SW003"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Registry V003 TaskFlow: procurement 'Approved', security 'Approved' (review date 2026-06-03), legal terms 'Approved'.",
+        "reference": "vendors.csv:V003"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor-risk service: risk 'low', security review 'approved' (last review 2026-06-03), processes personal data: True, stores data outside region: False.",
+        "reference": "GET /vendor-risk/TaskFlow"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Annual amount $5,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+        "reference": "Policy \u00a74"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Security review required: 'Workday HRIS' = integration with an HR system (employee PII).",
+        "reference": "Policy \u00a75"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Privacy review required: 'Workday HRIS' = integration with an HR system (employee PII).",
+        "reference": "Policy \u00a76"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Request extends an existing approved product/agreement (TaskFlow); not a duplicate purchase.",
+        "reference": "Policy \u00a73"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Requester is the head of Operations; Department Head approval must go to the next level of leadership to avoid self-approval.",
+        "reference": "Policy \u00a711"
+      },
+      {
+        "source": "get_requester_profile (agent)",
+        "finding": "Requester is Lisa Park (VP, Operations).",
+        "reference": "employees.csv:E010"
+      },
+      {
+        "source": "check_department_budget (agent)",
+        "finding": "Requested annual cost is $5,000. Operations department has $20,000 available budget. Request is within budget.",
+        "reference": "department_budgets.csv:Operations"
+      },
+      {
+        "source": "get_vendor_registry_record (agent)",
+        "finding": "TaskFlow is an existing approved vendor (procurement, security, and legal status approved). Last security review: 2026-06-03.",
+        "reference": "vendors.csv:V003"
+      },
+      {
+        "source": "get_vendor_risk_assessment (agent)",
+        "finding": "External risk assessment for TaskFlow is 'low' risk. Processes personal data, no data residency issues. Last review: 2026-06-03.",
+        "reference": "GET /vendor-risk/TaskFlow"
+      },
+      {
+        "source": "search_existing_software (agent)",
+        "finding": "Company already uses TaskFlow (SW003) for project management. This request is for an add-on to the existing platform.",
+        "reference": "software_catalog.csv:SW003"
+      },
+      {
+        "source": "evaluate_procurement_policy (agent)",
+        "finding": "Annual amount $5,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+        "reference": "Policy \u00a74"
+      },
+      {
+        "source": "evaluate_procurement_policy (agent)",
+        "finding": "Security review required: 'Workday HRIS' = integration with an HR system (employee PII).",
+        "reference": "Policy \u00a75"
+      },
+      {
+        "source": "evaluate_procurement_policy (agent)",
+        "finding": "Privacy review required: 'Workday HRIS' = integration with an HR system (employee PII).",
+        "reference": "Policy \u00a76"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Security",
+      "Privacy"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "privacy_review_required",
+      "security_review_required"
+    ],
+    "next_step": "Route to Security and Privacy for review of the Workday HRIS integration. Request that the requester provide the next level of leadership for Department Head approval to avoid self-approval.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 4,
+      "tool_calls": 9,
+      "tool_names": [
+        "get_purchase_request",
+        "get_requester_profile",
+        "check_department_budget",
+        "search_existing_software",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_department_budget",
+        "search_existing_software",
+        "evaluate_procurement_policy"
+      ]
+    }
+  },
+  "trace": {
+    "architecture": "staged",
+    "mode": "llm",
+    "provider": "openai",
+    "model": "gemini-3.1-flash-lite",
+    "fallback_reason": null,
+    "latency_ms": 46390.9,
+    "usage": {
+      "input_tokens": 9718,
+      "output_tokens": 1576,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 0
+    },
+    "cost_usd": null,
+    "guardrails": {
+      "corrections": [],
+      "omitted_approvals": [],
+      "omitted_flags": [],
+      "added_by_llm_approvals": [],
+      "added_by_llm_flags": [],
+      "status_overridden": false,
+      "llm_status": "ESCALATE_SPECIALIST_REVIEW",
+      "final_status": "ESCALATE_SPECIALIST_REVIEW",
+      "grounded_claims": 9,
+      "ungrounded_claims": [],
+      "unsafe_language_blocked": false,
+      "raw_policy_compliant": true
+    },
+    "tool_log": [
+      {
+        "name": "get_purchase_request",
+        "caller": "analyst",
+        "args": {
+          "request_id": "SYN-1022"
+        },
+        "ok": true,
+        "latency_ms": 0.1,
+        "cached": false
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "analyst",
+        "args": {
+          "employee_id": "E010"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "analyst",
+        "args": {
+          "annual_cost_usd": 5000,
+          "department": "Operations"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "analyst",
+        "args": {
+          "use_case_keywords": [
+            "onboarding checklists",
+            "HRIS integration",
+            "automated onboarding"
+          ],
+          "vendor_name": "TaskFlow",
+          "product_name": "TaskFlow HR Onboarding Add-on",
+          "category": "Project Management"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "analyst",
+        "args": {
+          "vendor_name": "TaskFlow"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "analyst",
+        "args": {
+          "vendor_name": "TaskFlow"
+        },
+        "ok": true,
+        "latency_ms": 5.8,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1022"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "system",
+        "args": {
+          "employee_id": "E010"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "system",
+        "args": {
+          "department": "Operations",
+          "annual_cost_usd": 5000.0
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "system",
+        "args": {
+          "product_name": "TaskFlow HR Onboarding Add-on",
+          "vendor_name": "TaskFlow",
+          "category": "Project Management"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "system",
+        "args": {
+          "vendor_name": "TaskFlow"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "system",
+        "args": {
+          "vendor_name": "TaskFlow"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1022"
+        },
+        "ok": true,
+        "latency_ms": 0.2,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1022"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1022"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      }
+    ],
+    "agent_runs": [
+      {
+        "role": "analyst",
+        "llm_calls": 3,
+        "tool_calls": 6,
+        "usage": {
+          "input_tokens": 5914,
+          "output_tokens": 700,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 41781.1,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_purchase_request",
+                "input": {
+                  "request_id": "SYN-1022"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 1365,
+              "output_tokens": 25
+            },
+            "latency_ms": 13932.0
+          },
+          {
+            "type": "tool",
+            "name": "get_purchase_request",
+            "input": {
+              "request_id": "SYN-1022"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_requester_profile",
+                "input": {
+                  "employee_id": "E010"
+                }
+              },
+              {
+                "name": "check_department_budget",
+                "input": {
+                  "annual_cost_usd": 5000,
+                  "department": "Operations"
+                }
+              },
+              {
+                "name": "search_existing_software",
+                "input": {
+                  "use_case_keywords": [
+                    "onboarding checklists",
+                    "HRIS integration",
+                    "automated onboarding"
+                  ],
+                  "vendor_name": "TaskFlow",
+                  "product_name": "TaskFlow HR Onboarding Add-on",
+                  "category": "Project Management"
+                }
+              },
+              {
+                "name": "get_vendor_registry_record",
+                "input": {
+                  "vendor_name": "TaskFlow"
+                }
+              },
+              {
+                "name": "get_vendor_risk_assessment",
+                "input": {
+                  "vendor_name": "TaskFlow"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 1668,
+              "output_tokens": 165
+            },
+            "latency_ms": 10927.7
+          },
+          {
+            "type": "tool",
+            "name": "get_requester_profile",
+            "input": {
+              "employee_id": "E010"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "check_department_budget",
+            "input": {
+              "annual_cost_usd": 5000,
+              "department": "Operations"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "search_existing_software",
+            "input": {
+              "use_case_keywords": [
+                "onboarding checklists",
+                "HRIS integration",
+                "automated onboarding"
+              ],
+              "vendor_name": "TaskFlow",
+              "product_name": "TaskFlow HR Onboarding Add-on",
+              "category": "Project Management"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_registry_record",
+            "input": {
+              "vendor_name": "TaskFlow"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_risk_assessment",
+            "input": {
+              "vendor_name": "TaskFlow"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_evidence_pack",
+                "input": {
+                  "facts": [
+                    {
+                      "finding": "Requester is Lisa Park (VP, Operations).",
+                      "source": "get_requester_profile",
+                      "reference": "employees.csv:E010"
+                    },
+                    {
+                      "reference": "department_budgets.csv:Operations",
+                      "finding": "Requested annual cost is $5,000. Operations department has $20,000 available budget. Request is within budget.",
+                      "source": "check_department_budget"
+                    },
+                    {
+                      "finding": "TaskFlow is an existing approved vendor (procurement, security, and legal status approved). Last security review: 2026-06-03.",
+                      "source": "get_vendor_registry_record",
+                      "reference": "vendors.csv:V003"
+                    },
+                    {
+                      "finding": "External risk assessment for TaskFlow is 'low' risk. Processes personal data, no data residency issues. Last review: 2026-06-03.",
+                      "source": "get_vendor_risk_assessment",
+                      "reference": "GET /vendor-risk/TaskFlow"
+                    },
+                    {
+                      "finding": "Company already uses TaskFlow (SW003) for project management. This request is for an add-on to the existing platform.",
+                      "source": "search_existing_software",
+                      "reference": "software_catalog.csv:SW003"
+                    }
+                  ],
+                  "open_questions": [
+                    "Does the existing TaskFlow license (SW003) cover the functionality of this add-on, or is this a separate module requiring additional procurement?",
+                    "Are there any specific data privacy concerns regarding the integration with Workday HRIS?"
+                  ],
+                  "injection_details": "None detected.",
+                  "prompt_injection_observed": false,
+                  "data_quality_issues": [],
+                  "overlap_assessment": {
+                    "disposition": "existing_tool_likely_sufficient",
+                    "reasoning": "The requester is asking for an add-on to an existing, company-wide approved tool (TaskFlow). It is unclear if this is a separate purchase or an extension of the existing agreement.",
+                    "existing_options": [
+                      "TaskFlow (SW003)"
+                    ]
+                  },
+                  "need_summary": "Operations (Lisa Park) requests 'TaskFlow HR Onboarding Add-on' ($5,000/year) to automate onboarding checklists and integrate with Workday HRIS. TaskFlow is an existing approved vendor."
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2881,
+              "output_tokens": 510
+            },
+            "latency_ms": 16921.4
+          }
+        ]
+      },
+      {
+        "role": "reviewer",
+        "llm_calls": 1,
+        "tool_calls": 0,
+        "usage": {
+          "input_tokens": 3804,
+          "output_tokens": 876,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 3981.3,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_decision",
+                "input": {
+                  "overlap_disposition": "existing_tool_likely_sufficient",
+                  "evidence": [
+                    {
+                      "reference": "employees.csv:E010",
+                      "source": "get_requester_profile",
+                      "finding": "Requester is Lisa Park (VP, Operations)."
+                    },
+                    {
+                      "reference": "department_budgets.csv:Operations",
+                      "finding": "Requested annual cost is $5,000. Operations department has $20,000 available budget. Request is within budget.",
+                      "source": "check_department_budget"
+                    },
+                    {
+                      "source": "get_vendor_registry_record",
+                      "reference": "vendors.csv:V003",
+                      "finding": "TaskFlow is an existing approved vendor (procurement, security, and legal status approved). Last security review: 2026-06-03."
+                    },
+                    {
+                      "finding": "External risk assessment for TaskFlow is 'low' risk. Processes personal data, no data residency issues. Last review: 2026-06-03.",
+                      "reference": "GET /vendor-risk/TaskFlow",
+                      "source": "get_vendor_risk_assessment"
+                    },
+                    {
+                      "reference": "software_catalog.csv:SW003",
+                      "finding": "Company already uses TaskFlow (SW003) for project management. This request is for an add-on to the existing platform.",
+                      "source": "search_existing_software"
+                    },
+                    {
+                      "reference": "Policy \u00a74",
+                      "finding": "Annual amount $5,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+                      "source": "evaluate_procurement_policy"
+                    },
+                    {
+                      "reference": "Policy \u00a75",
+                      "source": "evaluate_procurement_policy",
+                      "finding": "Security review required: 'Workday HRIS' = integration with an HR system (employee PII)."
+                    },
+                    {
+                      "reference": "Policy \u00a76",
+                      "source": "evaluate_procurement_policy",
+                      "finding": "Privacy review required: 'Workday HRIS' = integration with an HR system (employee PII)."
+                    },
+                    {
+                      "source": "evaluate_procurement_policy",
+                      "reference": "Policy \u00a711",
+                      "finding": "Requester is the head of Operations; Department Head approval must go to the next level of leadership to avoid self-approval."
+                    }
+                  ],
+                  "status": "ESCALATE_SPECIALIST_REVIEW",
+                  "risk_flags": [
+                    "security_review_required",
+                    "privacy_review_required"
+                  ],
+                  "prompt_injection_observed": false,
+                  "rationale": "The request is for an add-on to an existing approved vendor (TaskFlow). While the cost is within budget, the integration with Workday HRIS triggers mandatory Security and Privacy reviews due to the handling of employee PII. Additionally, because the requester is the head of the department, the Department Head approval must be escalated to the next level of leadership to comply with Policy \u00a711. The overlap disposition is 'existing_tool_likely_sufficient' because it is an extension of an existing tool, and we need to confirm if this is a new procurement or a modification of the existing contract.",
+                  "missing_information": [
+                    "Confirmation of whether this is a separate module purchase or an extension of the existing agreement."
+                  ],
+                  "clarification_questions": [
+                    "Does the existing TaskFlow license (SW003) cover the functionality of this add-on, or is this a separate module requiring additional procurement?",
+                    "Are there any specific data privacy concerns regarding the integration with Workday HRIS?"
+                  ],
+                  "required_approvals": [
+                    "Department Head",
+                    "Procurement",
+                    "Security",
+                    "Privacy"
+                  ],
+                  "recommendation": "ESCALATE_SPECIALIST_REVIEW: The request requires Security and Privacy review due to the integration with Workday HRIS. Department Head approval must be escalated to the next level of leadership to avoid self-approval.",
+                  "next_step": "Route to Security and Privacy for review of the Workday HRIS integration. Request that the requester provide the next level of leadership for Department Head approval to avoid self-approval."
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 3804,
+              "output_tokens": 876
+            },
+            "latency_ms": 3981.3
+          }
+        ]
+      }
+    ],
+    "evidence_pack": {
+      "need_summary": "Operations (Lisa Park) requests 'TaskFlow HR Onboarding Add-on' ($5,000/year) to automate onboarding checklists and integrate with Workday HRIS. TaskFlow is an existing approved vendor.",
+      "facts": [
+        {
+          "source": "get_requester_profile",
+          "finding": "Requester is Lisa Park (VP, Operations).",
+          "reference": "employees.csv:E010"
+        },
+        {
+          "source": "check_department_budget",
+          "finding": "Requested annual cost is $5,000. Operations department has $20,000 available budget. Request is within budget.",
+          "reference": "department_budgets.csv:Operations"
+        },
+        {
+          "source": "get_vendor_registry_record",
+          "finding": "TaskFlow is an existing approved vendor (procurement, security, and legal status approved). Last security review: 2026-06-03.",
+          "reference": "vendors.csv:V003"
+        },
+        {
+          "source": "get_vendor_risk_assessment",
+          "finding": "External risk assessment for TaskFlow is 'low' risk. Processes personal data, no data residency issues. Last review: 2026-06-03.",
+          "reference": "GET /vendor-risk/TaskFlow"
+        },
+        {
+          "source": "search_existing_software",
+          "finding": "Company already uses TaskFlow (SW003) for project management. This request is for an add-on to the existing platform.",
+          "reference": "software_catalog.csv:SW003"
+        }
+      ],
+      "overlap_assessment": {
+        "disposition": "existing_tool_likely_sufficient",
+        "existing_options": [
+          "TaskFlow (SW003)"
+        ],
+        "reasoning": "The requester is asking for an add-on to an existing, company-wide approved tool (TaskFlow). It is unclear if this is a separate purchase or an extension of the existing agreement."
+      },
+      "data_quality_issues": [],
+      "open_questions": [
+        "Does the existing TaskFlow license (SW003) cover the functionality of this add-on, or is this a separate module requiring additional procurement?",
+        "Are there any specific data privacy concerns regarding the integration with Workday HRIS?"
+      ],
+      "prompt_injection_observed": false,
+      "injection_details": "None detected."
+    },
+    "draft": {
+      "status": "ESCALATE_SPECIALIST_REVIEW",
+      "recommendation": "ESCALATE_SPECIALIST_REVIEW: The request requires Security and Privacy review due to the integration with Workday HRIS. Department Head approval must be escalated to the next level of leadership to avoid self-approval.",
+      "rationale": "The request is for an add-on to an existing approved vendor (TaskFlow). While the cost is within budget, the integration with Workday HRIS triggers mandatory Security and Privacy reviews due to the handling of employee PII. Additionally, because the requester is the head of the department, the Department Head approval must be escalated to the next level of leadership to comply with Policy \u00a711. The overlap disposition is 'existing_tool_likely_sufficient' because it is an extension of an existing tool, and we need to confirm if this is a new procurement or a modification of the existing contract.",
+      "evidence": [
+        {
+          "source": "get_requester_profile",
+          "finding": "Requester is Lisa Park (VP, Operations).",
+          "reference": "employees.csv:E010"
+        },
+        {
+          "source": "check_department_budget",
+          "finding": "Requested annual cost is $5,000. Operations department has $20,000 available budget. Request is within budget.",
+          "reference": "department_budgets.csv:Operations"
+        },
+        {
+          "source": "get_vendor_registry_record",
+          "finding": "TaskFlow is an existing approved vendor (procurement, security, and legal status approved). Last security review: 2026-06-03.",
+          "reference": "vendors.csv:V003"
+        },
+        {
+          "source": "get_vendor_risk_assessment",
+          "finding": "External risk assessment for TaskFlow is 'low' risk. Processes personal data, no data residency issues. Last review: 2026-06-03.",
+          "reference": "GET /vendor-risk/TaskFlow"
+        },
+        {
+          "source": "search_existing_software",
+          "finding": "Company already uses TaskFlow (SW003) for project management. This request is for an add-on to the existing platform.",
+          "reference": "software_catalog.csv:SW003"
+        },
+        {
+          "source": "evaluate_procurement_policy",
+          "finding": "Annual amount $5,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+          "reference": "Policy \u00a74"
+        },
+        {
+          "source": "evaluate_procurement_policy",
+          "finding": "Security review required: 'Workday HRIS' = integration with an HR system (employee PII).",
+          "reference": "Policy \u00a75"
+        },
+        {
+          "source": "evaluate_procurement_policy",
+          "finding": "Privacy review required: 'Workday HRIS' = integration with an HR system (employee PII).",
+          "reference": "Policy \u00a76"
+        },
+        {
+          "source": "evaluate_procurement_policy",
+          "finding": "Requester is the head of Operations; Department Head approval must go to the next level of leadership to avoid self-approval.",
+          "reference": "Policy \u00a711"
+        }
+      ],
+      "required_approvals": [
+        "Department Head",
+        "Procurement",
+        "Security",
+        "Privacy"
+      ],
+      "risk_flags": [
+        "security_review_required",
+        "privacy_review_required"
+      ],
+      "missing_information": [
+        "Confirmation of whether this is a separate module purchase or an extension of the existing agreement."
+      ],
+      "clarification_questions": [
+        "Does the existing TaskFlow license (SW003) cover the functionality of this add-on, or is this a separate module requiring additional procurement?",
+        "Are there any specific data privacy concerns regarding the integration with Workday HRIS?"
+      ],
+      "overlap_disposition": "existing_tool_likely_sufficient",
+      "next_step": "Route to Security and Privacy for review of the Workday HRIS integration. Request that the requester provide the next level of leadership for Department Head approval to avoid self-approval.",
+      "prompt_injection_observed": false
+    },
+    "assessment": {
+      "reference_date": "2026-09-30",
+      "annual_amount_usd": 5000.0,
+      "approval_tier": "$1,000.01 - $10,000",
+      "required_approvals": [
+        "Department Head",
+        "Procurement",
+        "Security",
+        "Privacy"
+      ],
+      "risk_flags": [
+        "privacy_review_required",
+        "security_review_required"
+      ],
+      "missing_information": [],
+      "missing_fields": [],
+      "rule_hits": [
+        {
+          "rule": "approval_threshold",
+          "section": "Policy \u00a74",
+          "finding": "Annual amount $5,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+          "adds_approvals": [
+            "Department Head",
+            "Procurement"
+          ],
+          "adds_flags": []
+        },
+        {
+          "rule": "budget_within",
+          "section": "Policy \u00a72",
+          "finding": "Cost $5,000 is within Operations available budget $20,000 ($15,000 remaining). This does not imply approval.",
+          "adds_approvals": [],
+          "adds_flags": []
+        },
+        {
+          "rule": "security_data_trigger",
+          "section": "Policy \u00a75",
+          "finding": "Security review required: 'Workday HRIS' = integration with an HR system (employee PII).",
+          "adds_approvals": [
+            "Security"
+          ],
+          "adds_flags": [
+            "security_review_required"
+          ]
+        },
+        {
+          "rule": "privacy_trigger",
+          "section": "Policy \u00a76",
+          "finding": "Privacy review required: 'Workday HRIS' = integration with an HR system (employee PII).",
+          "adds_approvals": [
+            "Privacy"
+          ],
+          "adds_flags": [
+            "privacy_review_required"
+          ]
+        },
+        {
+          "rule": "extends_existing_agreement",
+          "section": "Policy \u00a73",
+          "finding": "Request extends an existing approved product/agreement (TaskFlow); not a duplicate purchase.",
+          "adds_approvals": [],
+          "adds_flags": []
+        },
+        {
+          "rule": "self_approval_conflict",
+          "section": "Policy \u00a711",
+          "finding": "Requester is the head of Operations; Department Head approval must go to the next level of leadership to avoid self-approval.",
+          "adds_approvals": [],
+          "adds_flags": []
+        }
+      ],
+      "open_items": [
+        "Requester is their own department head; route Department Head sign-off to the next level of leadership."
+      ],
+      "budget": {
+        "department": "Operations",
+        "available_usd": 20000.0,
+        "requested_usd": 5000,
+        "remaining_after_usd": 15000.0,
+        "within_budget": true
+      },
+      "vendor_review": {
+        "registry_status": "Approved",
+        "registry_review_date": "2026-06-03",
+        "registry_days_since_review": 119,
+        "api_status": "approved",
+        "api_review_date": "2026-06-03",
+        "api_days_since_review": 119,
+        "api_outcome": "ok",
+        "validity_days": 365,
+        "assessment_current": true,
+        "conflicts": []
+      },
+      "data_sensitivity": {
+        "data_access_level": "internal_documents",
+        "category": "low",
+        "security_reasons": [
+          "'Workday HRIS' = integration with an HR system (employee PII)"
+        ],
+        "privacy_reasons": [
+          "'Workday HRIS' = integration with an HR system (employee PII)"
+        ],
+        "stores_data_outside_region": false
+      },
+      "overlap": {
+        "flagged": false,
+        "gap_stated": false,
+        "exact_duplicate": false,
+        "matches": [],
+        "extends": [
+          {
+            "software_id": "SW003",
+            "product_name": "TaskFlow",
+            "category": "Project Management",
+            "vendor_name": "TaskFlow",
+            "status": "Approved",
+            "annual_cost_usd": 36000,
+            "licensed_seats": 180,
+            "scope": "Company-wide",
+            "notes": "Project and task management",
+            "relation": "same_vendor_extension",
+            "reference": "software_catalog.csv:SW003"
+          }
+        ]
+      },
+      "injection": {
+        "detected": false,
+        "findings": []
+      },
+      "default_status": "ESCALATE_SPECIALIST_REVIEW",
+      "allowed_statuses": [
+        "ESCALATE_SPECIALIST_REVIEW",
+        "REQUEST_CLARIFICATION",
+        "MANUAL_REVIEW_REQUIRED"
+      ],
+      "status_reasons": [
+        "Security / Privacy / Legal / budget-exception review is required before approval."
+      ],
+      "approver_routing": [
+        {
+          "role": "Department Head",
+          "assignee": "Lisa Park (E010, VP, Operations)",
+          "basis": "Director/VP of the requesting department, else first Director/VP in the reporting chain"
+        },
+        {
+          "role": "Procurement",
+          "assignee": "Procurement team queue",
+          "basis": "Functional review queue"
+        },
+        {
+          "role": "Security",
+          "assignee": "Security review queue",
+          "basis": "Functional review queue"
+        },
+        {
+          "role": "Privacy",
+          "assignee": "Privacy office queue",
+          "basis": "Functional review queue"
+        }
+      ]
+    }
+  }
+}

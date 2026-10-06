@@ -1,0 +1,728 @@
+{
+  "case_id": "EXT-24",
+  "decision": {
+    "request_id": "SYN-1024",
+    "recommendation": "Evaluate existing tool first: Redirect to existing tool / Request clarification.",
+    "evidence": [
+      {
+        "source": "get_purchase_request",
+        "finding": "DocSpace from DocSpace (Knowledge Management): annual cost $6,000, users 20, data access 'internal_documents', integrations: none, urgency 'normal'.",
+        "reference": "requests.json:SYN-1024"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Elena Garcia (E003), Sales, IC3; manager Robert King (E007); department head Robert King (E007).",
+        "reference": "employees.csv:E003"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Data quality: No Director/VP is listed for department 'Sales'; using first Director/VP in reporting chain (Robert King, department 'Go To Market'). Confirm department head.",
+        "reference": "employees.csv:E003"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Data quality: Manager's department 'Go To Market' has no budget record (org data inconsistency).",
+        "reference": "employees.csv:E003"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Requested $6,000 is within Sales available budget of $18,000 ($12,000 would remain).",
+        "reference": "department_budgets.csv:Sales"
+      },
+      {
+        "source": "search_existing_software",
+        "finding": "Catalog SW004 DocSpace (DocSpace, Knowledge Management) is 'Approved', scope Company-wide, 200 seats, $24,000/yr; relation: same product. Notes: Knowledge base and docs.",
+        "reference": "software_catalog.csv:SW004"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Registry V004 DocSpace: procurement 'Approved', security 'Approved' (review date 2026-02-24), legal terms 'Approved'.",
+        "reference": "vendors.csv:V004"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor-risk service: risk 'low', security review 'approved' (last review 2026-02-24), processes personal data: True, stores data outside region: False.",
+        "reference": "GET /vendor-risk/DocSpace"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Annual amount $6,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+        "reference": "Policy \u00a74"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Approved catalog already contains: DocSpace (same product, Company-wide, 200 seats). Overlap is not an automatic rejection; the request does not explain why existing tools are insufficient.",
+        "reference": "Policy \u00a73"
+      },
+      {
+        "source": "search_existing_software (agent)",
+        "finding": "The company already has an approved, company-wide license for DocSpace (SW004).",
+        "reference": "software_catalog.csv:SW004"
+      },
+      {
+        "source": "check_department_budget (agent)",
+        "finding": "The requested annual cost of $6,000 is within the Sales department's available budget of $18,000.",
+        "reference": "department_budgets.csv:Sales"
+      },
+      {
+        "source": "get_vendor_registry_record (agent)",
+        "finding": "DocSpace is an approved vendor with a current security review (last reviewed 2026-02-24).",
+        "reference": "vendors.csv:V004"
+      },
+      {
+        "source": "evaluate_procurement_policy (agent)",
+        "finding": "The policy engine flagged an overlap with an existing tool and recommends checking for existing capacity.",
+        "reference": "procurement_policy.md v2026.09"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "existing_tool_overlap"
+    ],
+    "next_step": "Ask the requester to confirm if they have checked for existing DocSpace seat availability with the IT/Knowledge Management team. If they have not, they must do so before proceeding. If they have and seats are unavailable, they must provide a business justification for a separate subscription.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 8,
+      "tool_calls": 9,
+      "tool_names": [
+        "get_purchase_request",
+        "get_requester_profile",
+        "check_department_budget",
+        "search_existing_software",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_department_budget",
+        "search_existing_software",
+        "evaluate_procurement_policy"
+      ]
+    }
+  },
+  "trace": {
+    "architecture": "single",
+    "mode": "llm",
+    "provider": "openai",
+    "model": "gemini-3.1-flash-lite",
+    "fallback_reason": null,
+    "latency_ms": 54722.2,
+    "usage": {
+      "input_tokens": 25529,
+      "output_tokens": 758,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 0
+    },
+    "cost_usd": null,
+    "guardrails": {
+      "corrections": [],
+      "omitted_approvals": [],
+      "omitted_flags": [],
+      "added_by_llm_approvals": [],
+      "added_by_llm_flags": [],
+      "status_overridden": false,
+      "llm_status": "REDIRECT_TO_EXISTING_TOOL",
+      "final_status": "REDIRECT_TO_EXISTING_TOOL",
+      "grounded_claims": 4,
+      "ungrounded_claims": [],
+      "unsafe_language_blocked": false,
+      "raw_policy_compliant": true
+    },
+    "tool_log": [
+      {
+        "name": "get_purchase_request",
+        "caller": "single_agent",
+        "args": {
+          "request_id": "SYN-1024"
+        },
+        "ok": true,
+        "latency_ms": 0.1,
+        "cached": false
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "single_agent",
+        "args": {
+          "employee_id": "E003"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "single_agent",
+        "args": {
+          "department": "Sales",
+          "annual_cost_usd": 6000
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "single_agent",
+        "args": {
+          "product_name": "DocSpace",
+          "category": "Knowledge Management",
+          "vendor_name": "DocSpace",
+          "use_case_keywords": [
+            "knowledge base",
+            "battle cards",
+            "pricing playbooks"
+          ]
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "single_agent",
+        "args": {
+          "vendor_name": "DocSpace"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "single_agent",
+        "args": {
+          "vendor_name": "DocSpace"
+        },
+        "ok": true,
+        "latency_ms": 3.1,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1024"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "system",
+        "args": {
+          "employee_id": "E003"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "system",
+        "args": {
+          "department": "Sales",
+          "annual_cost_usd": 6000.0
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "system",
+        "args": {
+          "product_name": "DocSpace",
+          "vendor_name": "DocSpace",
+          "category": "Knowledge Management"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "system",
+        "args": {
+          "vendor_name": "DocSpace"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "system",
+        "args": {
+          "vendor_name": "DocSpace"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "single_agent",
+        "args": {
+          "request_id": "SYN-1024"
+        },
+        "ok": true,
+        "latency_ms": 0.3,
+        "cached": false
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1024"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      }
+    ],
+    "agent_runs": [
+      {
+        "role": "single_agent",
+        "llm_calls": 8,
+        "tool_calls": 7,
+        "usage": {
+          "input_tokens": 25529,
+          "output_tokens": 758,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 54446.7,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_purchase_request",
+                "input": {
+                  "request_id": "SYN-1024"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2194,
+              "output_tokens": 25
+            },
+            "latency_ms": 3914.8
+          },
+          {
+            "type": "tool",
+            "name": "get_purchase_request",
+            "input": {
+              "request_id": "SYN-1024"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_requester_profile",
+                "input": {
+                  "employee_id": "E003"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2483,
+              "output_tokens": 24
+            },
+            "latency_ms": 7736.3
+          },
+          {
+            "type": "tool",
+            "name": "get_requester_profile",
+            "input": {
+              "employee_id": "E003"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "check_department_budget",
+                "input": {
+                  "department": "Sales",
+                  "annual_cost_usd": 6000
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2769,
+              "output_tokens": 29
+            },
+            "latency_ms": 10347.0
+          },
+          {
+            "type": "tool",
+            "name": "check_department_budget",
+            "input": {
+              "department": "Sales",
+              "annual_cost_usd": 6000
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "search_existing_software",
+                "input": {
+                  "product_name": "DocSpace",
+                  "category": "Knowledge Management",
+                  "vendor_name": "DocSpace",
+                  "use_case_keywords": [
+                    "knowledge base",
+                    "battle cards",
+                    "pricing playbooks"
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2947,
+              "output_tokens": 59
+            },
+            "latency_ms": 4489.8
+          },
+          {
+            "type": "tool",
+            "name": "search_existing_software",
+            "input": {
+              "product_name": "DocSpace",
+              "category": "Knowledge Management",
+              "vendor_name": "DocSpace",
+              "use_case_keywords": [
+                "knowledge base",
+                "battle cards",
+                "pricing playbooks"
+              ]
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_vendor_registry_record",
+                "input": {
+                  "vendor_name": "DocSpace"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 3238,
+              "output_tokens": 23
+            },
+            "latency_ms": 2958.3
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_registry_record",
+            "input": {
+              "vendor_name": "DocSpace"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_vendor_risk_assessment",
+                "input": {
+                  "vendor_name": "DocSpace"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 3457,
+              "output_tokens": 23
+            },
+            "latency_ms": 1980.1
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_risk_assessment",
+            "input": {
+              "vendor_name": "DocSpace"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "evaluate_procurement_policy",
+                "input": {
+                  "request_id": "SYN-1024"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 3701,
+              "output_tokens": 26
+            },
+            "latency_ms": 6060.7
+          },
+          {
+            "type": "tool",
+            "name": "evaluate_procurement_policy",
+            "input": {
+              "request_id": "SYN-1024"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_decision",
+                "input": {
+                  "risk_flags": [
+                    "existing_tool_overlap"
+                  ],
+                  "evidence": [
+                    {
+                      "reference": "software_catalog.csv:SW004",
+                      "source": "search_existing_software",
+                      "finding": "The company already has an approved, company-wide license for DocSpace (SW004)."
+                    },
+                    {
+                      "finding": "The requested annual cost of $6,000 is within the Sales department's available budget of $18,000.",
+                      "reference": "department_budgets.csv:Sales",
+                      "source": "check_department_budget"
+                    },
+                    {
+                      "finding": "DocSpace is an approved vendor with a current security review (last reviewed 2026-02-24).",
+                      "source": "get_vendor_registry_record",
+                      "reference": "vendors.csv:V004"
+                    },
+                    {
+                      "reference": "procurement_policy.md v2026.09",
+                      "finding": "The policy engine flagged an overlap with an existing tool and recommends checking for existing capacity.",
+                      "source": "evaluate_procurement_policy"
+                    }
+                  ],
+                  "overlap_disposition": "existing_tool_likely_sufficient",
+                  "recommendation": "Redirect to existing tool / Request clarification.",
+                  "next_step": "Ask the requester to confirm if they have checked for existing DocSpace seat availability with the IT/Knowledge Management team. If they have not, they must do so before proceeding. If they have and seats are unavailable, they must provide a business justification for a separate subscription.",
+                  "clarification_questions": [
+                    "The company already has a company-wide license for DocSpace (SW004). Can you confirm if you have checked with the IT/Knowledge Management team to see if existing seats are available for your team, rather than purchasing a new subscription?",
+                    "If existing seats are unavailable, please provide a specific justification for why a separate subscription is required for the Sales team."
+                  ],
+                  "prompt_injection_observed": false,
+                  "required_approvals": [
+                    "Department Head",
+                    "Procurement"
+                  ],
+                  "rationale": "The request is for a tool (DocSpace) that is already licensed company-wide. Per Policy \u00a73, we must first determine if existing capacity can meet the need before approving new spend. The budget is sufficient, and the vendor is approved, but the overlap must be addressed first.",
+                  "status": "REDIRECT_TO_EXISTING_TOOL",
+                  "missing_information": [
+                    "Confirmation of whether existing DocSpace seats are available.",
+                    "Justification for why a separate subscription is needed if existing seats are unavailable."
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 4740,
+              "output_tokens": 549
+            },
+            "latency_ms": 16959.7
+          }
+        ]
+      }
+    ],
+    "evidence_pack": null,
+    "draft": {
+      "status": "REDIRECT_TO_EXISTING_TOOL",
+      "recommendation": "Redirect to existing tool / Request clarification.",
+      "rationale": "The request is for a tool (DocSpace) that is already licensed company-wide. Per Policy \u00a73, we must first determine if existing capacity can meet the need before approving new spend. The budget is sufficient, and the vendor is approved, but the overlap must be addressed first.",
+      "evidence": [
+        {
+          "source": "search_existing_software",
+          "finding": "The company already has an approved, company-wide license for DocSpace (SW004).",
+          "reference": "software_catalog.csv:SW004"
+        },
+        {
+          "source": "check_department_budget",
+          "finding": "The requested annual cost of $6,000 is within the Sales department's available budget of $18,000.",
+          "reference": "department_budgets.csv:Sales"
+        },
+        {
+          "source": "get_vendor_registry_record",
+          "finding": "DocSpace is an approved vendor with a current security review (last reviewed 2026-02-24).",
+          "reference": "vendors.csv:V004"
+        },
+        {
+          "source": "evaluate_procurement_policy",
+          "finding": "The policy engine flagged an overlap with an existing tool and recommends checking for existing capacity.",
+          "reference": "procurement_policy.md v2026.09"
+        }
+      ],
+      "required_approvals": [
+        "Department Head",
+        "Procurement"
+      ],
+      "risk_flags": [
+        "existing_tool_overlap"
+      ],
+      "missing_information": [
+        "Confirmation of whether existing DocSpace seats are available.",
+        "Justification for why a separate subscription is needed if existing seats are unavailable."
+      ],
+      "clarification_questions": [
+        "The company already has a company-wide license for DocSpace (SW004). Can you confirm if you have checked with the IT/Knowledge Management team to see if existing seats are available for your team, rather than purchasing a new subscription?",
+        "If existing seats are unavailable, please provide a specific justification for why a separate subscription is required for the Sales team."
+      ],
+      "overlap_disposition": "existing_tool_likely_sufficient",
+      "next_step": "Ask the requester to confirm if they have checked for existing DocSpace seat availability with the IT/Knowledge Management team. If they have not, they must do so before proceeding. If they have and seats are unavailable, they must provide a business justification for a separate subscription.",
+      "prompt_injection_observed": false
+    },
+    "assessment": {
+      "reference_date": "2026-09-30",
+      "annual_amount_usd": 6000.0,
+      "approval_tier": "$1,000.01 - $10,000",
+      "required_approvals": [
+        "Department Head",
+        "Procurement"
+      ],
+      "risk_flags": [
+        "existing_tool_overlap"
+      ],
+      "missing_information": [],
+      "missing_fields": [],
+      "rule_hits": [
+        {
+          "rule": "approval_threshold",
+          "section": "Policy \u00a74",
+          "finding": "Annual amount $6,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+          "adds_approvals": [
+            "Department Head",
+            "Procurement"
+          ],
+          "adds_flags": []
+        },
+        {
+          "rule": "budget_within",
+          "section": "Policy \u00a72",
+          "finding": "Cost $6,000 is within Sales available budget $18,000 ($12,000 remaining). This does not imply approval.",
+          "adds_approvals": [],
+          "adds_flags": []
+        },
+        {
+          "rule": "existing_tool_overlap",
+          "section": "Policy \u00a73",
+          "finding": "Approved catalog already contains: DocSpace (same product, Company-wide, 200 seats). Overlap is not an automatic rejection; the request does not explain why existing tools are insufficient.",
+          "adds_approvals": [],
+          "adds_flags": [
+            "existing_tool_overlap"
+          ]
+        }
+      ],
+      "open_items": [
+        "No Director/VP is listed for department 'Sales'; using first Director/VP in reporting chain (Robert King, department 'Go To Market'). Confirm department head.",
+        "Manager's department 'Go To Market' has no budget record (org data inconsistency).",
+        "Seat utilisation of existing licences is not in the data; confirm unused capacity before buying new seats."
+      ],
+      "budget": {
+        "department": "Sales",
+        "available_usd": 18000.0,
+        "requested_usd": 6000,
+        "remaining_after_usd": 12000.0,
+        "within_budget": true
+      },
+      "vendor_review": {
+        "registry_status": "Approved",
+        "registry_review_date": "2026-02-24",
+        "registry_days_since_review": 218,
+        "api_status": "approved",
+        "api_review_date": "2026-02-24",
+        "api_days_since_review": 218,
+        "api_outcome": "ok",
+        "validity_days": 365,
+        "assessment_current": true,
+        "conflicts": []
+      },
+      "data_sensitivity": {
+        "data_access_level": "internal_documents",
+        "category": "low",
+        "security_reasons": [],
+        "privacy_reasons": [],
+        "stores_data_outside_region": false
+      },
+      "overlap": {
+        "flagged": true,
+        "gap_stated": false,
+        "exact_duplicate": true,
+        "matches": [
+          {
+            "software_id": "SW004",
+            "product_name": "DocSpace",
+            "category": "Knowledge Management",
+            "vendor_name": "DocSpace",
+            "status": "Approved",
+            "annual_cost_usd": 24000,
+            "licensed_seats": 200,
+            "scope": "Company-wide",
+            "notes": "Knowledge base and docs",
+            "relation": "same_product",
+            "reference": "software_catalog.csv:SW004"
+          }
+        ],
+        "extends": []
+      },
+      "injection": {
+        "detected": false,
+        "findings": []
+      },
+      "default_status": "REDIRECT_TO_EXISTING_TOOL",
+      "allowed_statuses": [
+        "REDIRECT_TO_EXISTING_TOOL",
+        "ROUTE_FOR_APPROVAL",
+        "REQUEST_CLARIFICATION",
+        "MANUAL_REVIEW_REQUIRED",
+        "ESCALATE_SPECIALIST_REVIEW"
+      ],
+      "status_reasons": [
+        "An approved tool may already satisfy the need (Policy \u00a73)."
+      ],
+      "approver_routing": [
+        {
+          "role": "Department Head",
+          "assignee": "Robert King (E007, Director, Go To Market)",
+          "basis": "Director/VP of the requesting department, else first Director/VP in the reporting chain"
+        },
+        {
+          "role": "Procurement",
+          "assignee": "Procurement team queue",
+          "basis": "Functional review queue"
+        }
+      ]
+    }
+  }
+}

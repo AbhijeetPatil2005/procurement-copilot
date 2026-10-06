@@ -1,0 +1,884 @@
+{
+  "case_id": "EXT-08",
+  "decision": {
+    "request_id": "REQ-1008",
+    "recommendation": "Evaluate existing tool first: Redirect to existing tool; request clarification on why the existing company-wide license is insufficient for the Marketing team's needs.",
+    "evidence": [
+      {
+        "source": "get_purchase_request",
+        "finding": "TaskFlow Pro from TaskFlow (Project Management): annual cost $8,000, users 15, data access 'internal_marketing', integrations: SSO, urgency 'normal'.",
+        "reference": "requests.json:REQ-1008"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Sarah Lee (E001), Marketing, IC4; manager David Chen (E009); department head David Chen (E009).",
+        "reference": "employees.csv:E001"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Requested $8,000 is within Marketing available budget of $15,000 ($7,000 would remain).",
+        "reference": "department_budgets.csv:Marketing"
+      },
+      {
+        "source": "search_existing_software",
+        "finding": "Catalog SW003 TaskFlow (TaskFlow, Project Management) is 'Approved', scope Company-wide, 180 seats, $36,000/yr; relation: same vendor. Notes: Project and task management.",
+        "reference": "software_catalog.csv:SW003"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Registry V003 TaskFlow: procurement 'Approved', security 'Approved' (review date 2026-06-03), legal terms 'Approved'.",
+        "reference": "vendors.csv:V003"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor-risk service: risk 'low', security review 'approved' (last review 2026-06-03), processes personal data: True, stores data outside region: False.",
+        "reference": "GET /vendor-risk/TaskFlow"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Annual amount $8,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+        "reference": "Policy \u00a74"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Approved catalog already contains: TaskFlow (same vendor, Company-wide, 180 seats). Overlap is not an automatic rejection; the request does not explain why existing tools are insufficient.",
+        "reference": "Policy \u00a73"
+      },
+      {
+        "source": "get_requester_profile (agent)",
+        "finding": "Requester is Sarah Lee (IC4) in Marketing, reporting to David Chen (Director).",
+        "reference": "employees.csv:E001"
+      },
+      {
+        "source": "check_department_budget (agent)",
+        "finding": "Marketing department has $15,000 available budget; request is $8,000. Purchase is within budget.",
+        "reference": "department_budgets.csv:Marketing"
+      },
+      {
+        "source": "search_existing_software (agent)",
+        "finding": "TaskFlow (the vendor) is already approved and used company-wide for project management.",
+        "reference": "software_catalog.csv:SW003"
+      },
+      {
+        "source": "get_vendor_registry_record (agent)",
+        "finding": "Vendor TaskFlow has an approved procurement status, security status, and legal terms.",
+        "reference": "vendors.csv:V003"
+      },
+      {
+        "source": "get_vendor_risk_assessment (agent)",
+        "finding": "External risk assessment for TaskFlow is 'low' risk, last reviewed 2026-06-03.",
+        "reference": "GET /vendor-risk/TaskFlow"
+      },
+      {
+        "source": "evaluate_procurement_policy (agent)",
+        "finding": "Annual amount $8,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+        "reference": "Policy \u00a74"
+      },
+      {
+        "source": "evaluate_procurement_policy (agent)",
+        "finding": "Approved catalog already contains: TaskFlow (same vendor, Company-wide, 180 seats). Overlap is not an automatic rejection; the request does not explain why existing tools are insufficient.",
+        "reference": "Policy \u00a73"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "existing_tool_overlap"
+    ],
+    "next_step": "Request clarification from the requester regarding the necessity of 'TaskFlow Pro' versus the existing company-wide 'TaskFlow' license. Once clarified, route to Department Head and Procurement if the purchase is still deemed necessary.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 5,
+      "tool_calls": 9,
+      "tool_names": [
+        "get_purchase_request",
+        "get_requester_profile",
+        "check_department_budget",
+        "search_existing_software",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_department_budget",
+        "search_existing_software",
+        "evaluate_procurement_policy"
+      ]
+    }
+  },
+  "trace": {
+    "architecture": "staged",
+    "mode": "llm",
+    "provider": "openai",
+    "model": "gemini-3.1-flash-lite",
+    "fallback_reason": null,
+    "latency_ms": 34502.2,
+    "usage": {
+      "input_tokens": 13473,
+      "output_tokens": 2087,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 0
+    },
+    "cost_usd": null,
+    "guardrails": {
+      "corrections": [],
+      "omitted_approvals": [],
+      "omitted_flags": [],
+      "added_by_llm_approvals": [],
+      "added_by_llm_flags": [],
+      "status_overridden": false,
+      "llm_status": "REDIRECT_TO_EXISTING_TOOL",
+      "final_status": "REDIRECT_TO_EXISTING_TOOL",
+      "grounded_claims": 7,
+      "ungrounded_claims": [],
+      "unsafe_language_blocked": false,
+      "raw_policy_compliant": true
+    },
+    "tool_log": [
+      {
+        "name": "get_purchase_request",
+        "caller": "analyst",
+        "args": {
+          "request_id": "REQ-1008"
+        },
+        "ok": true,
+        "latency_ms": 0.1,
+        "cached": false
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "analyst",
+        "args": {
+          "employee_id": "E001"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "analyst",
+        "args": {
+          "annual_cost_usd": 8000,
+          "department": "Marketing"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "analyst",
+        "args": {
+          "category": "Project Management",
+          "use_case_keywords": [
+            "task tracker",
+            "campaign launches",
+            "project management"
+          ],
+          "vendor_name": "TaskFlow",
+          "product_name": "TaskFlow Pro"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "analyst",
+        "args": {
+          "vendor_name": "TaskFlow"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "analyst",
+        "args": {
+          "vendor_name": "TaskFlow"
+        },
+        "ok": true,
+        "latency_ms": 4.4,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "REQ-1008"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "system",
+        "args": {
+          "employee_id": "E001"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "system",
+        "args": {
+          "department": "Marketing",
+          "annual_cost_usd": 8000.0
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "system",
+        "args": {
+          "product_name": "TaskFlow Pro",
+          "vendor_name": "TaskFlow",
+          "category": "Project Management"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "system",
+        "args": {
+          "vendor_name": "TaskFlow"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "system",
+        "args": {
+          "vendor_name": "TaskFlow"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "REQ-1008"
+        },
+        "ok": true,
+        "latency_ms": 0.2,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "REQ-1008"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "REQ-1008"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      }
+    ],
+    "agent_runs": [
+      {
+        "role": "analyst",
+        "llm_calls": 3,
+        "tool_calls": 6,
+        "usage": {
+          "input_tokens": 5931,
+          "output_tokens": 647,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 20216.6,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_purchase_request",
+                "input": {
+                  "request_id": "REQ-1008"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 1366,
+              "output_tokens": 25
+            },
+            "latency_ms": 9505.5
+          },
+          {
+            "type": "tool",
+            "name": "get_purchase_request",
+            "input": {
+              "request_id": "REQ-1008"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_requester_profile",
+                "input": {
+                  "employee_id": "E001"
+                }
+              },
+              {
+                "name": "check_department_budget",
+                "input": {
+                  "annual_cost_usd": 8000,
+                  "department": "Marketing"
+                }
+              },
+              {
+                "name": "search_existing_software",
+                "input": {
+                  "category": "Project Management",
+                  "use_case_keywords": [
+                    "task tracker",
+                    "campaign launches",
+                    "project management"
+                  ],
+                  "vendor_name": "TaskFlow",
+                  "product_name": "TaskFlow Pro"
+                }
+              },
+              {
+                "name": "get_vendor_registry_record",
+                "input": {
+                  "vendor_name": "TaskFlow"
+                }
+              },
+              {
+                "name": "get_vendor_risk_assessment",
+                "input": {
+                  "vendor_name": "TaskFlow"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 1655,
+              "output_tokens": 158
+            },
+            "latency_ms": 5828.1
+          },
+          {
+            "type": "tool",
+            "name": "get_requester_profile",
+            "input": {
+              "employee_id": "E001"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "check_department_budget",
+            "input": {
+              "annual_cost_usd": 8000,
+              "department": "Marketing"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "search_existing_software",
+            "input": {
+              "category": "Project Management",
+              "use_case_keywords": [
+                "task tracker",
+                "campaign launches",
+                "project management"
+              ],
+              "vendor_name": "TaskFlow",
+              "product_name": "TaskFlow Pro"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_registry_record",
+            "input": {
+              "vendor_name": "TaskFlow"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_risk_assessment",
+            "input": {
+              "vendor_name": "TaskFlow"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_evidence_pack",
+                "input": {
+                  "need_summary": "Marketing department requests TaskFlow Pro ($8,000/year) for campaign task tracking. TaskFlow is an existing approved vendor with a company-wide agreement.",
+                  "facts": [
+                    {
+                      "reference": "employees.csv:E001",
+                      "source": "get_requester_profile",
+                      "finding": "Requester is Sarah Lee (IC4) in Marketing, reporting to David Chen (Director)."
+                    },
+                    {
+                      "finding": "Marketing department has $15,000 available budget; request is $8,000. Purchase is within budget.",
+                      "source": "check_department_budget",
+                      "reference": "department_budgets.csv:Marketing"
+                    },
+                    {
+                      "reference": "software_catalog.csv:SW003",
+                      "finding": "TaskFlow (the vendor) is already approved and used company-wide for project management.",
+                      "source": "search_existing_software"
+                    },
+                    {
+                      "reference": "vendors.csv:V003",
+                      "source": "get_vendor_registry_record",
+                      "finding": "Vendor TaskFlow has an approved procurement status, security status, and legal terms."
+                    },
+                    {
+                      "source": "get_vendor_risk_assessment",
+                      "finding": "External risk assessment for TaskFlow is 'low' risk, last reviewed 2026-06-03.",
+                      "reference": "GET /vendor-risk/TaskFlow"
+                    }
+                  ],
+                  "data_quality_issues": [],
+                  "prompt_injection_observed": false,
+                  "overlap_assessment": {
+                    "disposition": "existing_tool_likely_sufficient",
+                    "existing_options": [
+                      "TaskFlow (SW003) - Company-wide agreement"
+                    ],
+                    "reasoning": "The company already has an approved, company-wide agreement with TaskFlow for project management. It is unclear if the requested 'TaskFlow Pro' is a distinct product or if the existing license can accommodate the Marketing team's needs."
+                  },
+                  "open_questions": [
+                    "Why is 'TaskFlow Pro' being requested as a separate purchase when a company-wide 'TaskFlow' agreement already exists? Can the existing license be leveraged?"
+                  ],
+                  "injection_details": "None detected."
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2910,
+              "output_tokens": 464
+            },
+            "latency_ms": 4883.0
+          }
+        ]
+      },
+      {
+        "role": "reviewer",
+        "llm_calls": 2,
+        "tool_calls": 0,
+        "usage": {
+          "input_tokens": 7542,
+          "output_tokens": 1440,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 13774.9,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "default_submit_decision",
+                "input": {
+                  "overlap_disposition": "existing_tool_likely_sufficient",
+                  "evidence": [
+                    {
+                      "reference": "employees.csv:E001",
+                      "source": "get_requester_profile",
+                      "finding": "Requester is Sarah Lee (IC4) in Marketing, reporting to David Chen (Director)."
+                    },
+                    {
+                      "reference": "department_budgets.csv:Marketing",
+                      "finding": "Marketing department has $15,000 available budget; request is $8,000. Purchase is within budget.",
+                      "source": "check_department_budget"
+                    },
+                    {
+                      "finding": "TaskFlow (the vendor) is already approved and used company-wide for project management.",
+                      "reference": "software_catalog.csv:SW003",
+                      "source": "search_existing_software"
+                    },
+                    {
+                      "finding": "Vendor TaskFlow has an approved procurement status, security status, and legal terms.",
+                      "reference": "vendors.csv:V003",
+                      "source": "get_vendor_registry_record"
+                    },
+                    {
+                      "reference": "GET /vendor-risk/TaskFlow",
+                      "source": "get_vendor_risk_assessment",
+                      "finding": "External risk assessment for TaskFlow is 'low' risk, last reviewed 2026-06-03."
+                    },
+                    {
+                      "finding": "Annual amount $8,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+                      "source": "evaluate_procurement_policy",
+                      "reference": "Policy \u00a74"
+                    },
+                    {
+                      "finding": "Approved catalog already contains: TaskFlow (same vendor, Company-wide, 180 seats). Overlap is not an automatic rejection; the request does not explain why existing tools are insufficient.",
+                      "source": "evaluate_procurement_policy",
+                      "reference": "Policy \u00a73"
+                    }
+                  ],
+                  "prompt_injection_observed": false,
+                  "next_step": "Request clarification from the requester regarding the necessity of 'TaskFlow Pro' versus the existing company-wide 'TaskFlow' license. Once clarified, route to Department Head and Procurement if the purchase is still deemed necessary.",
+                  "rationale": "The request is for a product ('TaskFlow Pro') from a vendor ('TaskFlow') that is already covered by a company-wide agreement. The business justification provided ('campaign task tracking') does not explain why the existing tool is insufficient. Per Policy \u00a73, we must verify if existing capacity can be used before approving new spend. The request is within budget and the vendor is approved, but the overlap must be resolved first.",
+                  "missing_information": [
+                    "Confirmation of whether existing TaskFlow licenses can accommodate the 15 requested seats."
+                  ],
+                  "recommendation": "Redirect to existing tool; request clarification on why the existing company-wide license is insufficient for the Marketing team's needs.",
+                  "clarification_questions": [
+                    "Why is 'TaskFlow Pro' being requested as a separate purchase when a company-wide 'TaskFlow' agreement already exists? Can the existing license be leveraged?",
+                    "Does the Marketing team require specific features in 'TaskFlow Pro' that are not available in the existing company-wide 'TaskFlow' license?"
+                  ],
+                  "risk_flags": [
+                    "existing_tool_overlap"
+                  ],
+                  "status": "REDIRECT_TO_EXISTING_TOOL",
+                  "required_approvals": [
+                    "Department Head",
+                    "Procurement"
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 3390,
+              "output_tokens": 719
+            },
+            "latency_ms": 6603.6
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_decision",
+                "input": {
+                  "overlap_disposition": "existing_tool_likely_sufficient",
+                  "risk_flags": [
+                    "existing_tool_overlap"
+                  ],
+                  "recommendation": "Redirect to existing tool; request clarification on why the existing company-wide license is insufficient for the Marketing team's needs.",
+                  "next_step": "Request clarification from the requester regarding the necessity of 'TaskFlow Pro' versus the existing company-wide 'TaskFlow' license. Once clarified, route to Department Head and Procurement if the purchase is still deemed necessary.",
+                  "clarification_questions": [
+                    "Why is 'TaskFlow Pro' being requested as a separate purchase when a company-wide 'TaskFlow' agreement already exists? Can the existing license be leveraged?",
+                    "Does the Marketing team require specific features in 'TaskFlow Pro' that are not available in the existing company-wide 'TaskFlow' license?"
+                  ],
+                  "prompt_injection_observed": false,
+                  "evidence": [
+                    {
+                      "reference": "employees.csv:E001",
+                      "finding": "Requester is Sarah Lee (IC4) in Marketing, reporting to David Chen (Director).",
+                      "source": "get_requester_profile"
+                    },
+                    {
+                      "source": "check_department_budget",
+                      "finding": "Marketing department has $15,000 available budget; request is $8,000. Purchase is within budget.",
+                      "reference": "department_budgets.csv:Marketing"
+                    },
+                    {
+                      "source": "search_existing_software",
+                      "finding": "TaskFlow (the vendor) is already approved and used company-wide for project management.",
+                      "reference": "software_catalog.csv:SW003"
+                    },
+                    {
+                      "finding": "Vendor TaskFlow has an approved procurement status, security status, and legal terms.",
+                      "source": "get_vendor_registry_record",
+                      "reference": "vendors.csv:V003"
+                    },
+                    {
+                      "source": "get_vendor_risk_assessment",
+                      "reference": "GET /vendor-risk/TaskFlow",
+                      "finding": "External risk assessment for TaskFlow is 'low' risk, last reviewed 2026-06-03."
+                    },
+                    {
+                      "source": "evaluate_procurement_policy",
+                      "reference": "Policy \u00a74",
+                      "finding": "Annual amount $8,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement."
+                    },
+                    {
+                      "finding": "Approved catalog already contains: TaskFlow (same vendor, Company-wide, 180 seats). Overlap is not an automatic rejection; the request does not explain why existing tools are insufficient.",
+                      "reference": "Policy \u00a73",
+                      "source": "evaluate_procurement_policy"
+                    }
+                  ],
+                  "required_approvals": [
+                    "Department Head",
+                    "Procurement"
+                  ],
+                  "missing_information": [
+                    "Confirmation of whether existing TaskFlow licenses can accommodate the 15 requested seats."
+                  ],
+                  "status": "REDIRECT_TO_EXISTING_TOOL",
+                  "rationale": "The request is for a product ('TaskFlow Pro') from a vendor ('TaskFlow') that is already covered by a company-wide agreement. The business justification provided ('campaign task tracking') does not explain why the existing tool is insufficient. Per Policy \u00a73, we must verify if existing capacity can be used before approving new spend. The request is within budget and the vendor is approved, but the overlap must be resolved first."
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 4152,
+              "output_tokens": 721
+            },
+            "latency_ms": 7171.3
+          }
+        ]
+      }
+    ],
+    "evidence_pack": {
+      "need_summary": "Marketing department requests TaskFlow Pro ($8,000/year) for campaign task tracking. TaskFlow is an existing approved vendor with a company-wide agreement.",
+      "facts": [
+        {
+          "source": "get_requester_profile",
+          "finding": "Requester is Sarah Lee (IC4) in Marketing, reporting to David Chen (Director).",
+          "reference": "employees.csv:E001"
+        },
+        {
+          "source": "check_department_budget",
+          "finding": "Marketing department has $15,000 available budget; request is $8,000. Purchase is within budget.",
+          "reference": "department_budgets.csv:Marketing"
+        },
+        {
+          "source": "search_existing_software",
+          "finding": "TaskFlow (the vendor) is already approved and used company-wide for project management.",
+          "reference": "software_catalog.csv:SW003"
+        },
+        {
+          "source": "get_vendor_registry_record",
+          "finding": "Vendor TaskFlow has an approved procurement status, security status, and legal terms.",
+          "reference": "vendors.csv:V003"
+        },
+        {
+          "source": "get_vendor_risk_assessment",
+          "finding": "External risk assessment for TaskFlow is 'low' risk, last reviewed 2026-06-03.",
+          "reference": "GET /vendor-risk/TaskFlow"
+        }
+      ],
+      "overlap_assessment": {
+        "disposition": "existing_tool_likely_sufficient",
+        "existing_options": [
+          "TaskFlow (SW003) - Company-wide agreement"
+        ],
+        "reasoning": "The company already has an approved, company-wide agreement with TaskFlow for project management. It is unclear if the requested 'TaskFlow Pro' is a distinct product or if the existing license can accommodate the Marketing team's needs."
+      },
+      "data_quality_issues": [],
+      "open_questions": [
+        "Why is 'TaskFlow Pro' being requested as a separate purchase when a company-wide 'TaskFlow' agreement already exists? Can the existing license be leveraged?"
+      ],
+      "prompt_injection_observed": false,
+      "injection_details": "None detected."
+    },
+    "draft": {
+      "status": "REDIRECT_TO_EXISTING_TOOL",
+      "recommendation": "Redirect to existing tool; request clarification on why the existing company-wide license is insufficient for the Marketing team's needs.",
+      "rationale": "The request is for a product ('TaskFlow Pro') from a vendor ('TaskFlow') that is already covered by a company-wide agreement. The business justification provided ('campaign task tracking') does not explain why the existing tool is insufficient. Per Policy \u00a73, we must verify if existing capacity can be used before approving new spend. The request is within budget and the vendor is approved, but the overlap must be resolved first.",
+      "evidence": [
+        {
+          "source": "get_requester_profile",
+          "finding": "Requester is Sarah Lee (IC4) in Marketing, reporting to David Chen (Director).",
+          "reference": "employees.csv:E001"
+        },
+        {
+          "source": "check_department_budget",
+          "finding": "Marketing department has $15,000 available budget; request is $8,000. Purchase is within budget.",
+          "reference": "department_budgets.csv:Marketing"
+        },
+        {
+          "source": "search_existing_software",
+          "finding": "TaskFlow (the vendor) is already approved and used company-wide for project management.",
+          "reference": "software_catalog.csv:SW003"
+        },
+        {
+          "source": "get_vendor_registry_record",
+          "finding": "Vendor TaskFlow has an approved procurement status, security status, and legal terms.",
+          "reference": "vendors.csv:V003"
+        },
+        {
+          "source": "get_vendor_risk_assessment",
+          "finding": "External risk assessment for TaskFlow is 'low' risk, last reviewed 2026-06-03.",
+          "reference": "GET /vendor-risk/TaskFlow"
+        },
+        {
+          "source": "evaluate_procurement_policy",
+          "finding": "Annual amount $8,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+          "reference": "Policy \u00a74"
+        },
+        {
+          "source": "evaluate_procurement_policy",
+          "finding": "Approved catalog already contains: TaskFlow (same vendor, Company-wide, 180 seats). Overlap is not an automatic rejection; the request does not explain why existing tools are insufficient.",
+          "reference": "Policy \u00a73"
+        }
+      ],
+      "required_approvals": [
+        "Department Head",
+        "Procurement"
+      ],
+      "risk_flags": [
+        "existing_tool_overlap"
+      ],
+      "missing_information": [
+        "Confirmation of whether existing TaskFlow licenses can accommodate the 15 requested seats."
+      ],
+      "clarification_questions": [
+        "Why is 'TaskFlow Pro' being requested as a separate purchase when a company-wide 'TaskFlow' agreement already exists? Can the existing license be leveraged?",
+        "Does the Marketing team require specific features in 'TaskFlow Pro' that are not available in the existing company-wide 'TaskFlow' license?"
+      ],
+      "overlap_disposition": "existing_tool_likely_sufficient",
+      "next_step": "Request clarification from the requester regarding the necessity of 'TaskFlow Pro' versus the existing company-wide 'TaskFlow' license. Once clarified, route to Department Head and Procurement if the purchase is still deemed necessary.",
+      "prompt_injection_observed": false
+    },
+    "assessment": {
+      "reference_date": "2026-09-30",
+      "annual_amount_usd": 8000.0,
+      "approval_tier": "$1,000.01 - $10,000",
+      "required_approvals": [
+        "Department Head",
+        "Procurement"
+      ],
+      "risk_flags": [
+        "existing_tool_overlap"
+      ],
+      "missing_information": [],
+      "missing_fields": [],
+      "rule_hits": [
+        {
+          "rule": "approval_threshold",
+          "section": "Policy \u00a74",
+          "finding": "Annual amount $8,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+          "adds_approvals": [
+            "Department Head",
+            "Procurement"
+          ],
+          "adds_flags": []
+        },
+        {
+          "rule": "budget_within",
+          "section": "Policy \u00a72",
+          "finding": "Cost $8,000 is within Marketing available budget $15,000 ($7,000 remaining). This does not imply approval.",
+          "adds_approvals": [],
+          "adds_flags": []
+        },
+        {
+          "rule": "existing_tool_overlap",
+          "section": "Policy \u00a73",
+          "finding": "Approved catalog already contains: TaskFlow (same vendor, Company-wide, 180 seats). Overlap is not an automatic rejection; the request does not explain why existing tools are insufficient.",
+          "adds_approvals": [],
+          "adds_flags": [
+            "existing_tool_overlap"
+          ]
+        }
+      ],
+      "open_items": [
+        "Seat utilisation of existing licences is not in the data; confirm unused capacity before buying new seats."
+      ],
+      "budget": {
+        "department": "Marketing",
+        "available_usd": 15000.0,
+        "requested_usd": 8000,
+        "remaining_after_usd": 7000.0,
+        "within_budget": true
+      },
+      "vendor_review": {
+        "registry_status": "Approved",
+        "registry_review_date": "2026-06-03",
+        "registry_days_since_review": 119,
+        "api_status": "approved",
+        "api_review_date": "2026-06-03",
+        "api_days_since_review": 119,
+        "api_outcome": "ok",
+        "validity_days": 365,
+        "assessment_current": true,
+        "conflicts": []
+      },
+      "data_sensitivity": {
+        "data_access_level": "internal_marketing",
+        "category": "low",
+        "security_reasons": [],
+        "privacy_reasons": [],
+        "stores_data_outside_region": false
+      },
+      "overlap": {
+        "flagged": true,
+        "gap_stated": false,
+        "exact_duplicate": false,
+        "matches": [
+          {
+            "software_id": "SW003",
+            "product_name": "TaskFlow",
+            "category": "Project Management",
+            "vendor_name": "TaskFlow",
+            "status": "Approved",
+            "annual_cost_usd": 36000,
+            "licensed_seats": 180,
+            "scope": "Company-wide",
+            "notes": "Project and task management",
+            "relation": "same_vendor",
+            "reference": "software_catalog.csv:SW003"
+          }
+        ],
+        "extends": []
+      },
+      "injection": {
+        "detected": false,
+        "findings": []
+      },
+      "default_status": "REDIRECT_TO_EXISTING_TOOL",
+      "allowed_statuses": [
+        "REDIRECT_TO_EXISTING_TOOL",
+        "ROUTE_FOR_APPROVAL",
+        "REQUEST_CLARIFICATION",
+        "MANUAL_REVIEW_REQUIRED",
+        "ESCALATE_SPECIALIST_REVIEW"
+      ],
+      "status_reasons": [
+        "An approved tool may already satisfy the need (Policy \u00a73)."
+      ],
+      "approver_routing": [
+        {
+          "role": "Department Head",
+          "assignee": "David Chen (E009, Director, Marketing)",
+          "basis": "Director/VP of the requesting department, else first Director/VP in the reporting chain"
+        },
+        {
+          "role": "Procurement",
+          "assignee": "Procurement team queue",
+          "basis": "Functional review queue"
+        }
+      ]
+    }
+  }
+}

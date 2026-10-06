@@ -1,0 +1,952 @@
+{
+  "case_id": "EXT-19",
+  "decision": {
+    "request_id": "SYN-1019",
+    "recommendation": "Escalate for specialist review: Escalate to specialist review (Security, Legal, Finance, Procurement) and request additional information from the requester regarding vendor contacts and data types.",
+    "evidence": [
+      {
+        "source": "get_purchase_request",
+        "finding": "VectorVault from VectorVault Inc (Database): annual cost $14,000, users 10, data access 'internal_documents', integrations: Production cloud account, urgency 'normal'.",
+        "reference": "requests.json:SYN-1019"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Arjun Mehta (E002), Engineering, IC5; manager Maya Rao (E008); department head Maya Rao (E008).",
+        "reference": "employees.csv:E002"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Requested $14,000 is within Engineering available budget of $26,000 ($12,000 would remain).",
+        "reference": "department_budgets.csv:Engineering"
+      },
+      {
+        "source": "search_existing_software",
+        "finding": "No approved catalog product from the same vendor or category.",
+        "reference": "software_catalog.csv"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Vendor 'VectorVault Inc' not found in internal registry (vendors.csv).",
+        "reference": "vendors.csv"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor-risk service result 'not_found': No vendor-risk record exists for this vendor. Status treated as unverified.",
+        "reference": "GET /vendor-risk/VectorVault%20Inc"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Annual amount $14,000 falls in tier '$10,000.01 - $25,000' -> Department Head, Finance, Procurement.",
+        "reference": "Policy \u00a74"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Vendor 'VectorVault Inc' is not in the internal vendor registry (treated as a new vendor with no approved terms).",
+        "reference": "Policy \u00a75 / \u00a77"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Vendor-risk service has no assessment record for this vendor; assessment is missing.",
+        "reference": "Policy \u00a75"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Security review required: 'Production cloud account' = production or cloud-account integration.",
+        "reference": "Policy \u00a75"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "New vendor (procurement status 'not registered') with annual spend $14,000 >= $10,000.",
+        "reference": "Policy \u00a77"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Vendor legal terms are not approved/standard (status: 'none on file').",
+        "reference": "Policy \u00a77"
+      },
+      {
+        "source": "get_requester_profile (agent)",
+        "finding": "Requester Arjun Mehta (IC5) is in the Engineering department.",
+        "reference": "employees.csv:E002"
+      },
+      {
+        "source": "check_department_budget (agent)",
+        "finding": "The requested annual cost of $14,000 is within the Engineering department's available budget of $26,000.",
+        "reference": "department_budgets.csv:Engineering"
+      },
+      {
+        "source": "search_existing_software (agent)",
+        "finding": "No existing software matches 'VectorVault' or the use case 'vector database'/'search relevance' in the catalog.",
+        "reference": "software_catalog.csv:search_existing_software"
+      },
+      {
+        "source": "get_vendor_registry_record (agent)",
+        "finding": "Vendor 'VectorVault Inc' is not registered in the internal vendor registry.",
+        "reference": "vendors.csv:get_vendor_registry_record"
+      },
+      {
+        "source": "get_vendor_risk_assessment (agent)",
+        "finding": "No vendor-risk assessment record exists for 'VectorVault Inc'. Status is unverified.",
+        "reference": "GET /vendor-risk/VectorVault%20Inc"
+      },
+      {
+        "source": "evaluate_procurement_policy (agent)",
+        "finding": "Annual amount $14,000 falls in tier '$10,000.01 - $25,000' -> Department Head, Finance, Procurement.",
+        "reference": "Policy \u00a74"
+      },
+      {
+        "source": "evaluate_procurement_policy (agent)",
+        "finding": "Security review required: 'Production cloud account' = production or cloud-account integration.",
+        "reference": "Policy \u00a75"
+      },
+      {
+        "source": "evaluate_procurement_policy (agent)",
+        "finding": "New vendor (procurement status 'not registered') with annual spend $14,000 >= $10,000.",
+        "reference": "Policy \u00a77"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "Security",
+      "Legal"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "legal_review_required",
+      "missing_information",
+      "security_review_required"
+    ],
+    "next_step": "Route to Security, Legal, Finance, and Department Head for review. Requester must provide vendor contact details and confirm data types to initiate the onboarding and risk assessment process.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 5,
+      "tool_calls": 10,
+      "tool_names": [
+        "get_purchase_request",
+        "get_requester_profile",
+        "check_department_budget",
+        "search_existing_software",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_department_budget",
+        "search_existing_software",
+        "evaluate_procurement_policy",
+        "lookup_policy_section"
+      ]
+    }
+  },
+  "trace": {
+    "architecture": "staged",
+    "mode": "llm",
+    "provider": "openai",
+    "model": "gemini-3.1-flash-lite",
+    "fallback_reason": null,
+    "latency_ms": 31994.3,
+    "usage": {
+      "input_tokens": 13359,
+      "output_tokens": 1390,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 0
+    },
+    "cost_usd": null,
+    "guardrails": {
+      "corrections": [],
+      "omitted_approvals": [],
+      "omitted_flags": [],
+      "added_by_llm_approvals": [],
+      "added_by_llm_flags": [
+        "missing_information"
+      ],
+      "status_overridden": false,
+      "llm_status": "ESCALATE_SPECIALIST_REVIEW",
+      "final_status": "ESCALATE_SPECIALIST_REVIEW",
+      "grounded_claims": 8,
+      "ungrounded_claims": [],
+      "unsafe_language_blocked": false,
+      "raw_policy_compliant": true
+    },
+    "tool_log": [
+      {
+        "name": "get_purchase_request",
+        "caller": "analyst",
+        "args": {
+          "request_id": "SYN-1019"
+        },
+        "ok": true,
+        "latency_ms": 0.1,
+        "cached": false
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "analyst",
+        "args": {
+          "employee_id": "E002"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "analyst",
+        "args": {
+          "annual_cost_usd": 14000,
+          "department": "Engineering"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "analyst",
+        "args": {
+          "use_case_keywords": [
+            "vector database",
+            "search relevance"
+          ],
+          "category": "Database",
+          "vendor_name": "VectorVault Inc",
+          "product_name": "VectorVault"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "analyst",
+        "args": {
+          "vendor_name": "VectorVault Inc"
+        },
+        "ok": false,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "analyst",
+        "args": {
+          "vendor_name": "VectorVault Inc"
+        },
+        "ok": false,
+        "latency_ms": 3.2,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1019"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "system",
+        "args": {
+          "employee_id": "E002"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "system",
+        "args": {
+          "department": "Engineering",
+          "annual_cost_usd": 14000.0
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "system",
+        "args": {
+          "product_name": "VectorVault",
+          "vendor_name": "VectorVault Inc",
+          "category": "Database"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "system",
+        "args": {
+          "vendor_name": "VectorVault Inc"
+        },
+        "ok": false,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "system",
+        "args": {
+          "vendor_name": "VectorVault Inc"
+        },
+        "ok": false,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1019"
+        },
+        "ok": true,
+        "latency_ms": 0.2,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1019"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "lookup_policy_section",
+        "caller": "reviewer",
+        "args": {
+          "query": "privacy review requirements"
+        },
+        "ok": true,
+        "latency_ms": 5.5,
+        "cached": false
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1019"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      }
+    ],
+    "agent_runs": [
+      {
+        "role": "analyst",
+        "llm_calls": 3,
+        "tool_calls": 6,
+        "usage": {
+          "input_tokens": 5599,
+          "output_tokens": 607,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 18915.7,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_purchase_request",
+                "input": {
+                  "request_id": "SYN-1019"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 1365,
+              "output_tokens": 25
+            },
+            "latency_ms": 10160.5
+          },
+          {
+            "type": "tool",
+            "name": "get_purchase_request",
+            "input": {
+              "request_id": "SYN-1019"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_requester_profile",
+                "input": {
+                  "employee_id": "E002"
+                }
+              },
+              {
+                "name": "check_department_budget",
+                "input": {
+                  "annual_cost_usd": 14000,
+                  "department": "Engineering"
+                }
+              },
+              {
+                "name": "search_existing_software",
+                "input": {
+                  "use_case_keywords": [
+                    "vector database",
+                    "search relevance"
+                  ],
+                  "category": "Database",
+                  "vendor_name": "VectorVault Inc",
+                  "product_name": "VectorVault"
+                }
+              },
+              {
+                "name": "get_vendor_registry_record",
+                "input": {
+                  "vendor_name": "VectorVault Inc"
+                }
+              },
+              {
+                "name": "get_vendor_risk_assessment",
+                "input": {
+                  "vendor_name": "VectorVault Inc"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 1660,
+              "output_tokens": 155
+            },
+            "latency_ms": 1692.9
+          },
+          {
+            "type": "tool",
+            "name": "get_requester_profile",
+            "input": {
+              "employee_id": "E002"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "check_department_budget",
+            "input": {
+              "annual_cost_usd": 14000,
+              "department": "Engineering"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "search_existing_software",
+            "input": {
+              "use_case_keywords": [
+                "vector database",
+                "search relevance"
+              ],
+              "category": "Database",
+              "vendor_name": "VectorVault Inc",
+              "product_name": "VectorVault"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_registry_record",
+            "input": {
+              "vendor_name": "VectorVault Inc"
+            },
+            "ok": false
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_risk_assessment",
+            "input": {
+              "vendor_name": "VectorVault Inc"
+            },
+            "ok": false
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_evidence_pack",
+                "input": {
+                  "prompt_injection_observed": false,
+                  "data_quality_issues": [
+                    "Vendor 'VectorVault Inc' is not present in the internal vendor registry.",
+                    "No vendor-risk assessment record exists for 'VectorVault Inc'."
+                  ],
+                  "overlap_assessment": {
+                    "disposition": "no_overlap",
+                    "existing_options": [],
+                    "reasoning": "No existing tools in the catalog match the requested product or use case."
+                  },
+                  "open_questions": [
+                    "Is there a plan to initiate a vendor onboarding and security review process for 'VectorVault Inc'?"
+                  ],
+                  "need_summary": "Engineering requests 'VectorVault' (a managed vector database) for a search relevance project in production. The request is for 10 users at an annual cost of $14,000.",
+                  "injection_details": "None detected.",
+                  "facts": [
+                    {
+                      "source": "get_requester_profile",
+                      "reference": "employees.csv:E002",
+                      "finding": "Requester Arjun Mehta (IC5) is in the Engineering department."
+                    },
+                    {
+                      "source": "check_department_budget",
+                      "finding": "The requested annual cost of $14,000 is within the Engineering department's available budget of $26,000.",
+                      "reference": "department_budgets.csv:Engineering"
+                    },
+                    {
+                      "reference": "software_catalog.csv",
+                      "source": "search_existing_software",
+                      "finding": "No existing software matches 'VectorVault' or the use case 'vector database'/'search relevance' in the catalog."
+                    },
+                    {
+                      "source": "get_vendor_registry_record",
+                      "reference": "vendors.csv",
+                      "finding": "Vendor 'VectorVault Inc' is not registered in the internal vendor registry."
+                    },
+                    {
+                      "finding": "No vendor-risk assessment record exists for 'VectorVault Inc'. Status is unverified.",
+                      "source": "get_vendor_risk_assessment",
+                      "reference": "GET /vendor-risk/VectorVault%20Inc"
+                    }
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2574,
+              "output_tokens": 427
+            },
+            "latency_ms": 7062.3
+          }
+        ]
+      },
+      {
+        "role": "reviewer",
+        "llm_calls": 2,
+        "tool_calls": 1,
+        "usage": {
+          "input_tokens": 7760,
+          "output_tokens": 783,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 12570.6,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "lookup_policy_section",
+                "input": {
+                  "query": "privacy review requirements"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 3725,
+              "output_tokens": 20
+            },
+            "latency_ms": 2834.8
+          },
+          {
+            "type": "tool",
+            "name": "lookup_policy_section",
+            "input": {
+              "query": "privacy review requirements"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_decision",
+                "input": {
+                  "next_step": "Route to Security, Legal, Finance, and Department Head for review. Requester must provide vendor contact details and confirm data types to initiate the onboarding and risk assessment process.",
+                  "evidence": [
+                    {
+                      "reference": "employees.csv:E002",
+                      "source": "get_requester_profile",
+                      "finding": "Requester Arjun Mehta (IC5) is in the Engineering department."
+                    },
+                    {
+                      "source": "check_department_budget",
+                      "reference": "department_budgets.csv:Engineering",
+                      "finding": "The requested annual cost of $14,000 is within the Engineering department's available budget of $26,000."
+                    },
+                    {
+                      "source": "search_existing_software",
+                      "reference": "software_catalog.csv:search_existing_software",
+                      "finding": "No existing software matches 'VectorVault' or the use case 'vector database'/'search relevance' in the catalog."
+                    },
+                    {
+                      "reference": "vendors.csv:get_vendor_registry_record",
+                      "finding": "Vendor 'VectorVault Inc' is not registered in the internal vendor registry.",
+                      "source": "get_vendor_registry_record"
+                    },
+                    {
+                      "source": "get_vendor_risk_assessment",
+                      "reference": "GET /vendor-risk/VectorVault%20Inc",
+                      "finding": "No vendor-risk assessment record exists for 'VectorVault Inc'. Status is unverified."
+                    },
+                    {
+                      "reference": "Policy \u00a74",
+                      "finding": "Annual amount $14,000 falls in tier '$10,000.01 - $25,000' -> Department Head, Finance, Procurement.",
+                      "source": "evaluate_procurement_policy"
+                    },
+                    {
+                      "source": "evaluate_procurement_policy",
+                      "finding": "Security review required: 'Production cloud account' = production or cloud-account integration.",
+                      "reference": "Policy \u00a75"
+                    },
+                    {
+                      "finding": "New vendor (procurement status 'not registered') with annual spend $14,000 >= $10,000.",
+                      "reference": "Policy \u00a77",
+                      "source": "evaluate_procurement_policy"
+                    }
+                  ],
+                  "overlap_disposition": "no_overlap",
+                  "prompt_injection_observed": false,
+                  "recommendation": "Escalate to specialist review (Security, Legal, Finance, Procurement) and request additional information from the requester regarding vendor contacts and data types.",
+                  "missing_information": [
+                    "Vendor contact information for onboarding.",
+                    "Confirmation of data types (PII) to determine if Privacy review is required."
+                  ],
+                  "risk_flags": [
+                    "security_review_required",
+                    "legal_review_required",
+                    "missing_information"
+                  ],
+                  "status": "ESCALATE_SPECIALIST_REVIEW",
+                  "required_approvals": [
+                    "Department Head",
+                    "Procurement",
+                    "Finance",
+                    "Security",
+                    "Legal"
+                  ],
+                  "clarification_questions": [
+                    "The request involves a production cloud integration. Please confirm if this tool will process any customer PII or employee PII, as this will trigger a mandatory Privacy review.",
+                    "Please provide the contact information for the vendor representative at VectorVault Inc to facilitate the onboarding and security assessment process."
+                  ],
+                  "rationale": "The request is for a new, unregistered vendor with no existing risk assessment, involving production cloud integration. This triggers mandatory Security and Legal reviews per Policy \u00a75 and \u00a77. The budget is sufficient, but the lack of vendor registration and risk assessment necessitates a full onboarding process. Privacy review may also be required depending on the data types processed, which remains unconfirmed."
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 4035,
+              "output_tokens": 763
+            },
+            "latency_ms": 9735.8
+          }
+        ]
+      }
+    ],
+    "evidence_pack": {
+      "need_summary": "Engineering requests 'VectorVault' (a managed vector database) for a search relevance project in production. The request is for 10 users at an annual cost of $14,000.",
+      "facts": [
+        {
+          "source": "get_requester_profile",
+          "finding": "Requester Arjun Mehta (IC5) is in the Engineering department.",
+          "reference": "employees.csv:E002"
+        },
+        {
+          "source": "check_department_budget",
+          "finding": "The requested annual cost of $14,000 is within the Engineering department's available budget of $26,000.",
+          "reference": "department_budgets.csv:Engineering"
+        },
+        {
+          "source": "search_existing_software",
+          "finding": "No existing software matches 'VectorVault' or the use case 'vector database'/'search relevance' in the catalog.",
+          "reference": "software_catalog.csv"
+        },
+        {
+          "source": "get_vendor_registry_record",
+          "finding": "Vendor 'VectorVault Inc' is not registered in the internal vendor registry.",
+          "reference": "vendors.csv"
+        },
+        {
+          "source": "get_vendor_risk_assessment",
+          "finding": "No vendor-risk assessment record exists for 'VectorVault Inc'. Status is unverified.",
+          "reference": "GET /vendor-risk/VectorVault%20Inc"
+        }
+      ],
+      "overlap_assessment": {
+        "disposition": "no_overlap",
+        "existing_options": [],
+        "reasoning": "No existing tools in the catalog match the requested product or use case."
+      },
+      "data_quality_issues": [
+        "Vendor 'VectorVault Inc' is not present in the internal vendor registry.",
+        "No vendor-risk assessment record exists for 'VectorVault Inc'."
+      ],
+      "open_questions": [
+        "Is there a plan to initiate a vendor onboarding and security review process for 'VectorVault Inc'?"
+      ],
+      "prompt_injection_observed": false,
+      "injection_details": "None detected."
+    },
+    "draft": {
+      "status": "ESCALATE_SPECIALIST_REVIEW",
+      "recommendation": "Escalate to specialist review (Security, Legal, Finance, Procurement) and request additional information from the requester regarding vendor contacts and data types.",
+      "rationale": "The request is for a new, unregistered vendor with no existing risk assessment, involving production cloud integration. This triggers mandatory Security and Legal reviews per Policy \u00a75 and \u00a77. The budget is sufficient, but the lack of vendor registration and risk assessment necessitates a full onboarding process. Privacy review may also be required depending on the data types processed, which remains unconfirmed.",
+      "evidence": [
+        {
+          "source": "get_requester_profile",
+          "finding": "Requester Arjun Mehta (IC5) is in the Engineering department.",
+          "reference": "employees.csv:E002"
+        },
+        {
+          "source": "check_department_budget",
+          "finding": "The requested annual cost of $14,000 is within the Engineering department's available budget of $26,000.",
+          "reference": "department_budgets.csv:Engineering"
+        },
+        {
+          "source": "search_existing_software",
+          "finding": "No existing software matches 'VectorVault' or the use case 'vector database'/'search relevance' in the catalog.",
+          "reference": "software_catalog.csv:search_existing_software"
+        },
+        {
+          "source": "get_vendor_registry_record",
+          "finding": "Vendor 'VectorVault Inc' is not registered in the internal vendor registry.",
+          "reference": "vendors.csv:get_vendor_registry_record"
+        },
+        {
+          "source": "get_vendor_risk_assessment",
+          "finding": "No vendor-risk assessment record exists for 'VectorVault Inc'. Status is unverified.",
+          "reference": "GET /vendor-risk/VectorVault%20Inc"
+        },
+        {
+          "source": "evaluate_procurement_policy",
+          "finding": "Annual amount $14,000 falls in tier '$10,000.01 - $25,000' -> Department Head, Finance, Procurement.",
+          "reference": "Policy \u00a74"
+        },
+        {
+          "source": "evaluate_procurement_policy",
+          "finding": "Security review required: 'Production cloud account' = production or cloud-account integration.",
+          "reference": "Policy \u00a75"
+        },
+        {
+          "source": "evaluate_procurement_policy",
+          "finding": "New vendor (procurement status 'not registered') with annual spend $14,000 >= $10,000.",
+          "reference": "Policy \u00a77"
+        }
+      ],
+      "required_approvals": [
+        "Department Head",
+        "Procurement",
+        "Finance",
+        "Security",
+        "Legal"
+      ],
+      "risk_flags": [
+        "security_review_required",
+        "legal_review_required",
+        "missing_information"
+      ],
+      "missing_information": [
+        "Vendor contact information for onboarding.",
+        "Confirmation of data types (PII) to determine if Privacy review is required."
+      ],
+      "clarification_questions": [
+        "The request involves a production cloud integration. Please confirm if this tool will process any customer PII or employee PII, as this will trigger a mandatory Privacy review.",
+        "Please provide the contact information for the vendor representative at VectorVault Inc to facilitate the onboarding and security assessment process."
+      ],
+      "overlap_disposition": "no_overlap",
+      "next_step": "Route to Security, Legal, Finance, and Department Head for review. Requester must provide vendor contact details and confirm data types to initiate the onboarding and risk assessment process.",
+      "prompt_injection_observed": false
+    },
+    "assessment": {
+      "reference_date": "2026-09-30",
+      "annual_amount_usd": 14000.0,
+      "approval_tier": "$10,000.01 - $25,000",
+      "required_approvals": [
+        "Department Head",
+        "Procurement",
+        "Finance",
+        "Security",
+        "Legal"
+      ],
+      "risk_flags": [
+        "legal_review_required",
+        "security_review_required"
+      ],
+      "missing_information": [],
+      "missing_fields": [],
+      "rule_hits": [
+        {
+          "rule": "approval_threshold",
+          "section": "Policy \u00a74",
+          "finding": "Annual amount $14,000 falls in tier '$10,000.01 - $25,000' -> Department Head, Finance, Procurement.",
+          "adds_approvals": [
+            "Department Head",
+            "Finance",
+            "Procurement"
+          ],
+          "adds_flags": []
+        },
+        {
+          "rule": "budget_within",
+          "section": "Policy \u00a72",
+          "finding": "Cost $14,000 is within Engineering available budget $26,000 ($12,000 remaining). This does not imply approval.",
+          "adds_approvals": [],
+          "adds_flags": []
+        },
+        {
+          "rule": "vendor_not_in_registry",
+          "section": "Policy \u00a75 / \u00a77",
+          "finding": "Vendor 'VectorVault Inc' is not in the internal vendor registry (treated as a new vendor with no approved terms).",
+          "adds_approvals": [
+            "Security"
+          ],
+          "adds_flags": [
+            "security_review_required"
+          ]
+        },
+        {
+          "rule": "vendor_risk_missing",
+          "section": "Policy \u00a75",
+          "finding": "Vendor-risk service has no assessment record for this vendor; assessment is missing.",
+          "adds_approvals": [
+            "Security"
+          ],
+          "adds_flags": [
+            "security_review_required"
+          ]
+        },
+        {
+          "rule": "security_data_trigger",
+          "section": "Policy \u00a75",
+          "finding": "Security review required: 'Production cloud account' = production or cloud-account integration.",
+          "adds_approvals": [
+            "Security"
+          ],
+          "adds_flags": [
+            "security_review_required"
+          ]
+        },
+        {
+          "rule": "legal_new_vendor_spend",
+          "section": "Policy \u00a77",
+          "finding": "New vendor (procurement status 'not registered') with annual spend $14,000 >= $10,000.",
+          "adds_approvals": [
+            "Legal"
+          ],
+          "adds_flags": [
+            "legal_review_required"
+          ]
+        },
+        {
+          "rule": "legal_terms_not_approved",
+          "section": "Policy \u00a77",
+          "finding": "Vendor legal terms are not approved/standard (status: 'none on file').",
+          "adds_approvals": [
+            "Legal"
+          ],
+          "adds_flags": [
+            "legal_review_required"
+          ]
+        }
+      ],
+      "open_items": [
+        "Vendor data residency could not be verified; Privacy may need to confirm whether data leaves the region."
+      ],
+      "budget": {
+        "department": "Engineering",
+        "available_usd": 26000.0,
+        "requested_usd": 14000,
+        "remaining_after_usd": 12000.0,
+        "within_budget": true
+      },
+      "vendor_review": {
+        "registry_status": null,
+        "registry_review_date": null,
+        "registry_days_since_review": null,
+        "api_status": null,
+        "api_review_date": null,
+        "api_days_since_review": null,
+        "api_outcome": "not_found",
+        "validity_days": 365,
+        "assessment_current": null,
+        "conflicts": []
+      },
+      "data_sensitivity": {
+        "data_access_level": "internal_documents",
+        "category": "low",
+        "security_reasons": [
+          "'Production cloud account' = production or cloud-account integration"
+        ],
+        "privacy_reasons": [],
+        "stores_data_outside_region": null
+      },
+      "overlap": {
+        "flagged": false,
+        "gap_stated": false,
+        "exact_duplicate": false,
+        "matches": [],
+        "extends": []
+      },
+      "injection": {
+        "detected": false,
+        "findings": []
+      },
+      "default_status": "ESCALATE_SPECIALIST_REVIEW",
+      "allowed_statuses": [
+        "ESCALATE_SPECIALIST_REVIEW",
+        "REQUEST_CLARIFICATION",
+        "MANUAL_REVIEW_REQUIRED"
+      ],
+      "status_reasons": [
+        "Security / Privacy / Legal / budget-exception review is required before approval."
+      ],
+      "approver_routing": [
+        {
+          "role": "Department Head",
+          "assignee": "Maya Rao (E008, Director, Engineering)",
+          "basis": "Director/VP of the requesting department, else first Director/VP in the reporting chain"
+        },
+        {
+          "role": "Procurement",
+          "assignee": "Procurement team queue",
+          "basis": "Functional review queue"
+        },
+        {
+          "role": "Finance",
+          "assignee": "Finance / FP&A queue",
+          "basis": "Functional review queue"
+        },
+        {
+          "role": "Security",
+          "assignee": "Security review queue",
+          "basis": "Functional review queue"
+        },
+        {
+          "role": "Legal",
+          "assignee": "Legal / contracts queue",
+          "basis": "Functional review queue"
+        }
+      ]
+    }
+  }
+}

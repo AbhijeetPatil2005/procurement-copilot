@@ -1,0 +1,293 @@
+{
+  "case_id": "EXT-08",
+  "decision": {
+    "request_id": "REQ-1008",
+    "recommendation": "Evaluate existing tool first: TaskFlow is already approved and may meet this need; confirm the gap before any new purchase.",
+    "evidence": [
+      {
+        "source": "get_purchase_request",
+        "finding": "TaskFlow Pro from TaskFlow (Project Management): annual cost $8,000, users 15, data access 'internal_marketing', integrations: SSO, urgency 'normal'.",
+        "reference": "requests.json:REQ-1008"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Sarah Lee (E001), Marketing, IC4; manager David Chen (E009); department head David Chen (E009).",
+        "reference": "employees.csv:E001"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Requested $8,000 is within Marketing available budget of $15,000 ($7,000 would remain).",
+        "reference": "department_budgets.csv:Marketing"
+      },
+      {
+        "source": "search_existing_software",
+        "finding": "Catalog SW003 TaskFlow (TaskFlow, Project Management) is 'Approved', scope Company-wide, 180 seats, $36,000/yr; relation: same vendor. Notes: Project and task management.",
+        "reference": "software_catalog.csv:SW003"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Registry V003 TaskFlow: procurement 'Approved', security 'Approved' (review date 2026-06-03), legal terms 'Approved'.",
+        "reference": "vendors.csv:V003"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor-risk service: risk 'low', security review 'approved' (last review 2026-06-03), processes personal data: True, stores data outside region: False.",
+        "reference": "GET /vendor-risk/TaskFlow"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Annual amount $8,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+        "reference": "Policy \u00a74"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Approved catalog already contains: TaskFlow (same vendor, Company-wide, 180 seats). Overlap is not an automatic rejection; the request does not explain why existing tools are insufficient.",
+        "reference": "Policy \u00a73"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "existing_tool_overlap"
+    ],
+    "next_step": "Procurement asks the requester whether the existing approved tool (and any unused seats) meets the need; if a specific gap is documented, resubmit for Department Head, Procurement.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 0,
+      "tool_calls": 7,
+      "tool_names": [
+        "get_purchase_request",
+        "get_requester_profile",
+        "check_department_budget",
+        "search_existing_software",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "evaluate_procurement_policy"
+      ]
+    }
+  },
+  "trace": {
+    "architecture": "rules",
+    "mode": "rules_only",
+    "provider": "none",
+    "model": "gemini-3.1-flash-lite",
+    "fallback_reason": null,
+    "latency_ms": 14.0,
+    "usage": {},
+    "cost_usd": 0.0,
+    "guardrails": {
+      "corrections": [],
+      "omitted_approvals": [],
+      "omitted_flags": [],
+      "added_by_llm_approvals": [],
+      "added_by_llm_flags": [],
+      "status_overridden": false,
+      "llm_status": null,
+      "final_status": "REDIRECT_TO_EXISTING_TOOL",
+      "grounded_claims": 0,
+      "ungrounded_claims": [],
+      "unsafe_language_blocked": false,
+      "raw_policy_compliant": true
+    },
+    "tool_log": [
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "REQ-1008"
+        },
+        "ok": true,
+        "latency_ms": 0.1,
+        "cached": false
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "system",
+        "args": {
+          "employee_id": "E001"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "system",
+        "args": {
+          "department": "Marketing",
+          "annual_cost_usd": 8000.0
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "system",
+        "args": {
+          "product_name": "TaskFlow Pro",
+          "vendor_name": "TaskFlow",
+          "category": "Project Management"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "system",
+        "args": {
+          "vendor_name": "TaskFlow"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "system",
+        "args": {
+          "vendor_name": "TaskFlow"
+        },
+        "ok": true,
+        "latency_ms": 13.6,
+        "cached": false
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "REQ-1008"
+        },
+        "ok": true,
+        "latency_ms": 13.9,
+        "cached": false
+      }
+    ],
+    "agent_runs": [],
+    "evidence_pack": null,
+    "draft": null,
+    "assessment": {
+      "reference_date": "2026-09-30",
+      "annual_amount_usd": 8000.0,
+      "approval_tier": "$1,000.01 - $10,000",
+      "required_approvals": [
+        "Department Head",
+        "Procurement"
+      ],
+      "risk_flags": [
+        "existing_tool_overlap"
+      ],
+      "missing_information": [],
+      "missing_fields": [],
+      "rule_hits": [
+        {
+          "rule": "approval_threshold",
+          "section": "Policy \u00a74",
+          "finding": "Annual amount $8,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+          "adds_approvals": [
+            "Department Head",
+            "Procurement"
+          ],
+          "adds_flags": []
+        },
+        {
+          "rule": "budget_within",
+          "section": "Policy \u00a72",
+          "finding": "Cost $8,000 is within Marketing available budget $15,000 ($7,000 remaining). This does not imply approval.",
+          "adds_approvals": [],
+          "adds_flags": []
+        },
+        {
+          "rule": "existing_tool_overlap",
+          "section": "Policy \u00a73",
+          "finding": "Approved catalog already contains: TaskFlow (same vendor, Company-wide, 180 seats). Overlap is not an automatic rejection; the request does not explain why existing tools are insufficient.",
+          "adds_approvals": [],
+          "adds_flags": [
+            "existing_tool_overlap"
+          ]
+        }
+      ],
+      "open_items": [
+        "Seat utilisation of existing licences is not in the data; confirm unused capacity before buying new seats."
+      ],
+      "budget": {
+        "department": "Marketing",
+        "available_usd": 15000.0,
+        "requested_usd": 8000,
+        "remaining_after_usd": 7000.0,
+        "within_budget": true
+      },
+      "vendor_review": {
+        "registry_status": "Approved",
+        "registry_review_date": "2026-06-03",
+        "registry_days_since_review": 119,
+        "api_status": "approved",
+        "api_review_date": "2026-06-03",
+        "api_days_since_review": 119,
+        "api_outcome": "ok",
+        "validity_days": 365,
+        "assessment_current": true,
+        "conflicts": []
+      },
+      "data_sensitivity": {
+        "data_access_level": "internal_marketing",
+        "category": "low",
+        "security_reasons": [],
+        "privacy_reasons": [],
+        "stores_data_outside_region": false
+      },
+      "overlap": {
+        "flagged": true,
+        "gap_stated": false,
+        "exact_duplicate": false,
+        "matches": [
+          {
+            "software_id": "SW003",
+            "product_name": "TaskFlow",
+            "category": "Project Management",
+            "vendor_name": "TaskFlow",
+            "status": "Approved",
+            "annual_cost_usd": 36000,
+            "licensed_seats": 180,
+            "scope": "Company-wide",
+            "notes": "Project and task management",
+            "relation": "same_vendor",
+            "reference": "software_catalog.csv:SW003"
+          }
+        ],
+        "extends": []
+      },
+      "injection": {
+        "detected": false,
+        "findings": []
+      },
+      "default_status": "REDIRECT_TO_EXISTING_TOOL",
+      "allowed_statuses": [
+        "REDIRECT_TO_EXISTING_TOOL",
+        "ROUTE_FOR_APPROVAL",
+        "REQUEST_CLARIFICATION",
+        "MANUAL_REVIEW_REQUIRED",
+        "ESCALATE_SPECIALIST_REVIEW"
+      ],
+      "status_reasons": [
+        "An approved tool may already satisfy the need (Policy \u00a73)."
+      ],
+      "approver_routing": [
+        {
+          "role": "Department Head",
+          "assignee": "David Chen (E009, Director, Marketing)",
+          "basis": "Director/VP of the requesting department, else first Director/VP in the reporting chain"
+        },
+        {
+          "role": "Procurement",
+          "assignee": "Procurement team queue",
+          "basis": "Functional review queue"
+        }
+      ]
+    }
+  }
+}

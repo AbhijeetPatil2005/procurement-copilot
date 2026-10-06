@@ -1,0 +1,928 @@
+{
+  "case_id": "EXT-29",
+  "decision": {
+    "request_id": "SYN-1029",
+    "recommendation": "Escalate for specialist review: Escalate to Security and Legal for review. Do not approve until vendor risk and legal terms are assessed.",
+    "evidence": [
+      {
+        "source": "get_purchase_request",
+        "finding": "LintBot from LintBot OSS (Developer Tools): annual cost $0, users 40, data access 'source_code', integrations: GitHub repositories, urgency 'normal'.",
+        "reference": "requests.json:SYN-1029"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Arjun Mehta (E002), Engineering, IC5; manager Maya Rao (E008); department head Maya Rao (E008).",
+        "reference": "employees.csv:E002"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Requested $0 is within Engineering available budget of $26,000 ($26,000 would remain).",
+        "reference": "department_budgets.csv:Engineering"
+      },
+      {
+        "source": "search_existing_software",
+        "finding": "No approved catalog product from the same vendor or category.",
+        "reference": "software_catalog.csv"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Vendor 'LintBot OSS' not found in internal registry (vendors.csv).",
+        "reference": "vendors.csv"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor-risk service result 'not_found': No vendor-risk record exists for this vendor. Status treated as unverified.",
+        "reference": "GET /vendor-risk/LintBot%20OSS"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Annual amount $0 falls in tier 'Up to $1,000' -> Manager.",
+        "reference": "Policy \u00a74"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Vendor 'LintBot OSS' is not in the internal vendor registry (treated as a new vendor with no approved terms).",
+        "reference": "Policy \u00a75 / \u00a77"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Vendor-risk service has no assessment record for this vendor; assessment is missing.",
+        "reference": "Policy \u00a75"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Security review required: data access 'source_code'; 'GitHub repositories' = source-code repository access.",
+        "reference": "Policy \u00a75"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Vendor legal terms are not approved/standard (status: 'none on file').",
+        "reference": "Policy \u00a77"
+      },
+      {
+        "source": "get_requester_profile (agent)",
+        "finding": "Requester is Arjun Mehta (IC5) from Engineering, reporting to Maya Rao (Director).",
+        "reference": "employees.csv:E002"
+      },
+      {
+        "source": "get_purchase_request (agent)",
+        "finding": "The request is for 'LintBot', a developer tool for automated code review. Cost is $0.",
+        "reference": "requests.json:SYN-1029"
+      },
+      {
+        "source": "check_department_budget (agent)",
+        "finding": "Engineering department has $26,000 available budget; request cost is $0.",
+        "reference": "department_budgets.csv:Engineering"
+      },
+      {
+        "source": "search_existing_software (agent)",
+        "finding": "No existing software found in the catalog matching 'LintBot' or the use case.",
+        "reference": "software_catalog.csv"
+      },
+      {
+        "source": "get_vendor_registry_record (agent)",
+        "finding": "Vendor 'LintBot OSS' is not registered in the internal vendor registry.",
+        "reference": "vendors.csv"
+      },
+      {
+        "source": "get_vendor_risk_assessment (agent)",
+        "finding": "No vendor risk assessment record exists for 'LintBot OSS'. Status is unverified.",
+        "reference": "GET /vendor-risk/LintBot%20OSS"
+      }
+    ],
+    "required_approvals": [
+      "Manager",
+      "Security",
+      "Legal"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "legal_review_required",
+      "missing_information",
+      "security_review_required"
+    ],
+    "next_step": "Escalate to Security and Legal for review. The requester must provide information regarding the tool's data handling practices and license terms to facilitate these reviews.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 4,
+      "tool_calls": 9,
+      "tool_names": [
+        "get_purchase_request",
+        "get_requester_profile",
+        "check_department_budget",
+        "search_existing_software",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_department_budget",
+        "search_existing_software",
+        "evaluate_procurement_policy"
+      ]
+    }
+  },
+  "trace": {
+    "architecture": "staged",
+    "mode": "llm",
+    "provider": "openai",
+    "model": "gemini-3.1-flash-lite",
+    "fallback_reason": null,
+    "latency_ms": 35424.6,
+    "usage": {
+      "input_tokens": 9141,
+      "output_tokens": 1432,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 0
+    },
+    "cost_usd": null,
+    "guardrails": {
+      "corrections": [
+        "dropped 4 ungrounded evidence claim(s)"
+      ],
+      "omitted_approvals": [],
+      "omitted_flags": [],
+      "added_by_llm_approvals": [],
+      "added_by_llm_flags": [
+        "missing_information"
+      ],
+      "status_overridden": false,
+      "llm_status": "ESCALATE_SPECIALIST_REVIEW",
+      "final_status": "ESCALATE_SPECIALIST_REVIEW",
+      "grounded_claims": 6,
+      "ungrounded_claims": [
+        {
+          "source": "lookup_policy_section",
+          "finding": "Annual amount $0 falls in tier 'Up to $1,000' -> Manager.",
+          "reason": "cites tool 'lookup_policy_section' which was not called in this run"
+        },
+        {
+          "source": "lookup_policy_section",
+          "finding": "Vendor 'LintBot OSS' is not in the internal vendor registry (treated as a new vendor with no approved terms).",
+          "reason": "cites tool 'lookup_policy_section' which was not called in this run"
+        },
+        {
+          "source": "lookup_policy_section",
+          "finding": "Security review required: data access 'source_code'; 'GitHub repositories' = source-code repository access.",
+          "reason": "cites tool 'lookup_policy_section' which was not called in this run"
+        },
+        {
+          "source": "lookup_policy_section",
+          "finding": "Vendor legal terms are not approved/standard (status: 'none on file').",
+          "reason": "cites tool 'lookup_policy_section' which was not called in this run"
+        }
+      ],
+      "unsafe_language_blocked": false,
+      "raw_policy_compliant": true
+    },
+    "tool_log": [
+      {
+        "name": "get_purchase_request",
+        "caller": "analyst",
+        "args": {
+          "request_id": "SYN-1029"
+        },
+        "ok": true,
+        "latency_ms": 0.1,
+        "cached": false
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "analyst",
+        "args": {
+          "employee_id": "E002"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "analyst",
+        "args": {
+          "department": "Engineering",
+          "annual_cost_usd": 0
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "analyst",
+        "args": {
+          "product_name": "LintBot",
+          "use_case_keywords": [
+            "automated code review",
+            "code style checker",
+            "pull request bot"
+          ],
+          "vendor_name": "LintBot OSS",
+          "category": "Developer Tools"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "analyst",
+        "args": {
+          "vendor_name": "LintBot OSS"
+        },
+        "ok": false,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "analyst",
+        "args": {
+          "vendor_name": "LintBot OSS"
+        },
+        "ok": false,
+        "latency_ms": 2.4,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1029"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "system",
+        "args": {
+          "employee_id": "E002"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "system",
+        "args": {
+          "department": "Engineering",
+          "annual_cost_usd": 0.0
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "system",
+        "args": {
+          "product_name": "LintBot",
+          "vendor_name": "LintBot OSS",
+          "category": "Developer Tools"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "system",
+        "args": {
+          "vendor_name": "LintBot OSS"
+        },
+        "ok": false,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "system",
+        "args": {
+          "vendor_name": "LintBot OSS"
+        },
+        "ok": false,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1029"
+        },
+        "ok": true,
+        "latency_ms": 0.2,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1029"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1029"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      }
+    ],
+    "agent_runs": [
+      {
+        "role": "analyst",
+        "llm_calls": 3,
+        "tool_calls": 6,
+        "usage": {
+          "input_tokens": 5598,
+          "output_tokens": 665,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 21631.7,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_purchase_request",
+                "input": {
+                  "request_id": "SYN-1029"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 1365,
+              "output_tokens": 25
+            },
+            "latency_ms": 13369.1
+          },
+          {
+            "type": "tool",
+            "name": "get_purchase_request",
+            "input": {
+              "request_id": "SYN-1029"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_requester_profile",
+                "input": {
+                  "employee_id": "E002"
+                }
+              },
+              {
+                "name": "check_department_budget",
+                "input": {
+                  "department": "Engineering",
+                  "annual_cost_usd": 0
+                }
+              },
+              {
+                "name": "search_existing_software",
+                "input": {
+                  "product_name": "LintBot",
+                  "use_case_keywords": [
+                    "automated code review",
+                    "code style checker",
+                    "pull request bot"
+                  ],
+                  "vendor_name": "LintBot OSS",
+                  "category": "Developer Tools"
+                }
+              },
+              {
+                "name": "get_vendor_registry_record",
+                "input": {
+                  "vendor_name": "LintBot OSS"
+                }
+              },
+              {
+                "name": "get_vendor_risk_assessment",
+                "input": {
+                  "vendor_name": "LintBot OSS"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 1659,
+              "output_tokens": 160
+            },
+            "latency_ms": 1987.3
+          },
+          {
+            "type": "tool",
+            "name": "get_requester_profile",
+            "input": {
+              "employee_id": "E002"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "check_department_budget",
+            "input": {
+              "department": "Engineering",
+              "annual_cost_usd": 0
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "search_existing_software",
+            "input": {
+              "product_name": "LintBot",
+              "use_case_keywords": [
+                "automated code review",
+                "code style checker",
+                "pull request bot"
+              ],
+              "vendor_name": "LintBot OSS",
+              "category": "Developer Tools"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_registry_record",
+            "input": {
+              "vendor_name": "LintBot OSS"
+            },
+            "ok": false
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_risk_assessment",
+            "input": {
+              "vendor_name": "LintBot OSS"
+            },
+            "ok": false
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_evidence_pack",
+                "input": {
+                  "prompt_injection_observed": false,
+                  "open_questions": [
+                    "Is there a plan to initiate a vendor security review for 'LintBot OSS'?",
+                    "Does the Engineering team have a plan for managing the security of this tool given it requires access to source code?"
+                  ],
+                  "overlap_assessment": {
+                    "existing_options": [],
+                    "disposition": "no_overlap",
+                    "reasoning": "No existing tools were found in the catalog that match the requested product or use case."
+                  },
+                  "injection_details": "None detected.",
+                  "facts": [
+                    {
+                      "finding": "Requester is Arjun Mehta (IC5) from Engineering, reporting to Maya Rao (Director).",
+                      "reference": "employees.csv:E002",
+                      "source": "get_requester_profile"
+                    },
+                    {
+                      "finding": "The request is for 'LintBot', a developer tool for automated code review. Cost is $0.",
+                      "source": "get_purchase_request",
+                      "reference": "requests.json:SYN-1029"
+                    },
+                    {
+                      "finding": "Engineering department has $26,000 available budget; request cost is $0.",
+                      "reference": "department_budgets.csv:Engineering",
+                      "source": "check_department_budget"
+                    },
+                    {
+                      "finding": "No existing software found in the catalog matching 'LintBot' or the use case.",
+                      "reference": "software_catalog.csv",
+                      "source": "search_existing_software"
+                    },
+                    {
+                      "reference": "vendors.csv",
+                      "source": "get_vendor_registry_record",
+                      "finding": "Vendor 'LintBot OSS' is not registered in the internal vendor registry."
+                    },
+                    {
+                      "source": "get_vendor_risk_assessment",
+                      "reference": "GET /vendor-risk/LintBot%20OSS",
+                      "finding": "No vendor risk assessment record exists for 'LintBot OSS'. Status is unverified."
+                    }
+                  ],
+                  "need_summary": "Engineering requests 'LintBot', an automated code review tool, to assist with pull request style checks. The tool is free of charge and requires access to GitHub repositories.",
+                  "data_quality_issues": [
+                    "Vendor 'LintBot OSS' is not present in the internal vendor registry.",
+                    "No vendor risk assessment record exists for 'LintBot OSS'."
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2574,
+              "output_tokens": 480
+            },
+            "latency_ms": 6275.3
+          }
+        ]
+      },
+      {
+        "role": "reviewer",
+        "llm_calls": 1,
+        "tool_calls": 0,
+        "usage": {
+          "input_tokens": 3543,
+          "output_tokens": 767,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 13307.0,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_decision",
+                "input": {
+                  "risk_flags": [
+                    "security_review_required",
+                    "legal_review_required",
+                    "missing_information"
+                  ],
+                  "recommendation": "Escalate to Security and Legal for review. Do not approve until vendor risk and legal terms are assessed.",
+                  "evidence": [
+                    {
+                      "reference": "employees.csv:E002",
+                      "finding": "Requester is Arjun Mehta (IC5) from Engineering, reporting to Maya Rao (Director).",
+                      "source": "get_requester_profile"
+                    },
+                    {
+                      "reference": "requests.json:SYN-1029",
+                      "finding": "The request is for 'LintBot', a developer tool for automated code review. Cost is $0.",
+                      "source": "get_purchase_request"
+                    },
+                    {
+                      "finding": "Engineering department has $26,000 available budget; request cost is $0.",
+                      "source": "check_department_budget",
+                      "reference": "department_budgets.csv:Engineering"
+                    },
+                    {
+                      "source": "search_existing_software",
+                      "finding": "No existing software found in the catalog matching 'LintBot' or the use case.",
+                      "reference": "software_catalog.csv"
+                    },
+                    {
+                      "finding": "Vendor 'LintBot OSS' is not registered in the internal vendor registry.",
+                      "reference": "vendors.csv",
+                      "source": "get_vendor_registry_record"
+                    },
+                    {
+                      "reference": "GET /vendor-risk/LintBot%20OSS",
+                      "finding": "No vendor risk assessment record exists for 'LintBot OSS'. Status is unverified.",
+                      "source": "get_vendor_risk_assessment"
+                    },
+                    {
+                      "finding": "Annual amount $0 falls in tier 'Up to $1,000' -> Manager.",
+                      "reference": "Policy \u00a74",
+                      "source": "lookup_policy_section"
+                    },
+                    {
+                      "source": "lookup_policy_section",
+                      "reference": "Policy \u00a75 / \u00a77",
+                      "finding": "Vendor 'LintBot OSS' is not in the internal vendor registry (treated as a new vendor with no approved terms)."
+                    },
+                    {
+                      "source": "lookup_policy_section",
+                      "reference": "Policy \u00a75",
+                      "finding": "Security review required: data access 'source_code'; 'GitHub repositories' = source-code repository access."
+                    },
+                    {
+                      "finding": "Vendor legal terms are not approved/standard (status: 'none on file').",
+                      "source": "lookup_policy_section",
+                      "reference": "Policy \u00a77"
+                    }
+                  ],
+                  "overlap_disposition": "no_overlap",
+                  "prompt_injection_observed": false,
+                  "status": "ESCALATE_SPECIALIST_REVIEW",
+                  "clarification_questions": [
+                    "Since this tool requires access to source code, please provide details on the data handling practices of 'LintBot OSS'. Does the tool store code, or does it process it in memory only?",
+                    "Has the Engineering team reviewed the open-source license terms for 'LintBot OSS' to ensure compliance with company policy?"
+                  ],
+                  "next_step": "Escalate to Security and Legal for review. The requester must provide information regarding the tool's data handling practices and license terms to facilitate these reviews.",
+                  "required_approvals": [
+                    "Manager",
+                    "Security",
+                    "Legal"
+                  ],
+                  "missing_information": [
+                    "Vendor data residency information.",
+                    "Open-source license compliance verification."
+                  ],
+                  "rationale": "Although the tool is free, it requires access to sensitive source code repositories. Per policy, this triggers mandatory Security and Legal reviews because the vendor is not registered and no risk assessment exists. Privacy review is also recommended due to the potential for data to leave the region, which remains unverified."
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 3543,
+              "output_tokens": 767
+            },
+            "latency_ms": 13307.0
+          }
+        ]
+      }
+    ],
+    "evidence_pack": {
+      "need_summary": "Engineering requests 'LintBot', an automated code review tool, to assist with pull request style checks. The tool is free of charge and requires access to GitHub repositories.",
+      "facts": [
+        {
+          "source": "get_requester_profile",
+          "finding": "Requester is Arjun Mehta (IC5) from Engineering, reporting to Maya Rao (Director).",
+          "reference": "employees.csv:E002"
+        },
+        {
+          "source": "get_purchase_request",
+          "finding": "The request is for 'LintBot', a developer tool for automated code review. Cost is $0.",
+          "reference": "requests.json:SYN-1029"
+        },
+        {
+          "source": "check_department_budget",
+          "finding": "Engineering department has $26,000 available budget; request cost is $0.",
+          "reference": "department_budgets.csv:Engineering"
+        },
+        {
+          "source": "search_existing_software",
+          "finding": "No existing software found in the catalog matching 'LintBot' or the use case.",
+          "reference": "software_catalog.csv"
+        },
+        {
+          "source": "get_vendor_registry_record",
+          "finding": "Vendor 'LintBot OSS' is not registered in the internal vendor registry.",
+          "reference": "vendors.csv"
+        },
+        {
+          "source": "get_vendor_risk_assessment",
+          "finding": "No vendor risk assessment record exists for 'LintBot OSS'. Status is unverified.",
+          "reference": "GET /vendor-risk/LintBot%20OSS"
+        }
+      ],
+      "overlap_assessment": {
+        "disposition": "no_overlap",
+        "existing_options": [],
+        "reasoning": "No existing tools were found in the catalog that match the requested product or use case."
+      },
+      "data_quality_issues": [
+        "Vendor 'LintBot OSS' is not present in the internal vendor registry.",
+        "No vendor risk assessment record exists for 'LintBot OSS'."
+      ],
+      "open_questions": [
+        "Is there a plan to initiate a vendor security review for 'LintBot OSS'?",
+        "Does the Engineering team have a plan for managing the security of this tool given it requires access to source code?"
+      ],
+      "prompt_injection_observed": false,
+      "injection_details": "None detected."
+    },
+    "draft": {
+      "status": "ESCALATE_SPECIALIST_REVIEW",
+      "recommendation": "Escalate to Security and Legal for review. Do not approve until vendor risk and legal terms are assessed.",
+      "rationale": "Although the tool is free, it requires access to sensitive source code repositories. Per policy, this triggers mandatory Security and Legal reviews because the vendor is not registered and no risk assessment exists. Privacy review is also recommended due to the potential for data to leave the region, which remains unverified.",
+      "evidence": [
+        {
+          "source": "get_requester_profile",
+          "finding": "Requester is Arjun Mehta (IC5) from Engineering, reporting to Maya Rao (Director).",
+          "reference": "employees.csv:E002"
+        },
+        {
+          "source": "get_purchase_request",
+          "finding": "The request is for 'LintBot', a developer tool for automated code review. Cost is $0.",
+          "reference": "requests.json:SYN-1029"
+        },
+        {
+          "source": "check_department_budget",
+          "finding": "Engineering department has $26,000 available budget; request cost is $0.",
+          "reference": "department_budgets.csv:Engineering"
+        },
+        {
+          "source": "search_existing_software",
+          "finding": "No existing software found in the catalog matching 'LintBot' or the use case.",
+          "reference": "software_catalog.csv"
+        },
+        {
+          "source": "get_vendor_registry_record",
+          "finding": "Vendor 'LintBot OSS' is not registered in the internal vendor registry.",
+          "reference": "vendors.csv"
+        },
+        {
+          "source": "get_vendor_risk_assessment",
+          "finding": "No vendor risk assessment record exists for 'LintBot OSS'. Status is unverified.",
+          "reference": "GET /vendor-risk/LintBot%20OSS"
+        },
+        {
+          "source": "lookup_policy_section",
+          "finding": "Annual amount $0 falls in tier 'Up to $1,000' -> Manager.",
+          "reference": "Policy \u00a74"
+        },
+        {
+          "source": "lookup_policy_section",
+          "finding": "Vendor 'LintBot OSS' is not in the internal vendor registry (treated as a new vendor with no approved terms).",
+          "reference": "Policy \u00a75 / \u00a77"
+        },
+        {
+          "source": "lookup_policy_section",
+          "finding": "Security review required: data access 'source_code'; 'GitHub repositories' = source-code repository access.",
+          "reference": "Policy \u00a75"
+        },
+        {
+          "source": "lookup_policy_section",
+          "finding": "Vendor legal terms are not approved/standard (status: 'none on file').",
+          "reference": "Policy \u00a77"
+        }
+      ],
+      "required_approvals": [
+        "Manager",
+        "Security",
+        "Legal"
+      ],
+      "risk_flags": [
+        "security_review_required",
+        "legal_review_required",
+        "missing_information"
+      ],
+      "missing_information": [
+        "Vendor data residency information.",
+        "Open-source license compliance verification."
+      ],
+      "clarification_questions": [
+        "Since this tool requires access to source code, please provide details on the data handling practices of 'LintBot OSS'. Does the tool store code, or does it process it in memory only?",
+        "Has the Engineering team reviewed the open-source license terms for 'LintBot OSS' to ensure compliance with company policy?"
+      ],
+      "overlap_disposition": "no_overlap",
+      "next_step": "Escalate to Security and Legal for review. The requester must provide information regarding the tool's data handling practices and license terms to facilitate these reviews.",
+      "prompt_injection_observed": false
+    },
+    "assessment": {
+      "reference_date": "2026-09-30",
+      "annual_amount_usd": 0.0,
+      "approval_tier": "Up to $1,000",
+      "required_approvals": [
+        "Manager",
+        "Security",
+        "Legal"
+      ],
+      "risk_flags": [
+        "legal_review_required",
+        "security_review_required"
+      ],
+      "missing_information": [],
+      "missing_fields": [],
+      "rule_hits": [
+        {
+          "rule": "approval_threshold",
+          "section": "Policy \u00a74",
+          "finding": "Annual amount $0 falls in tier 'Up to $1,000' -> Manager.",
+          "adds_approvals": [
+            "Manager"
+          ],
+          "adds_flags": []
+        },
+        {
+          "rule": "budget_within",
+          "section": "Policy \u00a72",
+          "finding": "Cost $0 is within Engineering available budget $26,000 ($26,000 remaining). This does not imply approval.",
+          "adds_approvals": [],
+          "adds_flags": []
+        },
+        {
+          "rule": "vendor_not_in_registry",
+          "section": "Policy \u00a75 / \u00a77",
+          "finding": "Vendor 'LintBot OSS' is not in the internal vendor registry (treated as a new vendor with no approved terms).",
+          "adds_approvals": [
+            "Security"
+          ],
+          "adds_flags": [
+            "security_review_required"
+          ]
+        },
+        {
+          "rule": "vendor_risk_missing",
+          "section": "Policy \u00a75",
+          "finding": "Vendor-risk service has no assessment record for this vendor; assessment is missing.",
+          "adds_approvals": [
+            "Security"
+          ],
+          "adds_flags": [
+            "security_review_required"
+          ]
+        },
+        {
+          "rule": "security_data_trigger",
+          "section": "Policy \u00a75",
+          "finding": "Security review required: data access 'source_code'; 'GitHub repositories' = source-code repository access.",
+          "adds_approvals": [
+            "Security"
+          ],
+          "adds_flags": [
+            "security_review_required"
+          ]
+        },
+        {
+          "rule": "legal_terms_not_approved",
+          "section": "Policy \u00a77",
+          "finding": "Vendor legal terms are not approved/standard (status: 'none on file').",
+          "adds_approvals": [
+            "Legal"
+          ],
+          "adds_flags": [
+            "legal_review_required"
+          ]
+        }
+      ],
+      "open_items": [
+        "Vendor data residency could not be verified; Privacy may need to confirm whether data leaves the region."
+      ],
+      "budget": {
+        "department": "Engineering",
+        "available_usd": 26000.0,
+        "requested_usd": 0,
+        "remaining_after_usd": 26000.0,
+        "within_budget": true
+      },
+      "vendor_review": {
+        "registry_status": null,
+        "registry_review_date": null,
+        "registry_days_since_review": null,
+        "api_status": null,
+        "api_review_date": null,
+        "api_days_since_review": null,
+        "api_outcome": "not_found",
+        "validity_days": 365,
+        "assessment_current": null,
+        "conflicts": []
+      },
+      "data_sensitivity": {
+        "data_access_level": "source_code",
+        "category": "security",
+        "security_reasons": [
+          "data access 'source_code'",
+          "'GitHub repositories' = source-code repository access"
+        ],
+        "privacy_reasons": [],
+        "stores_data_outside_region": null
+      },
+      "overlap": {
+        "flagged": false,
+        "gap_stated": false,
+        "exact_duplicate": false,
+        "matches": [],
+        "extends": []
+      },
+      "injection": {
+        "detected": false,
+        "findings": []
+      },
+      "default_status": "ESCALATE_SPECIALIST_REVIEW",
+      "allowed_statuses": [
+        "ESCALATE_SPECIALIST_REVIEW",
+        "REQUEST_CLARIFICATION",
+        "MANUAL_REVIEW_REQUIRED"
+      ],
+      "status_reasons": [
+        "Security / Privacy / Legal / budget-exception review is required before approval."
+      ],
+      "approver_routing": [
+        {
+          "role": "Manager",
+          "assignee": "Maya Rao (E008)",
+          "basis": "Requester's reporting line (employees.csv)"
+        },
+        {
+          "role": "Security",
+          "assignee": "Security review queue",
+          "basis": "Functional review queue"
+        },
+        {
+          "role": "Legal",
+          "assignee": "Legal / contracts queue",
+          "basis": "Functional review queue"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,701 @@
+{
+  "case_id": "EXT-14",
+  "decision": {
+    "request_id": "SYN-1014",
+    "recommendation": "Route for approval: ROUTE_FOR_APPROVAL",
+    "evidence": [
+      {
+        "source": "get_purchase_request",
+        "finding": "SignFlow Enterprise Upgrade from SignFlow (E-signature): annual cost $25,000, users 120, data access 'internal_documents', integrations: none, urgency 'normal'.",
+        "reference": "requests.json:SYN-1014"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Noah Williams (E004), Finance, IC4; manager Priya Shah (E006); department head Priya Shah (E006).",
+        "reference": "employees.csv:E004"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Requested $25,000 is within Finance available budget of $29,000 ($4,000 would remain).",
+        "reference": "department_budgets.csv:Finance"
+      },
+      {
+        "source": "search_existing_software",
+        "finding": "Catalog SW010 SignFlow (SignFlow, E-signature) is 'Approved', scope Company-wide, 45 seats, $16,000/yr; relation: same vendor extension. Notes: Electronic signatures.",
+        "reference": "software_catalog.csv:SW010"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Registry V010 SignFlow: procurement 'Approved', security 'Approved' (review date 2026-06-20), legal terms 'Approved'.",
+        "reference": "vendors.csv:V010"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor-risk service: risk 'low', security review 'approved' (last review 2026-06-20), processes personal data: True, stores data outside region: False.",
+        "reference": "GET /vendor-risk/SignFlow"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Annual amount $25,000 falls in tier '$10,000.01 - $25,000' -> Department Head, Finance, Procurement.",
+        "reference": "Policy \u00a74"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Request extends an existing approved product/agreement (SignFlow); not a duplicate purchase.",
+        "reference": "Policy \u00a73"
+      },
+      {
+        "source": "search_existing_software (agent)",
+        "finding": "The request is for an upgrade to an existing approved vendor (SignFlow) to add specific features (bulk send, audit trails).",
+        "reference": "software_catalog.csv:SW010"
+      },
+      {
+        "source": "check_department_budget (agent)",
+        "finding": "The annual cost of $25,000 is within the Finance department's available budget of $29,000.",
+        "reference": "department_budgets.csv:Finance"
+      },
+      {
+        "source": "get_vendor_registry_record (agent)",
+        "finding": "The vendor (SignFlow) is currently approved with a valid security review (last reviewed 2026-06-20).",
+        "reference": "vendors.csv:V010"
+      },
+      {
+        "source": "evaluate_procurement_policy (agent)",
+        "finding": "The policy engine confirms the request requires Department Head, Procurement, and Finance approvals.",
+        "reference": "procurement_policy.md v2026.09"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance"
+    ],
+    "missing_information": [],
+    "risk_flags": [],
+    "next_step": "Route the request to the Department Head (Priya Shah), Procurement, and Finance for their respective approvals.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 8,
+      "tool_calls": 9,
+      "tool_names": [
+        "get_purchase_request",
+        "get_requester_profile",
+        "check_department_budget",
+        "search_existing_software",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_department_budget",
+        "search_existing_software",
+        "evaluate_procurement_policy"
+      ]
+    }
+  },
+  "trace": {
+    "architecture": "single",
+    "mode": "llm",
+    "provider": "openai",
+    "model": "gemini-3.1-flash-lite",
+    "fallback_reason": null,
+    "latency_ms": 61980.5,
+    "usage": {
+      "input_tokens": 25593,
+      "output_tokens": 608,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 0
+    },
+    "cost_usd": null,
+    "guardrails": {
+      "corrections": [],
+      "omitted_approvals": [],
+      "omitted_flags": [],
+      "added_by_llm_approvals": [],
+      "added_by_llm_flags": [],
+      "status_overridden": false,
+      "llm_status": "ROUTE_FOR_APPROVAL",
+      "final_status": "ROUTE_FOR_APPROVAL",
+      "grounded_claims": 4,
+      "ungrounded_claims": [],
+      "unsafe_language_blocked": false,
+      "raw_policy_compliant": true
+    },
+    "tool_log": [
+      {
+        "name": "get_purchase_request",
+        "caller": "single_agent",
+        "args": {
+          "request_id": "SYN-1014"
+        },
+        "ok": true,
+        "latency_ms": 0.1,
+        "cached": false
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "single_agent",
+        "args": {
+          "employee_id": "E004"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "single_agent",
+        "args": {
+          "department": "Finance",
+          "annual_cost_usd": 25000
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "single_agent",
+        "args": {
+          "category": "E-signature",
+          "vendor_name": "SignFlow",
+          "use_case_keywords": [
+            "e-signature",
+            "bulk send",
+            "audit trails"
+          ],
+          "product_name": "SignFlow Enterprise Upgrade"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "single_agent",
+        "args": {
+          "vendor_name": "SignFlow"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "single_agent",
+        "args": {
+          "vendor_name": "SignFlow"
+        },
+        "ok": true,
+        "latency_ms": 5.0,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1014"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "system",
+        "args": {
+          "employee_id": "E004"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "system",
+        "args": {
+          "department": "Finance",
+          "annual_cost_usd": 25000.0
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "system",
+        "args": {
+          "product_name": "SignFlow Enterprise Upgrade",
+          "vendor_name": "SignFlow",
+          "category": "E-signature"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "system",
+        "args": {
+          "vendor_name": "SignFlow"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "system",
+        "args": {
+          "vendor_name": "SignFlow"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "single_agent",
+        "args": {
+          "request_id": "SYN-1014"
+        },
+        "ok": true,
+        "latency_ms": 0.5,
+        "cached": false
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1014"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      }
+    ],
+    "agent_runs": [
+      {
+        "role": "single_agent",
+        "llm_calls": 8,
+        "tool_calls": 7,
+        "usage": {
+          "input_tokens": 25593,
+          "output_tokens": 608,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 61710.7,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_purchase_request",
+                "input": {
+                  "request_id": "SYN-1014"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2194,
+              "output_tokens": 25
+            },
+            "latency_ms": 2857.7
+          },
+          {
+            "type": "tool",
+            "name": "get_purchase_request",
+            "input": {
+              "request_id": "SYN-1014"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_requester_profile",
+                "input": {
+                  "employee_id": "E004"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2495,
+              "output_tokens": 24
+            },
+            "latency_ms": 12914.8
+          },
+          {
+            "type": "tool",
+            "name": "get_requester_profile",
+            "input": {
+              "employee_id": "E004"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "check_department_budget",
+                "input": {
+                  "department": "Finance",
+                  "annual_cost_usd": 25000
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2726,
+              "output_tokens": 30
+            },
+            "latency_ms": 2304.4
+          },
+          {
+            "type": "tool",
+            "name": "check_department_budget",
+            "input": {
+              "department": "Finance",
+              "annual_cost_usd": 25000
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "search_existing_software",
+                "input": {
+                  "category": "E-signature",
+                  "vendor_name": "SignFlow",
+                  "use_case_keywords": [
+                    "e-signature",
+                    "bulk send",
+                    "audit trails"
+                  ],
+                  "product_name": "SignFlow Enterprise Upgrade"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2903,
+              "output_tokens": 62
+            },
+            "latency_ms": 8139.6
+          },
+          {
+            "type": "tool",
+            "name": "search_existing_software",
+            "input": {
+              "category": "E-signature",
+              "vendor_name": "SignFlow",
+              "use_case_keywords": [
+                "e-signature",
+                "bulk send",
+                "audit trails"
+              ],
+              "product_name": "SignFlow Enterprise Upgrade"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_vendor_registry_record",
+                "input": {
+                  "vendor_name": "SignFlow"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 3297,
+              "output_tokens": 23
+            },
+            "latency_ms": 11015.9
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_registry_record",
+            "input": {
+              "vendor_name": "SignFlow"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_vendor_risk_assessment",
+                "input": {
+                  "vendor_name": "SignFlow"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 3516,
+              "output_tokens": 23
+            },
+            "latency_ms": 8901.4
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_risk_assessment",
+            "input": {
+              "vendor_name": "SignFlow"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "evaluate_procurement_policy",
+                "input": {
+                  "request_id": "SYN-1014"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 3760,
+              "output_tokens": 26
+            },
+            "latency_ms": 10413.4
+          },
+          {
+            "type": "tool",
+            "name": "evaluate_procurement_policy",
+            "input": {
+              "request_id": "SYN-1014"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_decision",
+                "input": {
+                  "recommendation": "ROUTE_FOR_APPROVAL",
+                  "missing_information": [],
+                  "next_step": "Route the request to the Department Head (Priya Shah), Procurement, and Finance for their respective approvals.",
+                  "required_approvals": [
+                    "Department Head",
+                    "Procurement",
+                    "Finance"
+                  ],
+                  "status": "ROUTE_FOR_APPROVAL",
+                  "prompt_injection_observed": false,
+                  "risk_flags": [],
+                  "rationale": "The request is a legitimate upgrade to an existing, approved vendor to support necessary finance controls. The cost is within the department's budget, and the vendor's security and legal status are current and compliant. No policy violations or risks were identified.",
+                  "overlap_disposition": "no_overlap",
+                  "evidence": [
+                    {
+                      "finding": "The request is for an upgrade to an existing approved vendor (SignFlow) to add specific features (bulk send, audit trails).",
+                      "source": "search_existing_software",
+                      "reference": "software_catalog.csv:SW010"
+                    },
+                    {
+                      "source": "check_department_budget",
+                      "finding": "The annual cost of $25,000 is within the Finance department's available budget of $29,000.",
+                      "reference": "department_budgets.csv:Finance"
+                    },
+                    {
+                      "source": "get_vendor_registry_record",
+                      "finding": "The vendor (SignFlow) is currently approved with a valid security review (last reviewed 2026-06-20).",
+                      "reference": "vendors.csv:V010"
+                    },
+                    {
+                      "finding": "The policy engine confirms the request requires Department Head, Procurement, and Finance approvals.",
+                      "reference": "procurement_policy.md v2026.09",
+                      "source": "evaluate_procurement_policy"
+                    }
+                  ],
+                  "clarification_questions": []
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 4702,
+              "output_tokens": 395
+            },
+            "latency_ms": 5163.5
+          }
+        ]
+      }
+    ],
+    "evidence_pack": null,
+    "draft": {
+      "status": "ROUTE_FOR_APPROVAL",
+      "recommendation": "ROUTE_FOR_APPROVAL",
+      "rationale": "The request is a legitimate upgrade to an existing, approved vendor to support necessary finance controls. The cost is within the department's budget, and the vendor's security and legal status are current and compliant. No policy violations or risks were identified.",
+      "evidence": [
+        {
+          "source": "search_existing_software",
+          "finding": "The request is for an upgrade to an existing approved vendor (SignFlow) to add specific features (bulk send, audit trails).",
+          "reference": "software_catalog.csv:SW010"
+        },
+        {
+          "source": "check_department_budget",
+          "finding": "The annual cost of $25,000 is within the Finance department's available budget of $29,000.",
+          "reference": "department_budgets.csv:Finance"
+        },
+        {
+          "source": "get_vendor_registry_record",
+          "finding": "The vendor (SignFlow) is currently approved with a valid security review (last reviewed 2026-06-20).",
+          "reference": "vendors.csv:V010"
+        },
+        {
+          "source": "evaluate_procurement_policy",
+          "finding": "The policy engine confirms the request requires Department Head, Procurement, and Finance approvals.",
+          "reference": "procurement_policy.md v2026.09"
+        }
+      ],
+      "required_approvals": [
+        "Department Head",
+        "Procurement",
+        "Finance"
+      ],
+      "risk_flags": [],
+      "missing_information": [],
+      "clarification_questions": [],
+      "overlap_disposition": "no_overlap",
+      "next_step": "Route the request to the Department Head (Priya Shah), Procurement, and Finance for their respective approvals.",
+      "prompt_injection_observed": false
+    },
+    "assessment": {
+      "reference_date": "2026-09-30",
+      "annual_amount_usd": 25000.0,
+      "approval_tier": "$10,000.01 - $25,000",
+      "required_approvals": [
+        "Department Head",
+        "Procurement",
+        "Finance"
+      ],
+      "risk_flags": [],
+      "missing_information": [],
+      "missing_fields": [],
+      "rule_hits": [
+        {
+          "rule": "approval_threshold",
+          "section": "Policy \u00a74",
+          "finding": "Annual amount $25,000 falls in tier '$10,000.01 - $25,000' -> Department Head, Finance, Procurement.",
+          "adds_approvals": [
+            "Department Head",
+            "Finance",
+            "Procurement"
+          ],
+          "adds_flags": []
+        },
+        {
+          "rule": "budget_within",
+          "section": "Policy \u00a72",
+          "finding": "Cost $25,000 is within Finance available budget $29,000 ($4,000 remaining). This does not imply approval.",
+          "adds_approvals": [],
+          "adds_flags": []
+        },
+        {
+          "rule": "extends_existing_agreement",
+          "section": "Policy \u00a73",
+          "finding": "Request extends an existing approved product/agreement (SignFlow); not a duplicate purchase.",
+          "adds_approvals": [],
+          "adds_flags": []
+        }
+      ],
+      "open_items": [],
+      "budget": {
+        "department": "Finance",
+        "available_usd": 29000.0,
+        "requested_usd": 25000,
+        "remaining_after_usd": 4000.0,
+        "within_budget": true
+      },
+      "vendor_review": {
+        "registry_status": "Approved",
+        "registry_review_date": "2026-06-20",
+        "registry_days_since_review": 102,
+        "api_status": "approved",
+        "api_review_date": "2026-06-20",
+        "api_days_since_review": 102,
+        "api_outcome": "ok",
+        "validity_days": 365,
+        "assessment_current": true,
+        "conflicts": []
+      },
+      "data_sensitivity": {
+        "data_access_level": "internal_documents",
+        "category": "low",
+        "security_reasons": [],
+        "privacy_reasons": [],
+        "stores_data_outside_region": false
+      },
+      "overlap": {
+        "flagged": false,
+        "gap_stated": false,
+        "exact_duplicate": false,
+        "matches": [],
+        "extends": [
+          {
+            "software_id": "SW010",
+            "product_name": "SignFlow",
+            "category": "E-signature",
+            "vendor_name": "SignFlow",
+            "status": "Approved",
+            "annual_cost_usd": 16000,
+            "licensed_seats": 45,
+            "scope": "Company-wide",
+            "notes": "Electronic signatures",
+            "relation": "same_vendor_extension",
+            "reference": "software_catalog.csv:SW010"
+          }
+        ]
+      },
+      "injection": {
+        "detected": false,
+        "findings": []
+      },
+      "default_status": "ROUTE_FOR_APPROVAL",
+      "allowed_statuses": [
+        "ROUTE_FOR_APPROVAL",
+        "REQUEST_CLARIFICATION",
+        "MANUAL_REVIEW_REQUIRED",
+        "ESCALATE_SPECIALIST_REVIEW"
+      ],
+      "status_reasons": [
+        "Only standard business approvals are triggered."
+      ],
+      "approver_routing": [
+        {
+          "role": "Department Head",
+          "assignee": "Priya Shah (E006, Director, Finance)",
+          "basis": "Director/VP of the requesting department, else first Director/VP in the reporting chain"
+        },
+        {
+          "role": "Procurement",
+          "assignee": "Procurement team queue",
+          "basis": "Functional review queue"
+        },
+        {
+          "role": "Finance",
+          "assignee": "Finance / FP&A queue",
+          "basis": "Functional review queue"
+        }
+      ]
+    }
+  }
+}

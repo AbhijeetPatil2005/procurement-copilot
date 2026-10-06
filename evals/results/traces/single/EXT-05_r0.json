@@ -1,0 +1,778 @@
+{
+  "case_id": "EXT-05",
+  "decision": {
+    "request_id": "REQ-1005",
+    "recommendation": "Escalate for specialist review: ESCALATE_SPECIALIST_REVIEW",
+    "evidence": [
+      {
+        "source": "get_purchase_request",
+        "finding": "ProspectPilot from GrowthForge (Sales Intelligence): annual cost $22,000, users 35, data access 'customer_pii', integrations: CRM, urgency 'normal'.",
+        "reference": "requests.json:REQ-1005"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Elena Garcia (E003), Sales, IC3; manager Robert King (E007); department head Robert King (E007).",
+        "reference": "employees.csv:E003"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Data quality: No Director/VP is listed for department 'Sales'; using first Director/VP in reporting chain (Robert King, department 'Go To Market'). Confirm department head.",
+        "reference": "employees.csv:E003"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Data quality: Manager's department 'Go To Market' has no budget record (org data inconsistency).",
+        "reference": "employees.csv:E003"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Requested $22,000 exceeds Sales available budget of $18,000 by $4,000.",
+        "reference": "department_budgets.csv:Sales"
+      },
+      {
+        "source": "search_existing_software",
+        "finding": "No approved catalog product from the same vendor or category.",
+        "reference": "software_catalog.csv"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Registry V012 GrowthForge: procurement 'New', security 'Pending' (review date none), legal terms 'Unknown'.",
+        "reference": "vendors.csv:V012"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor-risk service: risk 'high', security review 'not_completed' (last review none), processes personal data: True, stores data outside region: True.",
+        "reference": "GET /vendor-risk/GrowthForge"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Annual amount $22,000 falls in tier '$10,000.01 - $25,000' -> Department Head, Finance, Procurement.",
+        "reference": "Policy \u00a74"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Vendor security assessment is missing or not completed (registry 'Pending', vendor-risk service 'not_completed').",
+        "reference": "Policy \u00a75"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Security review required: data access 'customer_pii' (personal data); 'CRM' = integration with a customer-data system (customer PII).",
+        "reference": "Policy \u00a75"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Privacy review required: tool will process customer pii; 'CRM' = integration with a customer-data system (customer PII); vendor stores data outside the operating region while sensitive data may be involved.",
+        "reference": "Policy \u00a76"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "New vendor (procurement status 'New') with annual spend $22,000 >= $10,000.",
+        "reference": "Policy \u00a77"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Vendor legal terms are not approved/standard (status: 'Unknown').",
+        "reference": "Policy \u00a77"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Material cross-region data-processing issue: vendor stores data outside the region and the request involves sensitive data.",
+        "reference": "Policy \u00a77"
+      },
+      {
+        "source": "check_department_budget (agent)",
+        "finding": "The requested annual cost of $22,000 exceeds the Sales department's available software budget of $18,000, resulting in a $4,000 shortfall.",
+        "reference": "department_budgets.csv:Sales"
+      },
+      {
+        "source": "get_vendor_risk_assessment (agent)",
+        "finding": "GrowthForge is a new vendor with no prior contract and an 'Unknown' legal terms status. Security and privacy reviews are not completed. The vendor is classified as 'high' risk and stores data outside the operating region.",
+        "reference": "GET /vendor-risk/GrowthForge"
+      },
+      {
+        "source": "evaluate_procurement_policy (agent)",
+        "finding": "The request involves processing customer PII and integration with the CRM, triggering mandatory Security, Privacy, and Legal reviews.",
+        "reference": "procurement_policy.md v2026.09"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "Security",
+      "Privacy",
+      "Legal"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "budget_insufficient",
+      "legal_review_required",
+      "privacy_review_required",
+      "security_review_required"
+    ],
+    "next_step": "Route to the Finance, Security, Privacy, and Legal queues for specialist review. The requester must provide a budget coverage plan and confirm the department head.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 3,
+      "tool_calls": 9,
+      "tool_names": [
+        "get_purchase_request",
+        "get_requester_profile",
+        "check_department_budget",
+        "search_existing_software",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_department_budget",
+        "search_existing_software",
+        "evaluate_procurement_policy"
+      ]
+    }
+  },
+  "trace": {
+    "architecture": "single",
+    "mode": "llm",
+    "provider": "openai",
+    "model": "gemini-3.1-flash-lite",
+    "fallback_reason": null,
+    "latency_ms": 10493.9,
+    "usage": {
+      "input_tokens": 9723,
+      "output_tokens": 747,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 0
+    },
+    "cost_usd": null,
+    "guardrails": {
+      "corrections": [],
+      "omitted_approvals": [],
+      "omitted_flags": [],
+      "added_by_llm_approvals": [],
+      "added_by_llm_flags": [],
+      "status_overridden": false,
+      "llm_status": "ESCALATE_SPECIALIST_REVIEW",
+      "final_status": "ESCALATE_SPECIALIST_REVIEW",
+      "grounded_claims": 3,
+      "ungrounded_claims": [],
+      "unsafe_language_blocked": false,
+      "raw_policy_compliant": true
+    },
+    "tool_log": [
+      {
+        "name": "get_purchase_request",
+        "caller": "single_agent",
+        "args": {
+          "request_id": "REQ-1005"
+        },
+        "ok": true,
+        "latency_ms": 0.1,
+        "cached": false
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "single_agent",
+        "args": {
+          "employee_id": "E003"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "single_agent",
+        "args": {
+          "department": "Sales",
+          "annual_cost_usd": 22000
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "single_agent",
+        "args": {
+          "use_case_keywords": [
+            "lead enrichment",
+            "outbound account prioritization",
+            "sales intelligence"
+          ],
+          "product_name": "ProspectPilot",
+          "vendor_name": "GrowthForge",
+          "category": "Sales Intelligence"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "single_agent",
+        "args": {
+          "vendor_name": "GrowthForge"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "single_agent",
+        "args": {
+          "vendor_name": "GrowthForge"
+        },
+        "ok": true,
+        "latency_ms": 2.9,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "REQ-1005"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "system",
+        "args": {
+          "employee_id": "E003"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "system",
+        "args": {
+          "department": "Sales",
+          "annual_cost_usd": 22000.0
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "system",
+        "args": {
+          "product_name": "ProspectPilot",
+          "vendor_name": "GrowthForge",
+          "category": "Sales Intelligence"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "system",
+        "args": {
+          "vendor_name": "GrowthForge"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "system",
+        "args": {
+          "vendor_name": "GrowthForge"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "single_agent",
+        "args": {
+          "request_id": "REQ-1005"
+        },
+        "ok": true,
+        "latency_ms": 0.2,
+        "cached": false
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "REQ-1005"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      }
+    ],
+    "agent_runs": [
+      {
+        "role": "single_agent",
+        "llm_calls": 3,
+        "tool_calls": 7,
+        "usage": {
+          "input_tokens": 9723,
+          "output_tokens": 747,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 10236.4,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_purchase_request",
+                "input": {
+                  "request_id": "REQ-1005"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2195,
+              "output_tokens": 25
+            },
+            "latency_ms": 2908.8
+          },
+          {
+            "type": "tool",
+            "name": "get_purchase_request",
+            "input": {
+              "request_id": "REQ-1005"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_requester_profile",
+                "input": {
+                  "employee_id": "E003"
+                }
+              },
+              {
+                "name": "check_department_budget",
+                "input": {
+                  "department": "Sales",
+                  "annual_cost_usd": 22000
+                }
+              },
+              {
+                "name": "search_existing_software",
+                "input": {
+                  "use_case_keywords": [
+                    "lead enrichment",
+                    "outbound account prioritization",
+                    "sales intelligence"
+                  ],
+                  "product_name": "ProspectPilot",
+                  "vendor_name": "GrowthForge",
+                  "category": "Sales Intelligence"
+                }
+              },
+              {
+                "name": "get_vendor_registry_record",
+                "input": {
+                  "vendor_name": "GrowthForge"
+                }
+              },
+              {
+                "name": "get_vendor_risk_assessment",
+                "input": {
+                  "vendor_name": "GrowthForge"
+                }
+              },
+              {
+                "name": "evaluate_procurement_policy",
+                "input": {
+                  "request_id": "REQ-1005"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2488,
+              "output_tokens": 186
+            },
+            "latency_ms": 2083.7
+          },
+          {
+            "type": "tool",
+            "name": "get_requester_profile",
+            "input": {
+              "employee_id": "E003"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "check_department_budget",
+            "input": {
+              "department": "Sales",
+              "annual_cost_usd": 22000
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "search_existing_software",
+            "input": {
+              "use_case_keywords": [
+                "lead enrichment",
+                "outbound account prioritization",
+                "sales intelligence"
+              ],
+              "product_name": "ProspectPilot",
+              "vendor_name": "GrowthForge",
+              "category": "Sales Intelligence"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_registry_record",
+            "input": {
+              "vendor_name": "GrowthForge"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_risk_assessment",
+            "input": {
+              "vendor_name": "GrowthForge"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "evaluate_procurement_policy",
+            "input": {
+              "request_id": "REQ-1005"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_decision",
+                "input": {
+                  "rationale": "The request requires significant specialist review due to the processing of customer PII, integration with the CRM, and the vendor's high-risk status (including cross-region data storage). Additionally, the request exceeds the available department budget, necessitating a budget-exception review by Finance. No existing tools were identified in the catalog for this specific use case.",
+                  "evidence": [
+                    {
+                      "reference": "department_budgets.csv:Sales",
+                      "source": "check_department_budget",
+                      "finding": "The requested annual cost of $22,000 exceeds the Sales department's available software budget of $18,000, resulting in a $4,000 shortfall."
+                    },
+                    {
+                      "finding": "GrowthForge is a new vendor with no prior contract and an 'Unknown' legal terms status. Security and privacy reviews are not completed. The vendor is classified as 'high' risk and stores data outside the operating region.",
+                      "reference": "GET /vendor-risk/GrowthForge",
+                      "source": "get_vendor_risk_assessment"
+                    },
+                    {
+                      "finding": "The request involves processing customer PII and integration with the CRM, triggering mandatory Security, Privacy, and Legal reviews.",
+                      "reference": "procurement_policy.md v2026.09",
+                      "source": "evaluate_procurement_policy"
+                    }
+                  ],
+                  "status": "ESCALATE_SPECIALIST_REVIEW",
+                  "required_approvals": [
+                    "Department Head",
+                    "Procurement",
+                    "Finance",
+                    "Security",
+                    "Privacy",
+                    "Legal"
+                  ],
+                  "next_step": "Route to the Finance, Security, Privacy, and Legal queues for specialist review. The requester must provide a budget coverage plan and confirm the department head.",
+                  "overlap_disposition": "no_overlap",
+                  "recommendation": "ESCALATE_SPECIALIST_REVIEW",
+                  "risk_flags": [
+                    "budget_insufficient",
+                    "legal_review_required",
+                    "privacy_review_required",
+                    "security_review_required"
+                  ],
+                  "missing_information": [
+                    "Confirmation of the Department Head for the Sales department.",
+                    "Budget coverage plan for the $4,000 shortfall."
+                  ],
+                  "clarification_questions": [
+                    "Please confirm if Robert King (Director, Go To Market) is the correct Department Head for the Sales department.",
+                    "Given the budget shortfall of $4,000, please provide a plan for how this will be covered (e.g., budget reallocation from another project or department)."
+                  ],
+                  "prompt_injection_observed": false
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 5040,
+              "output_tokens": 536
+            },
+            "latency_ms": 5243.9
+          }
+        ]
+      }
+    ],
+    "evidence_pack": null,
+    "draft": {
+      "status": "ESCALATE_SPECIALIST_REVIEW",
+      "recommendation": "ESCALATE_SPECIALIST_REVIEW",
+      "rationale": "The request requires significant specialist review due to the processing of customer PII, integration with the CRM, and the vendor's high-risk status (including cross-region data storage). Additionally, the request exceeds the available department budget, necessitating a budget-exception review by Finance. No existing tools were identified in the catalog for this specific use case.",
+      "evidence": [
+        {
+          "source": "check_department_budget",
+          "finding": "The requested annual cost of $22,000 exceeds the Sales department's available software budget of $18,000, resulting in a $4,000 shortfall.",
+          "reference": "department_budgets.csv:Sales"
+        },
+        {
+          "source": "get_vendor_risk_assessment",
+          "finding": "GrowthForge is a new vendor with no prior contract and an 'Unknown' legal terms status. Security and privacy reviews are not completed. The vendor is classified as 'high' risk and stores data outside the operating region.",
+          "reference": "GET /vendor-risk/GrowthForge"
+        },
+        {
+          "source": "evaluate_procurement_policy",
+          "finding": "The request involves processing customer PII and integration with the CRM, triggering mandatory Security, Privacy, and Legal reviews.",
+          "reference": "procurement_policy.md v2026.09"
+        }
+      ],
+      "required_approvals": [
+        "Department Head",
+        "Procurement",
+        "Finance",
+        "Security",
+        "Privacy",
+        "Legal"
+      ],
+      "risk_flags": [
+        "budget_insufficient",
+        "legal_review_required",
+        "privacy_review_required",
+        "security_review_required"
+      ],
+      "missing_information": [
+        "Confirmation of the Department Head for the Sales department.",
+        "Budget coverage plan for the $4,000 shortfall."
+      ],
+      "clarification_questions": [
+        "Please confirm if Robert King (Director, Go To Market) is the correct Department Head for the Sales department.",
+        "Given the budget shortfall of $4,000, please provide a plan for how this will be covered (e.g., budget reallocation from another project or department)."
+      ],
+      "overlap_disposition": "no_overlap",
+      "next_step": "Route to the Finance, Security, Privacy, and Legal queues for specialist review. The requester must provide a budget coverage plan and confirm the department head.",
+      "prompt_injection_observed": false
+    },
+    "assessment": {
+      "reference_date": "2026-09-30",
+      "annual_amount_usd": 22000.0,
+      "approval_tier": "$10,000.01 - $25,000",
+      "required_approvals": [
+        "Department Head",
+        "Procurement",
+        "Finance",
+        "Security",
+        "Privacy",
+        "Legal"
+      ],
+      "risk_flags": [
+        "budget_insufficient",
+        "legal_review_required",
+        "privacy_review_required",
+        "security_review_required"
+      ],
+      "missing_information": [],
+      "missing_fields": [],
+      "rule_hits": [
+        {
+          "rule": "approval_threshold",
+          "section": "Policy \u00a74",
+          "finding": "Annual amount $22,000 falls in tier '$10,000.01 - $25,000' -> Department Head, Finance, Procurement.",
+          "adds_approvals": [
+            "Department Head",
+            "Finance",
+            "Procurement"
+          ],
+          "adds_flags": []
+        },
+        {
+          "rule": "budget_insufficient",
+          "section": "Policy \u00a72",
+          "finding": "Cost $22,000 exceeds Sales available software budget $18,000 (shortfall $4,000); Finance budget-exception review required.",
+          "adds_approvals": [
+            "Finance"
+          ],
+          "adds_flags": [
+            "budget_insufficient"
+          ]
+        },
+        {
+          "rule": "vendor_assessment_not_current",
+          "section": "Policy \u00a75",
+          "finding": "Vendor security assessment is missing or not completed (registry 'Pending', vendor-risk service 'not_completed').",
+          "adds_approvals": [
+            "Security"
+          ],
+          "adds_flags": [
+            "security_review_required"
+          ]
+        },
+        {
+          "rule": "security_data_trigger",
+          "section": "Policy \u00a75",
+          "finding": "Security review required: data access 'customer_pii' (personal data); 'CRM' = integration with a customer-data system (customer PII).",
+          "adds_approvals": [
+            "Security"
+          ],
+          "adds_flags": [
+            "security_review_required"
+          ]
+        },
+        {
+          "rule": "privacy_trigger",
+          "section": "Policy \u00a76",
+          "finding": "Privacy review required: tool will process customer pii; 'CRM' = integration with a customer-data system (customer PII); vendor stores data outside the operating region while sensitive data may be involved.",
+          "adds_approvals": [
+            "Privacy"
+          ],
+          "adds_flags": [
+            "privacy_review_required"
+          ]
+        },
+        {
+          "rule": "legal_new_vendor_spend",
+          "section": "Policy \u00a77",
+          "finding": "New vendor (procurement status 'New') with annual spend $22,000 >= $10,000.",
+          "adds_approvals": [
+            "Legal"
+          ],
+          "adds_flags": [
+            "legal_review_required"
+          ]
+        },
+        {
+          "rule": "legal_terms_not_approved",
+          "section": "Policy \u00a77",
+          "finding": "Vendor legal terms are not approved/standard (status: 'Unknown').",
+          "adds_approvals": [
+            "Legal"
+          ],
+          "adds_flags": [
+            "legal_review_required"
+          ]
+        },
+        {
+          "rule": "legal_cross_region",
+          "section": "Policy \u00a77",
+          "finding": "Material cross-region data-processing issue: vendor stores data outside the region and the request involves sensitive data.",
+          "adds_approvals": [
+            "Legal"
+          ],
+          "adds_flags": [
+            "legal_review_required"
+          ]
+        }
+      ],
+      "open_items": [
+        "No Director/VP is listed for department 'Sales'; using first Director/VP in reporting chain (Robert King, department 'Go To Market'). Confirm department head.",
+        "Manager's department 'Go To Market' has no budget record (org data inconsistency)."
+      ],
+      "budget": {
+        "department": "Sales",
+        "available_usd": 18000.0,
+        "requested_usd": 22000,
+        "remaining_after_usd": -4000.0,
+        "within_budget": false
+      },
+      "vendor_review": {
+        "registry_status": "Pending",
+        "registry_review_date": null,
+        "registry_days_since_review": null,
+        "api_status": "not_completed",
+        "api_review_date": null,
+        "api_days_since_review": null,
+        "api_outcome": "ok",
+        "validity_days": 365,
+        "assessment_current": false,
+        "conflicts": []
+      },
+      "data_sensitivity": {
+        "data_access_level": "customer_pii",
+        "category": "pii",
+        "security_reasons": [
+          "data access 'customer_pii' (personal data)",
+          "'CRM' = integration with a customer-data system (customer PII)"
+        ],
+        "privacy_reasons": [
+          "tool will process customer pii",
+          "'CRM' = integration with a customer-data system (customer PII)",
+          "vendor stores data outside the operating region while sensitive data may be involved"
+        ],
+        "stores_data_outside_region": true
+      },
+      "overlap": {
+        "flagged": false,
+        "gap_stated": false,
+        "exact_duplicate": false,
+        "matches": [],
+        "extends": []
+      },
+      "injection": {
+        "detected": false,
+        "findings": []
+      },
+      "default_status": "ESCALATE_SPECIALIST_REVIEW",
+      "allowed_statuses": [
+        "ESCALATE_SPECIALIST_REVIEW",
+        "REQUEST_CLARIFICATION",
+        "MANUAL_REVIEW_REQUIRED"
+      ],
+      "status_reasons": [
+        "Security / Privacy / Legal / budget-exception review is required before approval."
+      ],
+      "approver_routing": [
+        {
+          "role": "Department Head",
+          "assignee": "Robert King (E007, Director, Go To Market)",
+          "basis": "Director/VP of the requesting department, else first Director/VP in the reporting chain"
+        },
+        {
+          "role": "Procurement",
+          "assignee": "Procurement team queue",
+          "basis": "Functional review queue"
+        },
+        {
+          "role": "Finance",
+          "assignee": "Finance / FP&A queue",
+          "basis": "Functional review queue"
+        },
+        {
+          "role": "Security",
+          "assignee": "Security review queue",
+          "basis": "Functional review queue"
+        },
+        {
+          "role": "Privacy",
+          "assignee": "Privacy office queue",
+          "basis": "Functional review queue"
+        },
+        {
+          "role": "Legal",
+          "assignee": "Legal / contracts queue",
+          "basis": "Functional review queue"
+        }
+      ]
+    }
+  }
+}

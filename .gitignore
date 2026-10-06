@@ -6,5 +6,5 @@ __pycache__/
 .pytest_cache/
 runtime/
 # Starter-pack fix: evaluation results are a required deliverable, so they are no longer ignored.
-# Full per-run traces are large; regenerate them locally with run_eval_suite.py.
-evals/results/traces/
+# Per-run traces from the live LLM evaluation are committed as grounding evidence (they cannot be
+# regenerated without model quota); traces from ad-hoc local runs elsewhere stay out of the repo.

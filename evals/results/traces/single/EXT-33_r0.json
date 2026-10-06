@@ -1,0 +1,730 @@
+{
+  "case_id": "EXT-33",
+  "decision": {
+    "request_id": "SYN-1033",
+    "recommendation": "Escalate for specialist review: ESCALATE_SPECIALIST_REVIEW",
+    "evidence": [
+      {
+        "source": "get_purchase_request",
+        "finding": "ChartPilot from ChartPilot Ltd (Data Visualization): annual cost $3,000, users 6, data access 'internal_documents', integrations: none, urgency 'normal'.",
+        "reference": "requests.json:SYN-1033"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Elena Garcia (E003), Sales, IC3; manager Robert King (E007); department head Robert King (E007).",
+        "reference": "employees.csv:E003"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Data quality: No Director/VP is listed for department 'Sales'; using first Director/VP in reporting chain (Robert King, department 'Go To Market'). Confirm department head.",
+        "reference": "employees.csv:E003"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Data quality: Manager's department 'Go To Market' has no budget record (org data inconsistency).",
+        "reference": "employees.csv:E003"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Budget could not be verified: No software budget record for department 'Sales Ops'",
+        "reference": "department_budgets.csv"
+      },
+      {
+        "source": "search_existing_software",
+        "finding": "No approved catalog product from the same vendor or category.",
+        "reference": "software_catalog.csv"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Vendor 'ChartPilot Ltd' not found in internal registry (vendors.csv).",
+        "reference": "vendors.csv"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor-risk service result 'not_found': No vendor-risk record exists for this vendor. Status treated as unverified.",
+        "reference": "GET /vendor-risk/ChartPilot%20Ltd"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Annual amount $3,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+        "reference": "Policy \u00a74"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Vendor 'ChartPilot Ltd' is not in the internal vendor registry (treated as a new vendor with no approved terms).",
+        "reference": "Policy \u00a75 / \u00a77"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Vendor-risk service has no assessment record for this vendor; assessment is missing.",
+        "reference": "Policy \u00a75"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Vendor legal terms are not approved/standard (status: 'none on file').",
+        "reference": "Policy \u00a77"
+      },
+      {
+        "source": "evaluate_procurement_policy (agent)",
+        "finding": "The annual cost of $3,000 falls within the $1,000.01 - $10,000 approval tier, requiring Department Head and Procurement approval.",
+        "reference": "Policy \u00a74"
+      },
+      {
+        "source": "evaluate_procurement_policy (agent)",
+        "finding": "Vendor 'ChartPilot Ltd' is not in the internal registry and has no risk assessment record, triggering mandatory Security review.",
+        "reference": "Policy \u00a75 / \u00a77"
+      },
+      {
+        "source": "evaluate_procurement_policy (agent)",
+        "finding": "Vendor legal terms are not on file, triggering mandatory Legal review.",
+        "reference": "Policy \u00a77"
+      },
+      {
+        "source": "evaluate_procurement_policy (agent)",
+        "finding": "The department 'Sales' has $15,000 remaining in its budget after accounting for this $3,000 request.",
+        "reference": "Policy \u00a72"
+      },
+      {
+        "source": "search_existing_software (agent)",
+        "finding": "'MetricLoop' is an existing approved tool for dashboards and BI. The requester has not stated a gap.",
+        "reference": "software_catalog.csv:SW006"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Security",
+      "Legal"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "existing_tool_overlap",
+      "legal_review_required",
+      "security_review_required"
+    ],
+    "next_step": "The requester must clarify the need for a new tool given the existing 'MetricLoop' capability and confirm the correct Department Head. Once clarified, the request should be routed to Security, Legal, Procurement, and the Department Head for review.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 3,
+      "tool_calls": 9,
+      "tool_names": [
+        "get_purchase_request",
+        "get_requester_profile",
+        "check_department_budget",
+        "search_existing_software",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_department_budget",
+        "search_existing_software",
+        "evaluate_procurement_policy"
+      ]
+    }
+  },
+  "trace": {
+    "architecture": "single",
+    "mode": "llm",
+    "provider": "openai",
+    "model": "gemini-3.1-flash-lite",
+    "fallback_reason": null,
+    "latency_ms": 16284.4,
+    "usage": {
+      "input_tokens": 9208,
+      "output_tokens": 823,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 0
+    },
+    "cost_usd": null,
+    "guardrails": {
+      "corrections": [],
+      "omitted_approvals": [],
+      "omitted_flags": [],
+      "added_by_llm_approvals": [],
+      "added_by_llm_flags": [
+        "existing_tool_overlap"
+      ],
+      "status_overridden": false,
+      "llm_status": "ESCALATE_SPECIALIST_REVIEW",
+      "final_status": "ESCALATE_SPECIALIST_REVIEW",
+      "grounded_claims": 5,
+      "ungrounded_claims": [],
+      "unsafe_language_blocked": false,
+      "raw_policy_compliant": true
+    },
+    "tool_log": [
+      {
+        "name": "get_purchase_request",
+        "caller": "single_agent",
+        "args": {
+          "request_id": "SYN-1033"
+        },
+        "ok": true,
+        "latency_ms": 0.1,
+        "cached": false
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "single_agent",
+        "args": {
+          "employee_id": "E003"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "single_agent",
+        "args": {
+          "department": "Sales Ops",
+          "annual_cost_usd": 3000
+        },
+        "ok": false,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "single_agent",
+        "args": {
+          "product_name": "ChartPilot",
+          "category": "Data Visualization",
+          "vendor_name": "ChartPilot Ltd",
+          "use_case_keywords": [
+            "dashboards",
+            "charts",
+            "pipeline metrics",
+            "forecast meeting"
+          ]
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "single_agent",
+        "args": {
+          "vendor_name": "ChartPilot Ltd"
+        },
+        "ok": false,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "single_agent",
+        "args": {
+          "vendor_name": "ChartPilot Ltd"
+        },
+        "ok": false,
+        "latency_ms": 3.1,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1033"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "system",
+        "args": {
+          "employee_id": "E003"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "system",
+        "args": {
+          "department": "Sales",
+          "annual_cost_usd": 3000.0
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "system",
+        "args": {
+          "product_name": "ChartPilot",
+          "vendor_name": "ChartPilot Ltd",
+          "category": "Data Visualization"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "system",
+        "args": {
+          "vendor_name": "ChartPilot Ltd"
+        },
+        "ok": false,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "system",
+        "args": {
+          "vendor_name": "ChartPilot Ltd"
+        },
+        "ok": false,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "single_agent",
+        "args": {
+          "request_id": "SYN-1033"
+        },
+        "ok": true,
+        "latency_ms": 0.2,
+        "cached": false
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1033"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      }
+    ],
+    "agent_runs": [
+      {
+        "role": "single_agent",
+        "llm_calls": 3,
+        "tool_calls": 7,
+        "usage": {
+          "input_tokens": 9208,
+          "output_tokens": 823,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 16001.8,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_purchase_request",
+                "input": {
+                  "request_id": "SYN-1033"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2194,
+              "output_tokens": 25
+            },
+            "latency_ms": 4224.6
+          },
+          {
+            "type": "tool",
+            "name": "get_purchase_request",
+            "input": {
+              "request_id": "SYN-1033"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_requester_profile",
+                "input": {
+                  "employee_id": "E003"
+                }
+              },
+              {
+                "name": "check_department_budget",
+                "input": {
+                  "department": "Sales Ops",
+                  "annual_cost_usd": 3000
+                }
+              },
+              {
+                "name": "search_existing_software",
+                "input": {
+                  "product_name": "ChartPilot",
+                  "category": "Data Visualization",
+                  "vendor_name": "ChartPilot Ltd",
+                  "use_case_keywords": [
+                    "dashboards",
+                    "charts",
+                    "pipeline metrics",
+                    "forecast meeting"
+                  ]
+                }
+              },
+              {
+                "name": "get_vendor_registry_record",
+                "input": {
+                  "vendor_name": "ChartPilot Ltd"
+                }
+              },
+              {
+                "name": "get_vendor_risk_assessment",
+                "input": {
+                  "vendor_name": "ChartPilot Ltd"
+                }
+              },
+              {
+                "name": "evaluate_procurement_policy",
+                "input": {
+                  "request_id": "SYN-1033"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2485,
+              "output_tokens": 191
+            },
+            "latency_ms": 5512.0
+          },
+          {
+            "type": "tool",
+            "name": "get_requester_profile",
+            "input": {
+              "employee_id": "E003"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "check_department_budget",
+            "input": {
+              "department": "Sales Ops",
+              "annual_cost_usd": 3000
+            },
+            "ok": false
+          },
+          {
+            "type": "tool",
+            "name": "search_existing_software",
+            "input": {
+              "product_name": "ChartPilot",
+              "category": "Data Visualization",
+              "vendor_name": "ChartPilot Ltd",
+              "use_case_keywords": [
+                "dashboards",
+                "charts",
+                "pipeline metrics",
+                "forecast meeting"
+              ]
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_registry_record",
+            "input": {
+              "vendor_name": "ChartPilot Ltd"
+            },
+            "ok": false
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_risk_assessment",
+            "input": {
+              "vendor_name": "ChartPilot Ltd"
+            },
+            "ok": false
+          },
+          {
+            "type": "tool",
+            "name": "evaluate_procurement_policy",
+            "input": {
+              "request_id": "SYN-1033"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_decision",
+                "input": {
+                  "clarification_questions": [
+                    "Can you confirm if the existing tool 'MetricLoop' (used for dashboards and BI) can meet your team's needs for pipeline metrics? If not, please provide a specific technical gap that prevents its use.",
+                    "Please confirm if Robert King (Director, Go To Market) is the correct Department Head for your request, as no specific Director/VP is listed for the 'Sales' department."
+                  ],
+                  "evidence": [
+                    {
+                      "reference": "Policy \u00a74",
+                      "source": "evaluate_procurement_policy",
+                      "finding": "The annual cost of $3,000 falls within the $1,000.01 - $10,000 approval tier, requiring Department Head and Procurement approval."
+                    },
+                    {
+                      "finding": "Vendor 'ChartPilot Ltd' is not in the internal registry and has no risk assessment record, triggering mandatory Security review.",
+                      "reference": "Policy \u00a75 / \u00a77",
+                      "source": "evaluate_procurement_policy"
+                    },
+                    {
+                      "finding": "Vendor legal terms are not on file, triggering mandatory Legal review.",
+                      "reference": "Policy \u00a77",
+                      "source": "evaluate_procurement_policy"
+                    },
+                    {
+                      "source": "evaluate_procurement_policy",
+                      "finding": "The department 'Sales' has $15,000 remaining in its budget after accounting for this $3,000 request.",
+                      "reference": "Policy \u00a72"
+                    },
+                    {
+                      "finding": "'MetricLoop' is an existing approved tool for dashboards and BI. The requester has not stated a gap.",
+                      "reference": "software_catalog.csv:SW006",
+                      "source": "search_existing_software"
+                    }
+                  ],
+                  "prompt_injection_observed": false,
+                  "rationale": "The request is for a new, unvetted vendor. While the budget is sufficient, the lack of vendor registry/risk records and legal terms necessitates specialist reviews. Additionally, there is a potential overlap with the existing 'MetricLoop' tool that requires clarification from the requester.",
+                  "overlap_disposition": "existing_tool_likely_sufficient",
+                  "missing_information": [
+                    "Confirmation of Department Head (due to org data inconsistency).",
+                    "Specific technical gap for why existing tool 'MetricLoop' is insufficient."
+                  ],
+                  "risk_flags": [
+                    "security_review_required",
+                    "legal_review_required",
+                    "existing_tool_overlap"
+                  ],
+                  "next_step": "The requester must clarify the need for a new tool given the existing 'MetricLoop' capability and confirm the correct Department Head. Once clarified, the request should be routed to Security, Legal, Procurement, and the Department Head for review.",
+                  "required_approvals": [
+                    "Department Head",
+                    "Procurement",
+                    "Security",
+                    "Legal"
+                  ],
+                  "status": "ESCALATE_SPECIALIST_REVIEW",
+                  "recommendation": "ESCALATE_SPECIALIST_REVIEW"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 4529,
+              "output_tokens": 607
+            },
+            "latency_ms": 6265.2
+          }
+        ]
+      }
+    ],
+    "evidence_pack": null,
+    "draft": {
+      "status": "ESCALATE_SPECIALIST_REVIEW",
+      "recommendation": "ESCALATE_SPECIALIST_REVIEW",
+      "rationale": "The request is for a new, unvetted vendor. While the budget is sufficient, the lack of vendor registry/risk records and legal terms necessitates specialist reviews. Additionally, there is a potential overlap with the existing 'MetricLoop' tool that requires clarification from the requester.",
+      "evidence": [
+        {
+          "source": "evaluate_procurement_policy",
+          "finding": "The annual cost of $3,000 falls within the $1,000.01 - $10,000 approval tier, requiring Department Head and Procurement approval.",
+          "reference": "Policy \u00a74"
+        },
+        {
+          "source": "evaluate_procurement_policy",
+          "finding": "Vendor 'ChartPilot Ltd' is not in the internal registry and has no risk assessment record, triggering mandatory Security review.",
+          "reference": "Policy \u00a75 / \u00a77"
+        },
+        {
+          "source": "evaluate_procurement_policy",
+          "finding": "Vendor legal terms are not on file, triggering mandatory Legal review.",
+          "reference": "Policy \u00a77"
+        },
+        {
+          "source": "evaluate_procurement_policy",
+          "finding": "The department 'Sales' has $15,000 remaining in its budget after accounting for this $3,000 request.",
+          "reference": "Policy \u00a72"
+        },
+        {
+          "source": "search_existing_software",
+          "finding": "'MetricLoop' is an existing approved tool for dashboards and BI. The requester has not stated a gap.",
+          "reference": "software_catalog.csv:SW006"
+        }
+      ],
+      "required_approvals": [
+        "Department Head",
+        "Procurement",
+        "Security",
+        "Legal"
+      ],
+      "risk_flags": [
+        "security_review_required",
+        "legal_review_required",
+        "existing_tool_overlap"
+      ],
+      "missing_information": [
+        "Confirmation of Department Head (due to org data inconsistency).",
+        "Specific technical gap for why existing tool 'MetricLoop' is insufficient."
+      ],
+      "clarification_questions": [
+        "Can you confirm if the existing tool 'MetricLoop' (used for dashboards and BI) can meet your team's needs for pipeline metrics? If not, please provide a specific technical gap that prevents its use.",
+        "Please confirm if Robert King (Director, Go To Market) is the correct Department Head for your request, as no specific Director/VP is listed for the 'Sales' department."
+      ],
+      "overlap_disposition": "existing_tool_likely_sufficient",
+      "next_step": "The requester must clarify the need for a new tool given the existing 'MetricLoop' capability and confirm the correct Department Head. Once clarified, the request should be routed to Security, Legal, Procurement, and the Department Head for review.",
+      "prompt_injection_observed": false
+    },
+    "assessment": {
+      "reference_date": "2026-09-30",
+      "annual_amount_usd": 3000.0,
+      "approval_tier": "$1,000.01 - $10,000",
+      "required_approvals": [
+        "Department Head",
+        "Procurement",
+        "Security",
+        "Legal"
+      ],
+      "risk_flags": [
+        "legal_review_required",
+        "security_review_required"
+      ],
+      "missing_information": [],
+      "missing_fields": [],
+      "rule_hits": [
+        {
+          "rule": "approval_threshold",
+          "section": "Policy \u00a74",
+          "finding": "Annual amount $3,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+          "adds_approvals": [
+            "Department Head",
+            "Procurement"
+          ],
+          "adds_flags": []
+        },
+        {
+          "rule": "budget_within",
+          "section": "Policy \u00a72",
+          "finding": "Cost $3,000 is within Sales available budget $18,000 ($15,000 remaining). This does not imply approval.",
+          "adds_approvals": [],
+          "adds_flags": []
+        },
+        {
+          "rule": "vendor_not_in_registry",
+          "section": "Policy \u00a75 / \u00a77",
+          "finding": "Vendor 'ChartPilot Ltd' is not in the internal vendor registry (treated as a new vendor with no approved terms).",
+          "adds_approvals": [
+            "Security"
+          ],
+          "adds_flags": [
+            "security_review_required"
+          ]
+        },
+        {
+          "rule": "vendor_risk_missing",
+          "section": "Policy \u00a75",
+          "finding": "Vendor-risk service has no assessment record for this vendor; assessment is missing.",
+          "adds_approvals": [
+            "Security"
+          ],
+          "adds_flags": [
+            "security_review_required"
+          ]
+        },
+        {
+          "rule": "legal_terms_not_approved",
+          "section": "Policy \u00a77",
+          "finding": "Vendor legal terms are not approved/standard (status: 'none on file').",
+          "adds_approvals": [
+            "Legal"
+          ],
+          "adds_flags": [
+            "legal_review_required"
+          ]
+        }
+      ],
+      "open_items": [
+        "No Director/VP is listed for department 'Sales'; using first Director/VP in reporting chain (Robert King, department 'Go To Market'). Confirm department head.",
+        "Manager's department 'Go To Market' has no budget record (org data inconsistency)."
+      ],
+      "budget": {
+        "department": "Sales",
+        "available_usd": 18000.0,
+        "requested_usd": 3000,
+        "remaining_after_usd": 15000.0,
+        "within_budget": true
+      },
+      "vendor_review": {
+        "registry_status": null,
+        "registry_review_date": null,
+        "registry_days_since_review": null,
+        "api_status": null,
+        "api_review_date": null,
+        "api_days_since_review": null,
+        "api_outcome": "not_found",
+        "validity_days": 365,
+        "assessment_current": null,
+        "conflicts": []
+      },
+      "data_sensitivity": {
+        "data_access_level": "internal_documents",
+        "category": "low",
+        "security_reasons": [],
+        "privacy_reasons": [],
+        "stores_data_outside_region": null
+      },
+      "overlap": {
+        "flagged": false,
+        "gap_stated": false,
+        "exact_duplicate": false,
+        "matches": [],
+        "extends": []
+      },
+      "injection": {
+        "detected": false,
+        "findings": []
+      },
+      "default_status": "ESCALATE_SPECIALIST_REVIEW",
+      "allowed_statuses": [
+        "ESCALATE_SPECIALIST_REVIEW",
+        "REQUEST_CLARIFICATION",
+        "MANUAL_REVIEW_REQUIRED"
+      ],
+      "status_reasons": [
+        "Security / Privacy / Legal / budget-exception review is required before approval."
+      ],
+      "approver_routing": [
+        {
+          "role": "Department Head",
+          "assignee": "Robert King (E007, Director, Go To Market)",
+          "basis": "Director/VP of the requesting department, else first Director/VP in the reporting chain"
+        },
+        {
+          "role": "Procurement",
+          "assignee": "Procurement team queue",
+          "basis": "Functional review queue"
+        },
+        {
+          "role": "Security",
+          "assignee": "Security review queue",
+          "basis": "Functional review queue"
+        },
+        {
+          "role": "Legal",
+          "assignee": "Legal / contracts queue",
+          "basis": "Functional review queue"
+        }
+      ]
+    }
+  }
+}

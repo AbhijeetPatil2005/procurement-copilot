@@ -1,0 +1,808 @@
+{
+  "case_id": "EXT-09",
+  "decision": {
+    "request_id": "REQ-1009",
+    "recommendation": "Manual review required: Proceed with manual review. The request requires Security and Legal approval due to the new vendor status and the nature of the data access. Vendor risk assessment must be completed once the service is back online.",
+    "evidence": [
+      {
+        "source": "get_purchase_request",
+        "finding": "NimbusAI Contract Reviewer from NimbusAI (Legal AI): annual cost $15,000, users 8, data access 'confidential_documents', integrations: Document repository, urgency 'normal'.",
+        "reference": "requests.json:REQ-1009"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Noah Williams (E004), Finance, IC4; manager Priya Shah (E006); department head Priya Shah (E006).",
+        "reference": "employees.csv:E004"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Requested $15,000 is within Finance available budget of $29,000 ($14,000 would remain).",
+        "reference": "department_budgets.csv:Finance"
+      },
+      {
+        "source": "search_existing_software",
+        "finding": "No approved catalog product from the same vendor or category.",
+        "reference": "software_catalog.csv"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Registry V013 NimbusAI: procurement 'New', security 'Unknown' (review date none), legal terms 'Unknown'.",
+        "reference": "vendors.csv:V013"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor-risk service result 'unavailable': Upstream vendor assessment provider is temporarily unavailable.. Status treated as unverified.",
+        "reference": "GET /vendor-risk/NimbusAI"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Annual amount $15,000 falls in tier '$10,000.01 - $25,000' -> Department Head, Finance, Procurement.",
+        "reference": "Policy \u00a74"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Vendor-risk service could not be verified (unavailable: Upstream vendor assessment provider is temporarily unavailable.). No favourable status is inferred; routed to manual Security review.",
+        "reference": "Policy \u00a710"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Vendor security assessment is missing or not completed (registry 'Unknown').",
+        "reference": "Policy \u00a75"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Security review required: data access 'confidential_documents'; 'Document repository' = source-code repository access.",
+        "reference": "Policy \u00a75"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "New vendor (procurement status 'New') with annual spend $15,000 >= $10,000.",
+        "reference": "Policy \u00a77"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Vendor legal terms are not approved/standard (status: 'Unknown').",
+        "reference": "Policy \u00a77"
+      },
+      {
+        "source": "check_department_budget (agent)",
+        "finding": "Annual cost of $15,000 is within the Finance department's available budget of $29,000.",
+        "reference": "department_budgets.csv:Finance"
+      },
+      {
+        "source": "get_vendor_registry_record (agent)",
+        "finding": "Vendor 'NimbusAI' is new and has no existing security or legal terms approval in the registry.",
+        "reference": "vendors.csv:V013"
+      },
+      {
+        "source": "get_vendor_risk_assessment (agent)",
+        "finding": "External vendor-risk service is currently unavailable (503 error), preventing verification of security status.",
+        "reference": "GET /vendor-risk/NimbusAI"
+      },
+      {
+        "source": "evaluate_procurement_policy (agent)",
+        "finding": "Policy requires Security and Legal review for new vendors with spend >= $10,000 and access to confidential documents.",
+        "reference": "procurement_policy.md v2026.09"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "Security",
+      "Legal"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "legal_review_required",
+      "security_review_required",
+      "vendor_risk_unavailable"
+    ],
+    "next_step": "Route to Security and Legal for manual review once the vendor-risk service is available and the requester provides details on data handling.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 8,
+      "tool_calls": 9,
+      "tool_names": [
+        "get_purchase_request",
+        "get_requester_profile",
+        "check_department_budget",
+        "search_existing_software",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_department_budget",
+        "search_existing_software",
+        "evaluate_procurement_policy"
+      ]
+    }
+  },
+  "trace": {
+    "architecture": "single",
+    "mode": "llm",
+    "provider": "openai",
+    "model": "gemini-3.1-flash-lite",
+    "fallback_reason": null,
+    "latency_ms": 86576.2,
+    "usage": {
+      "input_tokens": 24955,
+      "output_tokens": 774,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 0
+    },
+    "cost_usd": null,
+    "guardrails": {
+      "corrections": [],
+      "omitted_approvals": [],
+      "omitted_flags": [],
+      "added_by_llm_approvals": [],
+      "added_by_llm_flags": [],
+      "status_overridden": false,
+      "llm_status": "MANUAL_REVIEW_REQUIRED",
+      "final_status": "MANUAL_REVIEW_REQUIRED",
+      "grounded_claims": 4,
+      "ungrounded_claims": [],
+      "unsafe_language_blocked": false,
+      "raw_policy_compliant": true
+    },
+    "tool_log": [
+      {
+        "name": "get_purchase_request",
+        "caller": "single_agent",
+        "args": {
+          "request_id": "REQ-1009"
+        },
+        "ok": true,
+        "latency_ms": 0.1,
+        "cached": false
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "single_agent",
+        "args": {
+          "employee_id": "E004"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "single_agent",
+        "args": {
+          "annual_cost_usd": 15000,
+          "department": "Finance"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "single_agent",
+        "args": {
+          "category": "Legal AI",
+          "use_case_keywords": [
+            "contract review",
+            "summarize agreements",
+            "payment terms analysis"
+          ],
+          "vendor_name": "NimbusAI",
+          "product_name": "NimbusAI Contract Reviewer"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "single_agent",
+        "args": {
+          "vendor_name": "NimbusAI"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "single_agent",
+        "args": {
+          "vendor_name": "NimbusAI"
+        },
+        "ok": false,
+        "latency_ms": 2.7,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "REQ-1009"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "system",
+        "args": {
+          "employee_id": "E004"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "system",
+        "args": {
+          "department": "Finance",
+          "annual_cost_usd": 15000.0
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "system",
+        "args": {
+          "product_name": "NimbusAI Contract Reviewer",
+          "vendor_name": "NimbusAI",
+          "category": "Legal AI"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "system",
+        "args": {
+          "vendor_name": "NimbusAI"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "system",
+        "args": {
+          "vendor_name": "NimbusAI"
+        },
+        "ok": false,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "single_agent",
+        "args": {
+          "request_id": "REQ-1009"
+        },
+        "ok": true,
+        "latency_ms": 0.2,
+        "cached": false
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "REQ-1009"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      }
+    ],
+    "agent_runs": [
+      {
+        "role": "single_agent",
+        "llm_calls": 8,
+        "tool_calls": 7,
+        "usage": {
+          "input_tokens": 24955,
+          "output_tokens": 774,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 86307.1,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_purchase_request",
+                "input": {
+                  "request_id": "REQ-1009"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2195,
+              "output_tokens": 25
+            },
+            "latency_ms": 3573.9
+          },
+          {
+            "type": "tool",
+            "name": "get_purchase_request",
+            "input": {
+              "request_id": "REQ-1009"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_requester_profile",
+                "input": {
+                  "employee_id": "E004"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2492,
+              "output_tokens": 24
+            },
+            "latency_ms": 4592.6
+          },
+          {
+            "type": "tool",
+            "name": "get_requester_profile",
+            "input": {
+              "employee_id": "E004"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "check_department_budget",
+                "input": {
+                  "annual_cost_usd": 15000,
+                  "department": "Finance"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2723,
+              "output_tokens": 30
+            },
+            "latency_ms": 4056.8
+          },
+          {
+            "type": "tool",
+            "name": "check_department_budget",
+            "input": {
+              "annual_cost_usd": 15000,
+              "department": "Finance"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "search_existing_software",
+                "input": {
+                  "category": "Legal AI",
+                  "use_case_keywords": [
+                    "contract review",
+                    "summarize agreements",
+                    "payment terms analysis"
+                  ],
+                  "vendor_name": "NimbusAI",
+                  "product_name": "NimbusAI Contract Reviewer"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2901,
+              "output_tokens": 63
+            },
+            "latency_ms": 41550.9
+          },
+          {
+            "type": "tool",
+            "name": "search_existing_software",
+            "input": {
+              "category": "Legal AI",
+              "use_case_keywords": [
+                "contract review",
+                "summarize agreements",
+                "payment terms analysis"
+              ],
+              "vendor_name": "NimbusAI",
+              "product_name": "NimbusAI Contract Reviewer"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_vendor_registry_record",
+                "input": {
+                  "vendor_name": "NimbusAI"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 3090,
+              "output_tokens": 23
+            },
+            "latency_ms": 5358.0
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_registry_record",
+            "input": {
+              "vendor_name": "NimbusAI"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_vendor_risk_assessment",
+                "input": {
+                  "vendor_name": "NimbusAI"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 3303,
+              "output_tokens": 23
+            },
+            "latency_ms": 2697.0
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_risk_assessment",
+            "input": {
+              "vendor_name": "NimbusAI"
+            },
+            "ok": false
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "evaluate_procurement_policy",
+                "input": {
+                  "request_id": "REQ-1009"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 3498,
+              "output_tokens": 26
+            },
+            "latency_ms": 1674.2
+          },
+          {
+            "type": "tool",
+            "name": "evaluate_procurement_policy",
+            "input": {
+              "request_id": "REQ-1009"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_decision",
+                "input": {
+                  "missing_information": [
+                    "Vendor security assessment status (currently unavailable).",
+                    "Vendor legal terms status (currently unknown).",
+                    "Data residency and PII processing details."
+                  ],
+                  "status": "MANUAL_REVIEW_REQUIRED",
+                  "overlap_disposition": "no_overlap",
+                  "rationale": "The request is for a new vendor with no existing security or legal vetting. The vendor-risk service is currently unavailable, and the requested access to 'confidential_documents' and 'Document repository' triggers mandatory Security and Legal reviews. While the request is within budget, the lack of vendor vetting and the sensitivity of the data access require manual intervention.",
+                  "next_step": "Route to Security and Legal for manual review once the vendor-risk service is available and the requester provides details on data handling.",
+                  "evidence": [
+                    {
+                      "source": "check_department_budget",
+                      "reference": "department_budgets.csv:Finance",
+                      "finding": "Annual cost of $15,000 is within the Finance department's available budget of $29,000."
+                    },
+                    {
+                      "source": "get_vendor_registry_record",
+                      "reference": "vendors.csv:V013",
+                      "finding": "Vendor 'NimbusAI' is new and has no existing security or legal terms approval in the registry."
+                    },
+                    {
+                      "source": "get_vendor_risk_assessment",
+                      "finding": "External vendor-risk service is currently unavailable (503 error), preventing verification of security status.",
+                      "reference": "GET /vendor-risk/NimbusAI"
+                    },
+                    {
+                      "finding": "Policy requires Security and Legal review for new vendors with spend >= $10,000 and access to confidential documents.",
+                      "reference": "procurement_policy.md v2026.09",
+                      "source": "evaluate_procurement_policy"
+                    }
+                  ],
+                  "clarification_questions": [
+                    "Can you confirm if NimbusAI will process any PII or sensitive personal data, and where that data will be hosted?",
+                    "Are there any specific security certifications (e.g., SOC2 Type II) that NimbusAI provides?"
+                  ],
+                  "risk_flags": [
+                    "security_review_required",
+                    "legal_review_required",
+                    "vendor_risk_unavailable"
+                  ],
+                  "required_approvals": [
+                    "Department Head",
+                    "Procurement",
+                    "Finance",
+                    "Security",
+                    "Legal"
+                  ],
+                  "recommendation": "Proceed with manual review. The request requires Security and Legal approval due to the new vendor status and the nature of the data access. Vendor risk assessment must be completed once the service is back online.",
+                  "prompt_injection_observed": false
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 4753,
+              "output_tokens": 560
+            },
+            "latency_ms": 22803.7
+          }
+        ]
+      }
+    ],
+    "evidence_pack": null,
+    "draft": {
+      "status": "MANUAL_REVIEW_REQUIRED",
+      "recommendation": "Proceed with manual review. The request requires Security and Legal approval due to the new vendor status and the nature of the data access. Vendor risk assessment must be completed once the service is back online.",
+      "rationale": "The request is for a new vendor with no existing security or legal vetting. The vendor-risk service is currently unavailable, and the requested access to 'confidential_documents' and 'Document repository' triggers mandatory Security and Legal reviews. While the request is within budget, the lack of vendor vetting and the sensitivity of the data access require manual intervention.",
+      "evidence": [
+        {
+          "source": "check_department_budget",
+          "finding": "Annual cost of $15,000 is within the Finance department's available budget of $29,000.",
+          "reference": "department_budgets.csv:Finance"
+        },
+        {
+          "source": "get_vendor_registry_record",
+          "finding": "Vendor 'NimbusAI' is new and has no existing security or legal terms approval in the registry.",
+          "reference": "vendors.csv:V013"
+        },
+        {
+          "source": "get_vendor_risk_assessment",
+          "finding": "External vendor-risk service is currently unavailable (503 error), preventing verification of security status.",
+          "reference": "GET /vendor-risk/NimbusAI"
+        },
+        {
+          "source": "evaluate_procurement_policy",
+          "finding": "Policy requires Security and Legal review for new vendors with spend >= $10,000 and access to confidential documents.",
+          "reference": "procurement_policy.md v2026.09"
+        }
+      ],
+      "required_approvals": [
+        "Department Head",
+        "Procurement",
+        "Finance",
+        "Security",
+        "Legal"
+      ],
+      "risk_flags": [
+        "security_review_required",
+        "legal_review_required",
+        "vendor_risk_unavailable"
+      ],
+      "missing_information": [
+        "Vendor security assessment status (currently unavailable).",
+        "Vendor legal terms status (currently unknown).",
+        "Data residency and PII processing details."
+      ],
+      "clarification_questions": [
+        "Can you confirm if NimbusAI will process any PII or sensitive personal data, and where that data will be hosted?",
+        "Are there any specific security certifications (e.g., SOC2 Type II) that NimbusAI provides?"
+      ],
+      "overlap_disposition": "no_overlap",
+      "next_step": "Route to Security and Legal for manual review once the vendor-risk service is available and the requester provides details on data handling.",
+      "prompt_injection_observed": false
+    },
+    "assessment": {
+      "reference_date": "2026-09-30",
+      "annual_amount_usd": 15000.0,
+      "approval_tier": "$10,000.01 - $25,000",
+      "required_approvals": [
+        "Department Head",
+        "Procurement",
+        "Finance",
+        "Security",
+        "Legal"
+      ],
+      "risk_flags": [
+        "legal_review_required",
+        "security_review_required",
+        "vendor_risk_unavailable"
+      ],
+      "missing_information": [],
+      "missing_fields": [],
+      "rule_hits": [
+        {
+          "rule": "approval_threshold",
+          "section": "Policy \u00a74",
+          "finding": "Annual amount $15,000 falls in tier '$10,000.01 - $25,000' -> Department Head, Finance, Procurement.",
+          "adds_approvals": [
+            "Department Head",
+            "Finance",
+            "Procurement"
+          ],
+          "adds_flags": []
+        },
+        {
+          "rule": "budget_within",
+          "section": "Policy \u00a72",
+          "finding": "Cost $15,000 is within Finance available budget $29,000 ($14,000 remaining). This does not imply approval.",
+          "adds_approvals": [],
+          "adds_flags": []
+        },
+        {
+          "rule": "vendor_risk_unavailable",
+          "section": "Policy \u00a710",
+          "finding": "Vendor-risk service could not be verified (unavailable: Upstream vendor assessment provider is temporarily unavailable.). No favourable status is inferred; routed to manual Security review.",
+          "adds_approvals": [
+            "Security"
+          ],
+          "adds_flags": [
+            "vendor_risk_unavailable",
+            "security_review_required"
+          ]
+        },
+        {
+          "rule": "vendor_assessment_not_current",
+          "section": "Policy \u00a75",
+          "finding": "Vendor security assessment is missing or not completed (registry 'Unknown').",
+          "adds_approvals": [
+            "Security"
+          ],
+          "adds_flags": [
+            "security_review_required"
+          ]
+        },
+        {
+          "rule": "security_data_trigger",
+          "section": "Policy \u00a75",
+          "finding": "Security review required: data access 'confidential_documents'; 'Document repository' = source-code repository access.",
+          "adds_approvals": [
+            "Security"
+          ],
+          "adds_flags": [
+            "security_review_required"
+          ]
+        },
+        {
+          "rule": "legal_new_vendor_spend",
+          "section": "Policy \u00a77",
+          "finding": "New vendor (procurement status 'New') with annual spend $15,000 >= $10,000.",
+          "adds_approvals": [
+            "Legal"
+          ],
+          "adds_flags": [
+            "legal_review_required"
+          ]
+        },
+        {
+          "rule": "legal_terms_not_approved",
+          "section": "Policy \u00a77",
+          "finding": "Vendor legal terms are not approved/standard (status: 'Unknown').",
+          "adds_approvals": [
+            "Legal"
+          ],
+          "adds_flags": [
+            "legal_review_required"
+          ]
+        }
+      ],
+      "open_items": [
+        "Re-run the vendor-risk check once the service is available.",
+        "Vendor data residency could not be verified; Privacy may need to confirm whether data leaves the region."
+      ],
+      "budget": {
+        "department": "Finance",
+        "available_usd": 29000.0,
+        "requested_usd": 15000,
+        "remaining_after_usd": 14000.0,
+        "within_budget": true
+      },
+      "vendor_review": {
+        "registry_status": "Unknown",
+        "registry_review_date": null,
+        "registry_days_since_review": null,
+        "api_status": null,
+        "api_review_date": null,
+        "api_days_since_review": null,
+        "api_outcome": "unavailable",
+        "validity_days": 365,
+        "assessment_current": null,
+        "conflicts": []
+      },
+      "data_sensitivity": {
+        "data_access_level": "confidential_documents",
+        "category": "security",
+        "security_reasons": [
+          "data access 'confidential_documents'",
+          "'Document repository' = source-code repository access"
+        ],
+        "privacy_reasons": [],
+        "stores_data_outside_region": null
+      },
+      "overlap": {
+        "flagged": false,
+        "gap_stated": false,
+        "exact_duplicate": false,
+        "matches": [],
+        "extends": []
+      },
+      "injection": {
+        "detected": false,
+        "findings": []
+      },
+      "default_status": "MANUAL_REVIEW_REQUIRED",
+      "allowed_statuses": [
+        "MANUAL_REVIEW_REQUIRED",
+        "REQUEST_CLARIFICATION"
+      ],
+      "status_reasons": [
+        "Material evidence is unavailable, conflicting, or unverifiable (Policy \u00a75, \u00a710)."
+      ],
+      "approver_routing": [
+        {
+          "role": "Department Head",
+          "assignee": "Priya Shah (E006, Director, Finance)",
+          "basis": "Director/VP of the requesting department, else first Director/VP in the reporting chain"
+        },
+        {
+          "role": "Procurement",
+          "assignee": "Procurement team queue",
+          "basis": "Functional review queue"
+        },
+        {
+          "role": "Finance",
+          "assignee": "Finance / FP&A queue",
+          "basis": "Functional review queue"
+        },
+        {
+          "role": "Security",
+          "assignee": "Security review queue",
+          "basis": "Functional review queue"
+        },
+        {
+          "role": "Legal",
+          "assignee": "Legal / contracts queue",
+          "basis": "Functional review queue"
+        }
+      ]
+    }
+  }
+}

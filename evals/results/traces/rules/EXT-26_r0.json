@@ -1,0 +1,371 @@
+{
+  "case_id": "EXT-26",
+  "decision": {
+    "request_id": "SYN-1026",
+    "recommendation": "Manual review required: the department budget could not be verified; a human must resolve this before the request can progress.",
+    "evidence": [
+      {
+        "source": "get_purchase_request",
+        "finding": "HelpDeskly Additional Seats from HelpDeskly (Customer Support): annual cost $4,000, users 5, data access 'customer_pii', integrations: none, urgency 'normal'.",
+        "reference": "requests.json:SYN-1026"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Robert King (E007), Go To Market, Director; manager Lisa Park (E010); department head Robert King (E007).",
+        "reference": "employees.csv:E007"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Budget could not be verified: No software budget record for department 'Go To Market'",
+        "reference": "department_budgets.csv"
+      },
+      {
+        "source": "search_existing_software",
+        "finding": "Catalog SW007 HelpDeskly (HelpDeskly, Customer Support) is 'Approved', scope Customer Success, 75 seats, $46,000/yr; relation: same vendor extension. Notes: Support ticketing.",
+        "reference": "software_catalog.csv:SW007"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Registry V007 HelpDeskly: procurement 'Approved', security 'Approved' (review date 2026-03-15), legal terms 'Approved'.",
+        "reference": "vendors.csv:V007"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor-risk service: risk 'low', security review 'approved' (last review 2026-03-15), processes personal data: True, stores data outside region: False.",
+        "reference": "GET /vendor-risk/HelpDeskly"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Annual amount $4,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+        "reference": "Policy \u00a74"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "No software budget record exists for department 'Go To Market'; budget cannot be verified.",
+        "reference": "Policy \u00a72 / \u00a710"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Security review required: data access 'customer_pii' (personal data).",
+        "reference": "Policy \u00a75"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Privacy review required: tool will process customer pii.",
+        "reference": "Policy \u00a76"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Request extends an existing approved product/agreement (HelpDeskly); not a duplicate purchase.",
+        "reference": "Policy \u00a73"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Requester is the head of Go To Market; Department Head approval must go to Lisa Park (E010) to avoid self-approval.",
+        "reference": "Policy \u00a711"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Finance",
+      "Security",
+      "Privacy"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "budget_unverifiable",
+      "privacy_review_required",
+      "security_review_required"
+    ],
+    "next_step": "Procurement opens a manual review: Security verifies the vendor's current assessment; then route to Department Head, Procurement, Finance, Security, Privacy with this evidence package.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 0,
+      "tool_calls": 7,
+      "tool_names": [
+        "get_purchase_request",
+        "get_requester_profile",
+        "check_department_budget",
+        "search_existing_software",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "evaluate_procurement_policy"
+      ]
+    }
+  },
+  "trace": {
+    "architecture": "rules",
+    "mode": "rules_only",
+    "provider": "none",
+    "model": "gemini-3.1-flash-lite",
+    "fallback_reason": null,
+    "latency_ms": 15.3,
+    "usage": {},
+    "cost_usd": 0.0,
+    "guardrails": {
+      "corrections": [],
+      "omitted_approvals": [],
+      "omitted_flags": [],
+      "added_by_llm_approvals": [],
+      "added_by_llm_flags": [],
+      "status_overridden": false,
+      "llm_status": null,
+      "final_status": "MANUAL_REVIEW_REQUIRED",
+      "grounded_claims": 0,
+      "ungrounded_claims": [],
+      "unsafe_language_blocked": false,
+      "raw_policy_compliant": true
+    },
+    "tool_log": [
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1026"
+        },
+        "ok": true,
+        "latency_ms": 0.1,
+        "cached": false
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "system",
+        "args": {
+          "employee_id": "E007"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "system",
+        "args": {
+          "department": "Go To Market",
+          "annual_cost_usd": 4000.0
+        },
+        "ok": false,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "system",
+        "args": {
+          "product_name": "HelpDeskly Additional Seats",
+          "vendor_name": "HelpDeskly",
+          "category": "Customer Support"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "system",
+        "args": {
+          "vendor_name": "HelpDeskly"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "system",
+        "args": {
+          "vendor_name": "HelpDeskly"
+        },
+        "ok": true,
+        "latency_ms": 14.8,
+        "cached": false
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1026"
+        },
+        "ok": true,
+        "latency_ms": 15.2,
+        "cached": false
+      }
+    ],
+    "agent_runs": [],
+    "evidence_pack": null,
+    "draft": null,
+    "assessment": {
+      "reference_date": "2026-09-30",
+      "annual_amount_usd": 4000.0,
+      "approval_tier": "$1,000.01 - $10,000",
+      "required_approvals": [
+        "Department Head",
+        "Procurement",
+        "Finance",
+        "Security",
+        "Privacy"
+      ],
+      "risk_flags": [
+        "budget_unverifiable",
+        "privacy_review_required",
+        "security_review_required"
+      ],
+      "missing_information": [],
+      "missing_fields": [],
+      "rule_hits": [
+        {
+          "rule": "approval_threshold",
+          "section": "Policy \u00a74",
+          "finding": "Annual amount $4,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+          "adds_approvals": [
+            "Department Head",
+            "Procurement"
+          ],
+          "adds_flags": []
+        },
+        {
+          "rule": "budget_unverifiable",
+          "section": "Policy \u00a72 / \u00a710",
+          "finding": "No software budget record exists for department 'Go To Market'; budget cannot be verified.",
+          "adds_approvals": [
+            "Finance"
+          ],
+          "adds_flags": [
+            "budget_unverifiable"
+          ]
+        },
+        {
+          "rule": "security_data_trigger",
+          "section": "Policy \u00a75",
+          "finding": "Security review required: data access 'customer_pii' (personal data).",
+          "adds_approvals": [
+            "Security"
+          ],
+          "adds_flags": [
+            "security_review_required"
+          ]
+        },
+        {
+          "rule": "privacy_trigger",
+          "section": "Policy \u00a76",
+          "finding": "Privacy review required: tool will process customer pii.",
+          "adds_approvals": [
+            "Privacy"
+          ],
+          "adds_flags": [
+            "privacy_review_required"
+          ]
+        },
+        {
+          "rule": "extends_existing_agreement",
+          "section": "Policy \u00a73",
+          "finding": "Request extends an existing approved product/agreement (HelpDeskly); not a duplicate purchase.",
+          "adds_approvals": [],
+          "adds_flags": []
+        },
+        {
+          "rule": "self_approval_conflict",
+          "section": "Policy \u00a711",
+          "finding": "Requester is the head of Go To Market; Department Head approval must go to Lisa Park (E010) to avoid self-approval.",
+          "adds_approvals": [],
+          "adds_flags": []
+        }
+      ],
+      "open_items": [
+        "Budget owner/record for department 'Go To Market' must be confirmed by Finance.",
+        "Requester is their own department head; route Department Head sign-off to Lisa Park (E010)."
+      ],
+      "budget": {
+        "department": "Go To Market",
+        "available_usd": null,
+        "requested_usd": 4000,
+        "remaining_after_usd": null,
+        "within_budget": null
+      },
+      "vendor_review": {
+        "registry_status": "Approved",
+        "registry_review_date": "2026-03-15",
+        "registry_days_since_review": 199,
+        "api_status": "approved",
+        "api_review_date": "2026-03-15",
+        "api_days_since_review": 199,
+        "api_outcome": "ok",
+        "validity_days": 365,
+        "assessment_current": true,
+        "conflicts": []
+      },
+      "data_sensitivity": {
+        "data_access_level": "customer_pii",
+        "category": "pii",
+        "security_reasons": [
+          "data access 'customer_pii' (personal data)"
+        ],
+        "privacy_reasons": [
+          "tool will process customer pii"
+        ],
+        "stores_data_outside_region": false
+      },
+      "overlap": {
+        "flagged": false,
+        "gap_stated": false,
+        "exact_duplicate": false,
+        "matches": [],
+        "extends": [
+          {
+            "software_id": "SW007",
+            "product_name": "HelpDeskly",
+            "category": "Customer Support",
+            "vendor_name": "HelpDeskly",
+            "status": "Approved",
+            "annual_cost_usd": 46000,
+            "licensed_seats": 75,
+            "scope": "Customer Success",
+            "notes": "Support ticketing",
+            "relation": "same_vendor_extension",
+            "reference": "software_catalog.csv:SW007"
+          }
+        ]
+      },
+      "injection": {
+        "detected": false,
+        "findings": []
+      },
+      "default_status": "MANUAL_REVIEW_REQUIRED",
+      "allowed_statuses": [
+        "MANUAL_REVIEW_REQUIRED",
+        "REQUEST_CLARIFICATION"
+      ],
+      "status_reasons": [
+        "Material evidence is unavailable, conflicting, or unverifiable (Policy \u00a75, \u00a710)."
+      ],
+      "approver_routing": [
+        {
+          "role": "Department Head",
+          "assignee": "Robert King (E007, Director, Go To Market)",
+          "basis": "Director/VP of the requesting department, else first Director/VP in the reporting chain"
+        },
+        {
+          "role": "Procurement",
+          "assignee": "Procurement team queue",
+          "basis": "Functional review queue"
+        },
+        {
+          "role": "Finance",
+          "assignee": "Finance / FP&A queue",
+          "basis": "Functional review queue"
+        },
+        {
+          "role": "Security",
+          "assignee": "Security review queue",
+          "basis": "Functional review queue"
+        },
+        {
+          "role": "Privacy",
+          "assignee": "Privacy office queue",
+          "basis": "Functional review queue"
+        }
+      ]
+    }
+  }
+}

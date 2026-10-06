@@ -1,0 +1,828 @@
+{
+  "case_id": "EXT-28",
+  "decision": {
+    "request_id": "SYN-1028",
+    "recommendation": "Manual review required: Route for Manager and Security approval. Request clarification on seat utilization.",
+    "evidence": [
+      {
+        "source": "get_purchase_request",
+        "finding": "SignFlow Extra Seats from SignFlow (E-signature): annual cost $500, users 2, data access 'internal_documents', integrations: none, urgency 'normal'.",
+        "reference": "requests.json:SYN-1028"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Noah Williams (E004), Finance, IC4; manager Priya Shah (E006); department head Priya Shah (E006).",
+        "reference": "employees.csv:E004"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Requested $500 is within Finance available budget of $29,000 ($28,500 would remain).",
+        "reference": "department_budgets.csv:Finance"
+      },
+      {
+        "source": "search_existing_software",
+        "finding": "Catalog SW010 SignFlow (SignFlow, E-signature) is 'Approved', scope Company-wide, 45 seats, $16,000/yr; relation: same vendor extension. Notes: Electronic signatures.",
+        "reference": "software_catalog.csv:SW010"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Registry V010 SignFlow: procurement 'Approved', security 'Approved' (review date 2026-06-20), legal terms 'Approved'.",
+        "reference": "vendors.csv:V010"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor-risk service result 'invalid_response': Response lacks security_review_status. Status treated as unverified.",
+        "reference": "GET /vendor-risk/SignFlow"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Annual amount $500 falls in tier 'Up to $1,000' -> Manager.",
+        "reference": "Policy \u00a74"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Vendor-risk service could not be verified (invalid_response: Response lacks security_review_status). No favourable status is inferred; routed to manual Security review.",
+        "reference": "Policy \u00a710"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Request extends an existing approved product/agreement (SignFlow); not a duplicate purchase.",
+        "reference": "Policy \u00a73"
+      },
+      {
+        "source": "get_purchase_request (agent)",
+        "finding": "Requester Noah Williams (Finance) requests 2 additional seats for SignFlow.",
+        "reference": "requests.json:SYN-1028"
+      },
+      {
+        "source": "check_department_budget (agent)",
+        "finding": "Annual cost is $500. Finance department has $29,000 available budget. Request is within budget.",
+        "reference": "department_budgets.csv:Finance"
+      },
+      {
+        "source": "search_existing_software (agent)",
+        "finding": "SignFlow is an existing approved vendor (SW010) with a company-wide agreement.",
+        "reference": "software_catalog.csv:SW010"
+      },
+      {
+        "source": "get_vendor_registry_record (agent)",
+        "finding": "Vendor SignFlow is approved in the internal registry (security review date 2026-06-20).",
+        "reference": "vendors.csv:V010"
+      },
+      {
+        "source": "get_vendor_risk_assessment (agent)",
+        "finding": "External vendor-risk service returned an invalid response for SignFlow (missing security_review_status). Status is unverified.",
+        "reference": "GET /vendor-risk/SignFlow"
+      }
+    ],
+    "required_approvals": [
+      "Manager",
+      "Security"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "security_review_required",
+      "vendor_risk_unavailable"
+    ],
+    "next_step": "Route to Manager for approval and Security for manual review due to the vendor-risk service failure. Request clarification from the requester regarding seat utilization.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 4,
+      "tool_calls": 9,
+      "tool_names": [
+        "get_purchase_request",
+        "get_requester_profile",
+        "check_department_budget",
+        "search_existing_software",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_department_budget",
+        "search_existing_software",
+        "evaluate_procurement_policy"
+      ]
+    }
+  },
+  "trace": {
+    "architecture": "staged",
+    "mode": "llm",
+    "provider": "openai",
+    "model": "gemini-3.1-flash-lite",
+    "fallback_reason": null,
+    "latency_ms": 30058.4,
+    "usage": {
+      "input_tokens": 9290,
+      "output_tokens": 1252,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 0
+    },
+    "cost_usd": null,
+    "guardrails": {
+      "corrections": [
+        "dropped 2 ungrounded evidence claim(s)"
+      ],
+      "omitted_approvals": [],
+      "omitted_flags": [],
+      "added_by_llm_approvals": [],
+      "added_by_llm_flags": [],
+      "status_overridden": false,
+      "llm_status": "MANUAL_REVIEW_REQUIRED",
+      "final_status": "MANUAL_REVIEW_REQUIRED",
+      "grounded_claims": 5,
+      "ungrounded_claims": [
+        {
+          "source": "lookup_policy_section",
+          "finding": "Annual amount $500 falls in tier 'Up to $1,000' -> Manager.",
+          "reason": "cites tool 'lookup_policy_section' which was not called in this run"
+        },
+        {
+          "source": "lookup_policy_section",
+          "finding": "Vendor-risk service could not be verified (invalid_response: Response lacks security_review_status). No favourable status is inferred; routed to manual Security review.",
+          "reason": "cites tool 'lookup_policy_section' which was not called in this run"
+        }
+      ],
+      "unsafe_language_blocked": false,
+      "raw_policy_compliant": true
+    },
+    "tool_log": [
+      {
+        "name": "get_purchase_request",
+        "caller": "analyst",
+        "args": {
+          "request_id": "SYN-1028"
+        },
+        "ok": true,
+        "latency_ms": 0.1,
+        "cached": false
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "analyst",
+        "args": {
+          "employee_id": "E004"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "analyst",
+        "args": {
+          "department": "Finance",
+          "annual_cost_usd": 500
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "analyst",
+        "args": {
+          "product_name": "SignFlow Extra Seats",
+          "use_case_keywords": [
+            "E-signature",
+            "contract signing",
+            "treasury contract approvals"
+          ],
+          "category": "E-signature",
+          "vendor_name": "SignFlow"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "analyst",
+        "args": {
+          "vendor_name": "SignFlow"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "analyst",
+        "args": {
+          "vendor_name": "SignFlow"
+        },
+        "ok": false,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1028"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "system",
+        "args": {
+          "employee_id": "E004"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "system",
+        "args": {
+          "department": "Finance",
+          "annual_cost_usd": 500.0
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "system",
+        "args": {
+          "product_name": "SignFlow Extra Seats",
+          "vendor_name": "SignFlow",
+          "category": "E-signature"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "system",
+        "args": {
+          "vendor_name": "SignFlow"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "system",
+        "args": {
+          "vendor_name": "SignFlow"
+        },
+        "ok": false,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1028"
+        },
+        "ok": true,
+        "latency_ms": 0.5,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1028"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1028"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      }
+    ],
+    "agent_runs": [
+      {
+        "role": "analyst",
+        "llm_calls": 3,
+        "tool_calls": 6,
+        "usage": {
+          "input_tokens": 5901,
+          "output_tokens": 648,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 17342.9,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_purchase_request",
+                "input": {
+                  "request_id": "SYN-1028"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 1365,
+              "output_tokens": 25
+            },
+            "latency_ms": 3947.5
+          },
+          {
+            "type": "tool",
+            "name": "get_purchase_request",
+            "input": {
+              "request_id": "SYN-1028"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_requester_profile",
+                "input": {
+                  "employee_id": "E004"
+                }
+              },
+              {
+                "name": "check_department_budget",
+                "input": {
+                  "department": "Finance",
+                  "annual_cost_usd": 500
+                }
+              },
+              {
+                "name": "search_existing_software",
+                "input": {
+                  "product_name": "SignFlow Extra Seats",
+                  "use_case_keywords": [
+                    "E-signature",
+                    "contract signing",
+                    "treasury contract approvals"
+                  ],
+                  "category": "E-signature",
+                  "vendor_name": "SignFlow"
+                }
+              },
+              {
+                "name": "get_vendor_registry_record",
+                "input": {
+                  "vendor_name": "SignFlow"
+                }
+              },
+              {
+                "name": "get_vendor_risk_assessment",
+                "input": {
+                  "vendor_name": "SignFlow"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 1653,
+              "output_tokens": 162
+            },
+            "latency_ms": 4238.5
+          },
+          {
+            "type": "tool",
+            "name": "get_requester_profile",
+            "input": {
+              "employee_id": "E004"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "check_department_budget",
+            "input": {
+              "department": "Finance",
+              "annual_cost_usd": 500
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "search_existing_software",
+            "input": {
+              "product_name": "SignFlow Extra Seats",
+              "use_case_keywords": [
+                "E-signature",
+                "contract signing",
+                "treasury contract approvals"
+              ],
+              "category": "E-signature",
+              "vendor_name": "SignFlow"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_registry_record",
+            "input": {
+              "vendor_name": "SignFlow"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_risk_assessment",
+            "input": {
+              "vendor_name": "SignFlow"
+            },
+            "ok": false
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_evidence_pack",
+                "input": {
+                  "overlap_assessment": {
+                    "existing_options": [
+                      "SignFlow (SW010)"
+                    ],
+                    "reasoning": "The request is for additional seats for an existing, company-wide approved tool. The tool is already in use by the department.",
+                    "disposition": "existing_tool_likely_sufficient"
+                  },
+                  "data_quality_issues": [
+                    "External vendor-risk service returned an invalid response for SignFlow (missing security_review_status). Status is unverified."
+                  ],
+                  "prompt_injection_observed": false,
+                  "need_summary": "Noah Williams (Finance) requests 2 additional seats for the existing approved e-signature tool, SignFlow, to support treasury contract approvals. Annual cost is $500.",
+                  "open_questions": [
+                    "Can the department confirm if existing seats are fully utilized before adding more?",
+                    "Given the external risk assessment failure, should a manual security review be triggered?"
+                  ],
+                  "injection_details": "None detected.",
+                  "facts": [
+                    {
+                      "source": "get_purchase_request",
+                      "reference": "requests.json:SYN-1028",
+                      "finding": "Requester Noah Williams (Finance) requests 2 additional seats for SignFlow."
+                    },
+                    {
+                      "reference": "department_budgets.csv:Finance",
+                      "finding": "Annual cost is $500. Finance department has $29,000 available budget. Request is within budget.",
+                      "source": "check_department_budget"
+                    },
+                    {
+                      "reference": "software_catalog.csv:SW010",
+                      "source": "search_existing_software",
+                      "finding": "SignFlow is an existing approved vendor (SW010) with a company-wide agreement."
+                    },
+                    {
+                      "reference": "vendors.csv:V010",
+                      "finding": "Vendor SignFlow is approved in the internal registry (security review date 2026-06-20).",
+                      "source": "get_vendor_registry_record"
+                    },
+                    {
+                      "reference": "GET /vendor-risk/SignFlow",
+                      "finding": "External vendor-risk assessment for SignFlow could not be verified.",
+                      "source": "get_vendor_risk_assessment"
+                    }
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2883,
+              "output_tokens": 461
+            },
+            "latency_ms": 9156.9
+          }
+        ]
+      },
+      {
+        "role": "reviewer",
+        "llm_calls": 1,
+        "tool_calls": 0,
+        "usage": {
+          "input_tokens": 3389,
+          "output_tokens": 604,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 12191.0,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_decision",
+                "input": {
+                  "evidence": [
+                    {
+                      "finding": "Requester Noah Williams (Finance) requests 2 additional seats for SignFlow.",
+                      "source": "get_purchase_request",
+                      "reference": "requests.json:SYN-1028"
+                    },
+                    {
+                      "reference": "department_budgets.csv:Finance",
+                      "source": "check_department_budget",
+                      "finding": "Annual cost is $500. Finance department has $29,000 available budget. Request is within budget."
+                    },
+                    {
+                      "source": "search_existing_software",
+                      "reference": "software_catalog.csv:SW010",
+                      "finding": "SignFlow is an existing approved vendor (SW010) with a company-wide agreement."
+                    },
+                    {
+                      "finding": "Vendor SignFlow is approved in the internal registry (security review date 2026-06-20).",
+                      "reference": "vendors.csv:V010",
+                      "source": "get_vendor_registry_record"
+                    },
+                    {
+                      "finding": "External vendor-risk service returned an invalid response for SignFlow (missing security_review_status). Status is unverified.",
+                      "reference": "GET /vendor-risk/SignFlow",
+                      "source": "get_vendor_risk_assessment"
+                    },
+                    {
+                      "reference": "Policy \u00a74",
+                      "source": "lookup_policy_section",
+                      "finding": "Annual amount $500 falls in tier 'Up to $1,000' -> Manager."
+                    },
+                    {
+                      "reference": "Policy \u00a710",
+                      "source": "lookup_policy_section",
+                      "finding": "Vendor-risk service could not be verified (invalid_response: Response lacks security_review_status). No favourable status is inferred; routed to manual Security review."
+                    }
+                  ],
+                  "missing_information": [],
+                  "status": "MANUAL_REVIEW_REQUIRED",
+                  "risk_flags": [
+                    "security_review_required",
+                    "vendor_risk_unavailable"
+                  ],
+                  "overlap_disposition": "existing_tool_likely_sufficient",
+                  "recommendation": "Route for Manager and Security approval. Request clarification on seat utilization.",
+                  "rationale": "The request is for additional seats for an existing, approved tool. While the budget is sufficient, the external vendor-risk assessment service returned an invalid response, necessitating a manual Security review per Policy \u00a710. The request is also subject to Manager approval per Policy \u00a74. I have flagged the need for seat utilization confirmation to ensure the additional seats are necessary.",
+                  "required_approvals": [
+                    "Manager",
+                    "Security"
+                  ],
+                  "clarification_questions": [
+                    "Can the department confirm if existing seats for SignFlow are fully utilized before adding more?"
+                  ],
+                  "next_step": "Route to Manager for approval and Security for manual review due to the vendor-risk service failure. Request clarification from the requester regarding seat utilization.",
+                  "prompt_injection_observed": false
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 3389,
+              "output_tokens": 604
+            },
+            "latency_ms": 12191.0
+          }
+        ]
+      }
+    ],
+    "evidence_pack": {
+      "need_summary": "Noah Williams (Finance) requests 2 additional seats for the existing approved e-signature tool, SignFlow, to support treasury contract approvals. Annual cost is $500.",
+      "facts": [
+        {
+          "source": "get_purchase_request",
+          "finding": "Requester Noah Williams (Finance) requests 2 additional seats for SignFlow.",
+          "reference": "requests.json:SYN-1028"
+        },
+        {
+          "source": "check_department_budget",
+          "finding": "Annual cost is $500. Finance department has $29,000 available budget. Request is within budget.",
+          "reference": "department_budgets.csv:Finance"
+        },
+        {
+          "source": "search_existing_software",
+          "finding": "SignFlow is an existing approved vendor (SW010) with a company-wide agreement.",
+          "reference": "software_catalog.csv:SW010"
+        },
+        {
+          "source": "get_vendor_registry_record",
+          "finding": "Vendor SignFlow is approved in the internal registry (security review date 2026-06-20).",
+          "reference": "vendors.csv:V010"
+        },
+        {
+          "source": "get_vendor_risk_assessment",
+          "finding": "External vendor-risk assessment for SignFlow could not be verified.",
+          "reference": "GET /vendor-risk/SignFlow"
+        }
+      ],
+      "overlap_assessment": {
+        "disposition": "existing_tool_likely_sufficient",
+        "existing_options": [
+          "SignFlow (SW010)"
+        ],
+        "reasoning": "The request is for additional seats for an existing, company-wide approved tool. The tool is already in use by the department."
+      },
+      "data_quality_issues": [
+        "External vendor-risk service returned an invalid response for SignFlow (missing security_review_status). Status is unverified."
+      ],
+      "open_questions": [
+        "Can the department confirm if existing seats are fully utilized before adding more?",
+        "Given the external risk assessment failure, should a manual security review be triggered?"
+      ],
+      "prompt_injection_observed": false,
+      "injection_details": "None detected."
+    },
+    "draft": {
+      "status": "MANUAL_REVIEW_REQUIRED",
+      "recommendation": "Route for Manager and Security approval. Request clarification on seat utilization.",
+      "rationale": "The request is for additional seats for an existing, approved tool. While the budget is sufficient, the external vendor-risk assessment service returned an invalid response, necessitating a manual Security review per Policy \u00a710. The request is also subject to Manager approval per Policy \u00a74. I have flagged the need for seat utilization confirmation to ensure the additional seats are necessary.",
+      "evidence": [
+        {
+          "source": "get_purchase_request",
+          "finding": "Requester Noah Williams (Finance) requests 2 additional seats for SignFlow.",
+          "reference": "requests.json:SYN-1028"
+        },
+        {
+          "source": "check_department_budget",
+          "finding": "Annual cost is $500. Finance department has $29,000 available budget. Request is within budget.",
+          "reference": "department_budgets.csv:Finance"
+        },
+        {
+          "source": "search_existing_software",
+          "finding": "SignFlow is an existing approved vendor (SW010) with a company-wide agreement.",
+          "reference": "software_catalog.csv:SW010"
+        },
+        {
+          "source": "get_vendor_registry_record",
+          "finding": "Vendor SignFlow is approved in the internal registry (security review date 2026-06-20).",
+          "reference": "vendors.csv:V010"
+        },
+        {
+          "source": "get_vendor_risk_assessment",
+          "finding": "External vendor-risk service returned an invalid response for SignFlow (missing security_review_status). Status is unverified.",
+          "reference": "GET /vendor-risk/SignFlow"
+        },
+        {
+          "source": "lookup_policy_section",
+          "finding": "Annual amount $500 falls in tier 'Up to $1,000' -> Manager.",
+          "reference": "Policy \u00a74"
+        },
+        {
+          "source": "lookup_policy_section",
+          "finding": "Vendor-risk service could not be verified (invalid_response: Response lacks security_review_status). No favourable status is inferred; routed to manual Security review.",
+          "reference": "Policy \u00a710"
+        }
+      ],
+      "required_approvals": [
+        "Manager",
+        "Security"
+      ],
+      "risk_flags": [
+        "security_review_required",
+        "vendor_risk_unavailable"
+      ],
+      "missing_information": [],
+      "clarification_questions": [
+        "Can the department confirm if existing seats for SignFlow are fully utilized before adding more?"
+      ],
+      "overlap_disposition": "existing_tool_likely_sufficient",
+      "next_step": "Route to Manager for approval and Security for manual review due to the vendor-risk service failure. Request clarification from the requester regarding seat utilization.",
+      "prompt_injection_observed": false
+    },
+    "assessment": {
+      "reference_date": "2026-09-30",
+      "annual_amount_usd": 500.0,
+      "approval_tier": "Up to $1,000",
+      "required_approvals": [
+        "Manager",
+        "Security"
+      ],
+      "risk_flags": [
+        "security_review_required",
+        "vendor_risk_unavailable"
+      ],
+      "missing_information": [],
+      "missing_fields": [],
+      "rule_hits": [
+        {
+          "rule": "approval_threshold",
+          "section": "Policy \u00a74",
+          "finding": "Annual amount $500 falls in tier 'Up to $1,000' -> Manager.",
+          "adds_approvals": [
+            "Manager"
+          ],
+          "adds_flags": []
+        },
+        {
+          "rule": "budget_within",
+          "section": "Policy \u00a72",
+          "finding": "Cost $500 is within Finance available budget $29,000 ($28,500 remaining). This does not imply approval.",
+          "adds_approvals": [],
+          "adds_flags": []
+        },
+        {
+          "rule": "vendor_risk_unavailable",
+          "section": "Policy \u00a710",
+          "finding": "Vendor-risk service could not be verified (invalid_response: Response lacks security_review_status). No favourable status is inferred; routed to manual Security review.",
+          "adds_approvals": [
+            "Security"
+          ],
+          "adds_flags": [
+            "vendor_risk_unavailable",
+            "security_review_required"
+          ]
+        },
+        {
+          "rule": "extends_existing_agreement",
+          "section": "Policy \u00a73",
+          "finding": "Request extends an existing approved product/agreement (SignFlow); not a duplicate purchase.",
+          "adds_approvals": [],
+          "adds_flags": []
+        }
+      ],
+      "open_items": [
+        "Re-run the vendor-risk check once the service is available."
+      ],
+      "budget": {
+        "department": "Finance",
+        "available_usd": 29000.0,
+        "requested_usd": 500,
+        "remaining_after_usd": 28500.0,
+        "within_budget": true
+      },
+      "vendor_review": {
+        "registry_status": "Approved",
+        "registry_review_date": "2026-06-20",
+        "registry_days_since_review": 102,
+        "api_status": null,
+        "api_review_date": null,
+        "api_days_since_review": null,
+        "api_outcome": "invalid_response",
+        "validity_days": 365,
+        "assessment_current": null,
+        "conflicts": []
+      },
+      "data_sensitivity": {
+        "data_access_level": "internal_documents",
+        "category": "low",
+        "security_reasons": [],
+        "privacy_reasons": [],
+        "stores_data_outside_region": null
+      },
+      "overlap": {
+        "flagged": false,
+        "gap_stated": false,
+        "exact_duplicate": false,
+        "matches": [],
+        "extends": [
+          {
+            "software_id": "SW010",
+            "product_name": "SignFlow",
+            "category": "E-signature",
+            "vendor_name": "SignFlow",
+            "status": "Approved",
+            "annual_cost_usd": 16000,
+            "licensed_seats": 45,
+            "scope": "Company-wide",
+            "notes": "Electronic signatures",
+            "relation": "same_vendor_extension",
+            "reference": "software_catalog.csv:SW010"
+          }
+        ]
+      },
+      "injection": {
+        "detected": false,
+        "findings": []
+      },
+      "default_status": "MANUAL_REVIEW_REQUIRED",
+      "allowed_statuses": [
+        "MANUAL_REVIEW_REQUIRED",
+        "REQUEST_CLARIFICATION"
+      ],
+      "status_reasons": [
+        "Material evidence is unavailable, conflicting, or unverifiable (Policy \u00a75, \u00a710)."
+      ],
+      "approver_routing": [
+        {
+          "role": "Manager",
+          "assignee": "Priya Shah (E006)",
+          "basis": "Requester's reporting line (employees.csv)"
+        },
+        {
+          "role": "Security",
+          "assignee": "Security review queue",
+          "basis": "Functional review queue"
+        }
+      ]
+    }
+  }
+}

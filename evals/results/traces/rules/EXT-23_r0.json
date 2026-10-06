@@ -1,0 +1,298 @@
+{
+  "case_id": "EXT-23",
+  "decision": {
+    "request_id": "SYN-1023",
+    "recommendation": "Request clarification: the request is incomplete (requester identity) and cannot be assessed for approval yet.",
+    "evidence": [
+      {
+        "source": "get_purchase_request",
+        "finding": "MetricLoop Additional Seats from MetricLoop (Analytics / BI): annual cost $2,000, users 3, data access 'internal_documents', integrations: none, urgency 'normal'.",
+        "reference": "requests.json:SYN-1023"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester could not be verified: Employee 'E999' not found in employees.csv",
+        "reference": "employees.csv"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Budget could not be verified: No software budget record for department ''",
+        "reference": "department_budgets.csv"
+      },
+      {
+        "source": "search_existing_software",
+        "finding": "Catalog SW006 MetricLoop (MetricLoop, Analytics / BI) is 'Approved', scope Company-wide, 55 seats, $52,000/yr; relation: same vendor extension. Notes: Dashboards and BI.",
+        "reference": "software_catalog.csv:SW006"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Registry V006 MetricLoop: procurement 'Approved', security 'Approved' (review date 2026-05-10), legal terms 'Approved'.",
+        "reference": "vendors.csv:V006"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor-risk service: risk 'low', security review 'approved' (last review 2026-05-10), processes personal data: True, stores data outside region: False.",
+        "reference": "GET /vendor-risk/MetricLoop"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Request is not ready for approval: 1 required item(s) missing.",
+        "reference": "Policy \u00a71"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Annual amount $2,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+        "reference": "Policy \u00a74"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Request extends an existing approved product/agreement (MetricLoop); not a duplicate purchase.",
+        "reference": "Policy \u00a73"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement"
+    ],
+    "missing_information": [
+      "Requester identity: requester_id 'E999' is not in the employee directory"
+    ],
+    "risk_flags": [
+      "missing_information"
+    ],
+    "next_step": "Procurement returns the request to the requester to supply: Requester identity: requester_id 'E999' is not in the employee directory. Re-run the assessment once the request is complete.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 0,
+      "tool_calls": 7,
+      "tool_names": [
+        "get_purchase_request",
+        "get_requester_profile",
+        "check_department_budget",
+        "search_existing_software",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "evaluate_procurement_policy"
+      ]
+    }
+  },
+  "trace": {
+    "architecture": "rules",
+    "mode": "rules_only",
+    "provider": "none",
+    "model": "gemini-3.1-flash-lite",
+    "fallback_reason": null,
+    "latency_ms": 17.6,
+    "usage": {},
+    "cost_usd": 0.0,
+    "guardrails": {
+      "corrections": [],
+      "omitted_approvals": [],
+      "omitted_flags": [],
+      "added_by_llm_approvals": [],
+      "added_by_llm_flags": [],
+      "status_overridden": false,
+      "llm_status": null,
+      "final_status": "REQUEST_CLARIFICATION",
+      "grounded_claims": 0,
+      "ungrounded_claims": [],
+      "unsafe_language_blocked": false,
+      "raw_policy_compliant": true
+    },
+    "tool_log": [
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1023"
+        },
+        "ok": true,
+        "latency_ms": 0.1,
+        "cached": false
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "system",
+        "args": {
+          "employee_id": "E999"
+        },
+        "ok": false,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "system",
+        "args": {
+          "department": "",
+          "annual_cost_usd": 2000.0
+        },
+        "ok": false,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "system",
+        "args": {
+          "product_name": "MetricLoop Additional Seats",
+          "vendor_name": "MetricLoop",
+          "category": "Analytics / BI"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "system",
+        "args": {
+          "vendor_name": "MetricLoop"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "system",
+        "args": {
+          "vendor_name": "MetricLoop"
+        },
+        "ok": true,
+        "latency_ms": 17.2,
+        "cached": false
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1023"
+        },
+        "ok": true,
+        "latency_ms": 17.4,
+        "cached": false
+      }
+    ],
+    "agent_runs": [],
+    "evidence_pack": null,
+    "draft": null,
+    "assessment": {
+      "reference_date": "2026-09-30",
+      "annual_amount_usd": 2000.0,
+      "approval_tier": "$1,000.01 - $10,000",
+      "required_approvals": [
+        "Department Head",
+        "Procurement"
+      ],
+      "risk_flags": [
+        "missing_information"
+      ],
+      "missing_information": [
+        "Requester identity: requester_id 'E999' is not in the employee directory"
+      ],
+      "missing_fields": [
+        "requester"
+      ],
+      "rule_hits": [
+        {
+          "rule": "required_information",
+          "section": "Policy \u00a71",
+          "finding": "Request is not ready for approval: 1 required item(s) missing.",
+          "adds_approvals": [],
+          "adds_flags": [
+            "missing_information"
+          ]
+        },
+        {
+          "rule": "approval_threshold",
+          "section": "Policy \u00a74",
+          "finding": "Annual amount $2,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+          "adds_approvals": [
+            "Department Head",
+            "Procurement"
+          ],
+          "adds_flags": []
+        },
+        {
+          "rule": "extends_existing_agreement",
+          "section": "Policy \u00a73",
+          "finding": "Request extends an existing approved product/agreement (MetricLoop); not a duplicate purchase.",
+          "adds_approvals": [],
+          "adds_flags": []
+        }
+      ],
+      "open_items": [],
+      "budget": {
+        "department": null,
+        "available_usd": null,
+        "requested_usd": 2000,
+        "remaining_after_usd": null,
+        "within_budget": null
+      },
+      "vendor_review": {
+        "registry_status": "Approved",
+        "registry_review_date": "2026-05-10",
+        "registry_days_since_review": 143,
+        "api_status": "approved",
+        "api_review_date": "2026-05-10",
+        "api_days_since_review": 143,
+        "api_outcome": "ok",
+        "validity_days": 365,
+        "assessment_current": true,
+        "conflicts": []
+      },
+      "data_sensitivity": {
+        "data_access_level": "internal_documents",
+        "category": "low",
+        "security_reasons": [],
+        "privacy_reasons": [],
+        "stores_data_outside_region": false
+      },
+      "overlap": {
+        "flagged": false,
+        "gap_stated": false,
+        "exact_duplicate": false,
+        "matches": [],
+        "extends": [
+          {
+            "software_id": "SW006",
+            "product_name": "MetricLoop",
+            "category": "Analytics / BI",
+            "vendor_name": "MetricLoop",
+            "status": "Approved",
+            "annual_cost_usd": 52000,
+            "licensed_seats": 55,
+            "scope": "Company-wide",
+            "notes": "Dashboards and BI",
+            "relation": "same_vendor_extension",
+            "reference": "software_catalog.csv:SW006"
+          }
+        ]
+      },
+      "injection": {
+        "detected": false,
+        "findings": []
+      },
+      "default_status": "REQUEST_CLARIFICATION",
+      "allowed_statuses": [
+        "REQUEST_CLARIFICATION"
+      ],
+      "status_reasons": [
+        "Material information is missing (Policy \u00a71)."
+      ],
+      "approver_routing": [
+        {
+          "role": "Department Head",
+          "assignee": "Unresolved - no department head found",
+          "basis": "Director/VP of the requesting department, else first Director/VP in the reporting chain"
+        },
+        {
+          "role": "Procurement",
+          "assignee": "Procurement team queue",
+          "basis": "Functional review queue"
+        }
+      ]
+    }
+  }
+}

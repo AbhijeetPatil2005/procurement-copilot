@@ -1,0 +1,803 @@
+{
+  "case_id": "EXT-10",
+  "decision": {
+    "request_id": "REQ-1010",
+    "recommendation": "Request clarification from the requester regarding the necessity of this purchase given the existing enterprise agreement for SignFlow. If confirmed as a necessary, non-covered service, route to the Manager for approval.",
+    "evidence": [
+      {
+        "source": "get_purchase_request",
+        "finding": "SignFlow Training Pack from SignFlow (Professional Services): annual cost $950, users 12, data access 'none', integrations: none, urgency 'normal'.",
+        "reference": "requests.json:REQ-1010"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Noah Williams (E004), Finance, IC4; manager Priya Shah (E006); department head Priya Shah (E006).",
+        "reference": "employees.csv:E004"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Requested $950 is within Finance available budget of $29,000 ($28,050 would remain).",
+        "reference": "department_budgets.csv:Finance"
+      },
+      {
+        "source": "search_existing_software",
+        "finding": "Catalog SW010 SignFlow (SignFlow, E-signature) is 'Approved', scope Company-wide, 45 seats, $16,000/yr; relation: same vendor extension. Notes: Electronic signatures.",
+        "reference": "software_catalog.csv:SW010"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Registry V010 SignFlow: procurement 'Approved', security 'Approved' (review date 2026-06-20), legal terms 'Approved'.",
+        "reference": "vendors.csv:V010"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor-risk service: risk 'low', security review 'approved' (last review 2026-06-20), processes personal data: True, stores data outside region: False.",
+        "reference": "GET /vendor-risk/SignFlow"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Annual amount $950 falls in tier 'Up to $1,000' -> Manager.",
+        "reference": "Policy \u00a74"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Request extends an existing approved product/agreement (SignFlow); not a duplicate purchase.",
+        "reference": "Policy \u00a73"
+      },
+      {
+        "source": "get_purchase_request (agent)",
+        "finding": "Noah Williams (Finance) requests a SignFlow Training Pack for $950.",
+        "reference": "requests.json:REQ-1010"
+      },
+      {
+        "source": "check_department_budget (agent)",
+        "finding": "Finance department has $29,000 available budget; request is within budget.",
+        "reference": "department_budgets.csv:Finance"
+      },
+      {
+        "source": "get_vendor_registry_record (agent)",
+        "finding": "SignFlow is an approved vendor with an approved security status (last reviewed 2026-06-20).",
+        "reference": "vendors.csv:V010"
+      },
+      {
+        "source": "get_vendor_risk_assessment (agent)",
+        "finding": "External risk assessment for SignFlow is 'low' risk, approved, and processes personal data.",
+        "reference": "GET /vendor-risk/SignFlow"
+      },
+      {
+        "source": "search_existing_software (agent)",
+        "finding": "SignFlow (the software) is already approved and in use company-wide.",
+        "reference": "software_catalog.csv:SW010"
+      }
+    ],
+    "required_approvals": [
+      "Manager"
+    ],
+    "missing_information": [
+      "Confirmation of whether training is covered under the existing enterprise agreement."
+    ],
+    "risk_flags": [
+      "existing_tool_overlap",
+      "missing_information"
+    ],
+    "next_step": "Request clarification from the requester regarding whether the training is included in the existing enterprise agreement before routing to the Manager for approval. Questions for the requester: (1) Does the existing company-wide SignFlow agreement include training, or is this a separate service? (2) Is the training provided by SignFlow directly, or a third party?",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 4,
+      "tool_calls": 9,
+      "tool_names": [
+        "get_purchase_request",
+        "get_requester_profile",
+        "check_department_budget",
+        "search_existing_software",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_department_budget",
+        "search_existing_software",
+        "evaluate_procurement_policy"
+      ]
+    }
+  },
+  "trace": {
+    "architecture": "staged",
+    "mode": "llm",
+    "provider": "openai",
+    "model": "gemini-3.1-flash-lite",
+    "fallback_reason": null,
+    "latency_ms": 27875.6,
+    "usage": {
+      "input_tokens": 9101,
+      "output_tokens": 1240,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 0
+    },
+    "cost_usd": null,
+    "guardrails": {
+      "corrections": [
+        "dropped 2 ungrounded evidence claim(s)"
+      ],
+      "omitted_approvals": [],
+      "omitted_flags": [],
+      "added_by_llm_approvals": [],
+      "added_by_llm_flags": [
+        "existing_tool_overlap"
+      ],
+      "status_overridden": false,
+      "llm_status": "REQUEST_CLARIFICATION",
+      "final_status": "REQUEST_CLARIFICATION",
+      "grounded_claims": 5,
+      "ungrounded_claims": [
+        {
+          "source": "lookup_policy_section",
+          "finding": "Annual amount $950 falls in tier 'Up to $1,000' -> Manager.",
+          "reason": "cites tool 'lookup_policy_section' which was not called in this run"
+        },
+        {
+          "source": "lookup_policy_section",
+          "finding": "Request extends an existing approved product/agreement (SignFlow); not a duplicate purchase.",
+          "reason": "cites tool 'lookup_policy_section' which was not called in this run"
+        }
+      ],
+      "unsafe_language_blocked": false,
+      "raw_policy_compliant": true
+    },
+    "tool_log": [
+      {
+        "name": "get_purchase_request",
+        "caller": "analyst",
+        "args": {
+          "request_id": "REQ-1010"
+        },
+        "ok": true,
+        "latency_ms": 0.1,
+        "cached": false
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "analyst",
+        "args": {
+          "employee_id": "E004"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "analyst",
+        "args": {
+          "annual_cost_usd": 950,
+          "department": "Finance"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "analyst",
+        "args": {
+          "category": "Professional Services",
+          "use_case_keywords": [
+            "training",
+            "finance training",
+            "document signing training"
+          ],
+          "vendor_name": "SignFlow",
+          "product_name": "SignFlow Training Pack"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "analyst",
+        "args": {
+          "vendor_name": "SignFlow"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "analyst",
+        "args": {
+          "vendor_name": "SignFlow"
+        },
+        "ok": true,
+        "latency_ms": 2.5,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "REQ-1010"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "system",
+        "args": {
+          "employee_id": "E004"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "system",
+        "args": {
+          "department": "Finance",
+          "annual_cost_usd": 950.0
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "system",
+        "args": {
+          "product_name": "SignFlow Training Pack",
+          "vendor_name": "SignFlow",
+          "category": "Professional Services"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "system",
+        "args": {
+          "vendor_name": "SignFlow"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "system",
+        "args": {
+          "vendor_name": "SignFlow"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "REQ-1010"
+        },
+        "ok": true,
+        "latency_ms": 0.2,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "REQ-1010"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "REQ-1010"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      }
+    ],
+    "agent_runs": [
+      {
+        "role": "analyst",
+        "llm_calls": 3,
+        "tool_calls": 6,
+        "usage": {
+          "input_tokens": 5926,
+          "output_tokens": 624,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 20897.4,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_purchase_request",
+                "input": {
+                  "request_id": "REQ-1010"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 1366,
+              "output_tokens": 25
+            },
+            "latency_ms": 9543.3
+          },
+          {
+            "type": "tool",
+            "name": "get_purchase_request",
+            "input": {
+              "request_id": "REQ-1010"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_requester_profile",
+                "input": {
+                  "employee_id": "E004"
+                }
+              },
+              {
+                "name": "check_department_budget",
+                "input": {
+                  "annual_cost_usd": 950,
+                  "department": "Finance"
+                }
+              },
+              {
+                "name": "search_existing_software",
+                "input": {
+                  "category": "Professional Services",
+                  "use_case_keywords": [
+                    "training",
+                    "finance training",
+                    "document signing training"
+                  ],
+                  "vendor_name": "SignFlow",
+                  "product_name": "SignFlow Training Pack"
+                }
+              },
+              {
+                "name": "get_vendor_registry_record",
+                "input": {
+                  "vendor_name": "SignFlow"
+                }
+              },
+              {
+                "name": "get_vendor_risk_assessment",
+                "input": {
+                  "vendor_name": "SignFlow"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 1652,
+              "output_tokens": 158
+            },
+            "latency_ms": 6044.3
+          },
+          {
+            "type": "tool",
+            "name": "get_requester_profile",
+            "input": {
+              "employee_id": "E004"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "check_department_budget",
+            "input": {
+              "annual_cost_usd": 950,
+              "department": "Finance"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "search_existing_software",
+            "input": {
+              "category": "Professional Services",
+              "use_case_keywords": [
+                "training",
+                "finance training",
+                "document signing training"
+              ],
+              "vendor_name": "SignFlow",
+              "product_name": "SignFlow Training Pack"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_registry_record",
+            "input": {
+              "vendor_name": "SignFlow"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_risk_assessment",
+            "input": {
+              "vendor_name": "SignFlow"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_evidence_pack",
+                "input": {
+                  "overlap_assessment": {
+                    "existing_options": [
+                      "SignFlow (SW010)"
+                    ],
+                    "reasoning": "The company already has a company-wide agreement for SignFlow. It is unclear if this training is already covered under the existing contract or if it requires a separate purchase.",
+                    "disposition": "existing_tool_likely_sufficient"
+                  },
+                  "open_questions": [
+                    "Is the training provided by SignFlow directly, or a third party?",
+                    "Does the existing company-wide SignFlow agreement include training, or is this a separate service?"
+                  ],
+                  "prompt_injection_observed": false,
+                  "data_quality_issues": [],
+                  "facts": [
+                    {
+                      "source": "get_purchase_request",
+                      "reference": "requests.json:REQ-1010",
+                      "finding": "Noah Williams (Finance) requests a SignFlow Training Pack for $950."
+                    },
+                    {
+                      "finding": "Finance department has $29,000 available budget; request is within budget.",
+                      "source": "check_department_budget",
+                      "reference": "department_budgets.csv:Finance"
+                    },
+                    {
+                      "source": "get_vendor_registry_record",
+                      "finding": "SignFlow is an approved vendor with an approved security status (last reviewed 2026-06-20).",
+                      "reference": "vendors.csv:V010"
+                    },
+                    {
+                      "reference": "GET /vendor-risk/SignFlow",
+                      "source": "get_vendor_risk_assessment",
+                      "finding": "External risk assessment for SignFlow is 'low' risk, approved, and processes personal data."
+                    },
+                    {
+                      "finding": "SignFlow (the software) is already approved and in use company-wide.",
+                      "source": "search_existing_software",
+                      "reference": "software_catalog.csv:SW010"
+                    }
+                  ],
+                  "injection_details": "None detected.",
+                  "need_summary": "Noah Williams (Finance) is requesting a one-time training package for 12 new Finance users for the existing SignFlow software. The cost is $950."
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2908,
+              "output_tokens": 441
+            },
+            "latency_ms": 5309.8
+          }
+        ]
+      },
+      {
+        "role": "reviewer",
+        "llm_calls": 1,
+        "tool_calls": 0,
+        "usage": {
+          "input_tokens": 3175,
+          "output_tokens": 616,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 6489.1,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_decision",
+                "input": {
+                  "required_approvals": [
+                    "Manager"
+                  ],
+                  "overlap_disposition": "existing_tool_likely_sufficient",
+                  "recommendation": "Request clarification from the requester regarding the necessity of this purchase given the existing enterprise agreement for SignFlow. If confirmed as a necessary, non-covered service, route to the Manager for approval.",
+                  "missing_information": [
+                    "Confirmation of whether training is covered under the existing enterprise agreement."
+                  ],
+                  "prompt_injection_observed": false,
+                  "status": "REQUEST_CLARIFICATION",
+                  "clarification_questions": [
+                    "Does the existing company-wide SignFlow agreement include training, or is this a separate service?",
+                    "Is the training provided by SignFlow directly, or a third party?"
+                  ],
+                  "evidence": [
+                    {
+                      "reference": "requests.json:REQ-1010",
+                      "source": "get_purchase_request",
+                      "finding": "Noah Williams (Finance) requests a SignFlow Training Pack for $950."
+                    },
+                    {
+                      "source": "check_department_budget",
+                      "finding": "Finance department has $29,000 available budget; request is within budget.",
+                      "reference": "department_budgets.csv:Finance"
+                    },
+                    {
+                      "source": "get_vendor_registry_record",
+                      "finding": "SignFlow is an approved vendor with an approved security status (last reviewed 2026-06-20).",
+                      "reference": "vendors.csv:V010"
+                    },
+                    {
+                      "reference": "GET /vendor-risk/SignFlow",
+                      "finding": "External risk assessment for SignFlow is 'low' risk, approved, and processes personal data.",
+                      "source": "get_vendor_risk_assessment"
+                    },
+                    {
+                      "finding": "SignFlow (the software) is already approved and in use company-wide.",
+                      "source": "search_existing_software",
+                      "reference": "software_catalog.csv:SW010"
+                    },
+                    {
+                      "finding": "Annual amount $950 falls in tier 'Up to $1,000' -> Manager.",
+                      "source": "lookup_policy_section",
+                      "reference": "Policy \u00a74"
+                    },
+                    {
+                      "reference": "Policy \u00a73",
+                      "source": "lookup_policy_section",
+                      "finding": "Request extends an existing approved product/agreement (SignFlow); not a duplicate purchase."
+                    }
+                  ],
+                  "risk_flags": [
+                    "existing_tool_overlap"
+                  ],
+                  "rationale": "The request is for a training package for an existing, company-wide approved tool (SignFlow). While the cost is within budget and the vendor is approved, it is unclear if this training is already included in the existing enterprise agreement. Clarification is required to ensure we are not paying for services already covered. Once clarified, the request only requires Manager approval per Policy \u00a74.",
+                  "next_step": "Request clarification from the requester regarding whether the training is included in the existing enterprise agreement before routing to the Manager for approval."
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 3175,
+              "output_tokens": 616
+            },
+            "latency_ms": 6489.1
+          }
+        ]
+      }
+    ],
+    "evidence_pack": {
+      "need_summary": "Noah Williams (Finance) is requesting a one-time training package for 12 new Finance users for the existing SignFlow software. The cost is $950.",
+      "facts": [
+        {
+          "source": "get_purchase_request",
+          "finding": "Noah Williams (Finance) requests a SignFlow Training Pack for $950.",
+          "reference": "requests.json:REQ-1010"
+        },
+        {
+          "source": "check_department_budget",
+          "finding": "Finance department has $29,000 available budget; request is within budget.",
+          "reference": "department_budgets.csv:Finance"
+        },
+        {
+          "source": "get_vendor_registry_record",
+          "finding": "SignFlow is an approved vendor with an approved security status (last reviewed 2026-06-20).",
+          "reference": "vendors.csv:V010"
+        },
+        {
+          "source": "get_vendor_risk_assessment",
+          "finding": "External risk assessment for SignFlow is 'low' risk, approved, and processes personal data.",
+          "reference": "GET /vendor-risk/SignFlow"
+        },
+        {
+          "source": "search_existing_software",
+          "finding": "SignFlow (the software) is already approved and in use company-wide.",
+          "reference": "software_catalog.csv:SW010"
+        }
+      ],
+      "overlap_assessment": {
+        "disposition": "existing_tool_likely_sufficient",
+        "existing_options": [
+          "SignFlow (SW010)"
+        ],
+        "reasoning": "The company already has a company-wide agreement for SignFlow. It is unclear if this training is already covered under the existing contract or if it requires a separate purchase."
+      },
+      "data_quality_issues": [],
+      "open_questions": [
+        "Is the training provided by SignFlow directly, or a third party?",
+        "Does the existing company-wide SignFlow agreement include training, or is this a separate service?"
+      ],
+      "prompt_injection_observed": false,
+      "injection_details": "None detected."
+    },
+    "draft": {
+      "status": "REQUEST_CLARIFICATION",
+      "recommendation": "Request clarification from the requester regarding the necessity of this purchase given the existing enterprise agreement for SignFlow. If confirmed as a necessary, non-covered service, route to the Manager for approval.",
+      "rationale": "The request is for a training package for an existing, company-wide approved tool (SignFlow). While the cost is within budget and the vendor is approved, it is unclear if this training is already included in the existing enterprise agreement. Clarification is required to ensure we are not paying for services already covered. Once clarified, the request only requires Manager approval per Policy \u00a74.",
+      "evidence": [
+        {
+          "source": "get_purchase_request",
+          "finding": "Noah Williams (Finance) requests a SignFlow Training Pack for $950.",
+          "reference": "requests.json:REQ-1010"
+        },
+        {
+          "source": "check_department_budget",
+          "finding": "Finance department has $29,000 available budget; request is within budget.",
+          "reference": "department_budgets.csv:Finance"
+        },
+        {
+          "source": "get_vendor_registry_record",
+          "finding": "SignFlow is an approved vendor with an approved security status (last reviewed 2026-06-20).",
+          "reference": "vendors.csv:V010"
+        },
+        {
+          "source": "get_vendor_risk_assessment",
+          "finding": "External risk assessment for SignFlow is 'low' risk, approved, and processes personal data.",
+          "reference": "GET /vendor-risk/SignFlow"
+        },
+        {
+          "source": "search_existing_software",
+          "finding": "SignFlow (the software) is already approved and in use company-wide.",
+          "reference": "software_catalog.csv:SW010"
+        },
+        {
+          "source": "lookup_policy_section",
+          "finding": "Annual amount $950 falls in tier 'Up to $1,000' -> Manager.",
+          "reference": "Policy \u00a74"
+        },
+        {
+          "source": "lookup_policy_section",
+          "finding": "Request extends an existing approved product/agreement (SignFlow); not a duplicate purchase.",
+          "reference": "Policy \u00a73"
+        }
+      ],
+      "required_approvals": [
+        "Manager"
+      ],
+      "risk_flags": [
+        "existing_tool_overlap"
+      ],
+      "missing_information": [
+        "Confirmation of whether training is covered under the existing enterprise agreement."
+      ],
+      "clarification_questions": [
+        "Does the existing company-wide SignFlow agreement include training, or is this a separate service?",
+        "Is the training provided by SignFlow directly, or a third party?"
+      ],
+      "overlap_disposition": "existing_tool_likely_sufficient",
+      "next_step": "Request clarification from the requester regarding whether the training is included in the existing enterprise agreement before routing to the Manager for approval.",
+      "prompt_injection_observed": false
+    },
+    "assessment": {
+      "reference_date": "2026-09-30",
+      "annual_amount_usd": 950.0,
+      "approval_tier": "Up to $1,000",
+      "required_approvals": [
+        "Manager"
+      ],
+      "risk_flags": [],
+      "missing_information": [],
+      "missing_fields": [],
+      "rule_hits": [
+        {
+          "rule": "approval_threshold",
+          "section": "Policy \u00a74",
+          "finding": "Annual amount $950 falls in tier 'Up to $1,000' -> Manager.",
+          "adds_approvals": [
+            "Manager"
+          ],
+          "adds_flags": []
+        },
+        {
+          "rule": "budget_within",
+          "section": "Policy \u00a72",
+          "finding": "Cost $950 is within Finance available budget $29,000 ($28,050 remaining). This does not imply approval.",
+          "adds_approvals": [],
+          "adds_flags": []
+        },
+        {
+          "rule": "extends_existing_agreement",
+          "section": "Policy \u00a73",
+          "finding": "Request extends an existing approved product/agreement (SignFlow); not a duplicate purchase.",
+          "adds_approvals": [],
+          "adds_flags": []
+        }
+      ],
+      "open_items": [],
+      "budget": {
+        "department": "Finance",
+        "available_usd": 29000.0,
+        "requested_usd": 950,
+        "remaining_after_usd": 28050.0,
+        "within_budget": true
+      },
+      "vendor_review": {
+        "registry_status": "Approved",
+        "registry_review_date": "2026-06-20",
+        "registry_days_since_review": 102,
+        "api_status": "approved",
+        "api_review_date": "2026-06-20",
+        "api_days_since_review": 102,
+        "api_outcome": "ok",
+        "validity_days": 365,
+        "assessment_current": true,
+        "conflicts": []
+      },
+      "data_sensitivity": {
+        "data_access_level": "none",
+        "category": "low",
+        "security_reasons": [],
+        "privacy_reasons": [],
+        "stores_data_outside_region": false
+      },
+      "overlap": {
+        "flagged": false,
+        "gap_stated": false,
+        "exact_duplicate": false,
+        "matches": [],
+        "extends": [
+          {
+            "software_id": "SW010",
+            "product_name": "SignFlow",
+            "category": "E-signature",
+            "vendor_name": "SignFlow",
+            "status": "Approved",
+            "annual_cost_usd": 16000,
+            "licensed_seats": 45,
+            "scope": "Company-wide",
+            "notes": "Electronic signatures",
+            "relation": "same_vendor_extension",
+            "reference": "software_catalog.csv:SW010"
+          }
+        ]
+      },
+      "injection": {
+        "detected": false,
+        "findings": []
+      },
+      "default_status": "ROUTE_FOR_APPROVAL",
+      "allowed_statuses": [
+        "ROUTE_FOR_APPROVAL",
+        "REQUEST_CLARIFICATION",
+        "MANUAL_REVIEW_REQUIRED",
+        "ESCALATE_SPECIALIST_REVIEW"
+      ],
+      "status_reasons": [
+        "Only standard business approvals are triggered."
+      ],
+      "approver_routing": [
+        {
+          "role": "Manager",
+          "assignee": "Priya Shah (E006)",
+          "basis": "Requester's reporting line (employees.csv)"
+        }
+      ]
+    }
+  }
+}

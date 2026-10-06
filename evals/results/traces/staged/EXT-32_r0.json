@@ -1,0 +1,859 @@
+{
+  "case_id": "EXT-32",
+  "decision": {
+    "request_id": "SYN-1032",
+    "recommendation": "Escalate for specialist review: Escalate for Security and Privacy review due to the processing of customer PII, and verify seat availability with Procurement.",
+    "evidence": [
+      {
+        "source": "get_purchase_request",
+        "finding": "TaskFlow Additional Seats from TaskFlow (Project Management): annual cost $4,000, users 10, data access 'internal_marketing', integrations: none, urgency 'normal'.",
+        "reference": "requests.json:SYN-1032"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester Sarah Lee (E001), Marketing, IC4; manager David Chen (E009); department head David Chen (E009).",
+        "reference": "employees.csv:E001"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Requested $4,000 is within Marketing available budget of $15,000 ($11,000 would remain).",
+        "reference": "department_budgets.csv:Marketing"
+      },
+      {
+        "source": "search_existing_software",
+        "finding": "Catalog SW003 TaskFlow (TaskFlow, Project Management) is 'Approved', scope Company-wide, 180 seats, $36,000/yr; relation: same vendor extension. Notes: Project and task management.",
+        "reference": "software_catalog.csv:SW003"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Registry V003 TaskFlow: procurement 'Approved', security 'Approved' (review date 2026-06-03), legal terms 'Approved'.",
+        "reference": "vendors.csv:V003"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor-risk service: risk 'low', security review 'approved' (last review 2026-06-03), processes personal data: True, stores data outside region: False.",
+        "reference": "GET /vendor-risk/TaskFlow"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Annual amount $4,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+        "reference": "Policy \u00a74"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Request extends an existing approved product/agreement (TaskFlow); not a duplicate purchase.",
+        "reference": "Policy \u00a73"
+      },
+      {
+        "source": "get_requester_profile (agent)",
+        "finding": "Requester Sarah Lee (IC4) is in the Marketing department.",
+        "reference": "employees.csv:E001"
+      },
+      {
+        "source": "check_department_budget (agent)",
+        "finding": "The requested cost of $4,000 is within the Marketing department's available budget of $15,000.",
+        "reference": "department_budgets.csv:Marketing"
+      },
+      {
+        "source": "search_existing_software (agent)",
+        "finding": "TaskFlow is already an approved vendor with an existing company-wide agreement.",
+        "reference": "software_catalog.csv:SW003"
+      },
+      {
+        "source": "get_vendor_registry_record (agent)",
+        "finding": "Vendor TaskFlow has an approved procurement and security status, with a security review dated 2026-06-03.",
+        "reference": "vendors.csv:V003"
+      },
+      {
+        "source": "get_vendor_risk_assessment (agent)",
+        "finding": "External risk assessment for TaskFlow is 'low' and confirms they process personal data. Security review is current (2026-06-03).",
+        "reference": "GET /vendor-risk/TaskFlow"
+      },
+      {
+        "source": "lookup_policy_section (agent)",
+        "finding": "Privacy review is required for tools that will process customer PII.",
+        "reference": "Policy \u00a76"
+      },
+      {
+        "source": "lookup_policy_section (agent)",
+        "finding": "Security review is required when customer PII is involved.",
+        "reference": "Policy \u00a75"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement",
+      "Security",
+      "Privacy"
+    ],
+    "missing_information": [],
+    "risk_flags": [
+      "privacy_review_required",
+      "security_review_required"
+    ],
+    "next_step": "Route to Procurement to verify seat availability and initiate Privacy/Security review for the new data use case.",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 5,
+      "tool_calls": 10,
+      "tool_names": [
+        "get_purchase_request",
+        "get_requester_profile",
+        "check_department_budget",
+        "search_existing_software",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_department_budget",
+        "search_existing_software",
+        "evaluate_procurement_policy",
+        "lookup_policy_section"
+      ]
+    }
+  },
+  "trace": {
+    "architecture": "staged",
+    "mode": "llm",
+    "provider": "openai",
+    "model": "gemini-3.1-flash-lite",
+    "fallback_reason": null,
+    "latency_ms": 24195.7,
+    "usage": {
+      "input_tokens": 12911,
+      "output_tokens": 1337,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 0
+    },
+    "cost_usd": null,
+    "guardrails": {
+      "corrections": [],
+      "omitted_approvals": [],
+      "omitted_flags": [],
+      "added_by_llm_approvals": [
+        "Privacy",
+        "Security"
+      ],
+      "added_by_llm_flags": [
+        "privacy_review_required",
+        "security_review_required"
+      ],
+      "status_overridden": false,
+      "llm_status": "ESCALATE_SPECIALIST_REVIEW",
+      "final_status": "ESCALATE_SPECIALIST_REVIEW",
+      "grounded_claims": 7,
+      "ungrounded_claims": [],
+      "unsafe_language_blocked": false,
+      "raw_policy_compliant": true
+    },
+    "tool_log": [
+      {
+        "name": "get_purchase_request",
+        "caller": "analyst",
+        "args": {
+          "request_id": "SYN-1032"
+        },
+        "ok": true,
+        "latency_ms": 0.1,
+        "cached": false
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "analyst",
+        "args": {
+          "employee_id": "E001"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "analyst",
+        "args": {
+          "department": "Marketing",
+          "annual_cost_usd": 4000
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "analyst",
+        "args": {
+          "vendor_name": "TaskFlow",
+          "category": "Project Management",
+          "product_name": "TaskFlow Additional Seats",
+          "use_case_keywords": [
+            "project management",
+            "task tracking",
+            "customer contact management"
+          ]
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "analyst",
+        "args": {
+          "vendor_name": "TaskFlow"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "analyst",
+        "args": {
+          "vendor_name": "TaskFlow"
+        },
+        "ok": true,
+        "latency_ms": 2.8,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1032"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "system",
+        "args": {
+          "employee_id": "E001"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "system",
+        "args": {
+          "department": "Marketing",
+          "annual_cost_usd": 4000.0
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "system",
+        "args": {
+          "product_name": "TaskFlow Additional Seats",
+          "vendor_name": "TaskFlow",
+          "category": "Project Management"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "system",
+        "args": {
+          "vendor_name": "TaskFlow"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "system",
+        "args": {
+          "vendor_name": "TaskFlow"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1032"
+        },
+        "ok": true,
+        "latency_ms": 0.2,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1032"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "lookup_policy_section",
+        "caller": "reviewer",
+        "args": {
+          "query": "privacy review requirements personal data"
+        },
+        "ok": true,
+        "latency_ms": 0.1,
+        "cached": false
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1032"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      }
+    ],
+    "agent_runs": [
+      {
+        "role": "analyst",
+        "llm_calls": 3,
+        "tool_calls": 6,
+        "usage": {
+          "input_tokens": 5975,
+          "output_tokens": 649,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 12892.5,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_purchase_request",
+                "input": {
+                  "request_id": "SYN-1032"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 1365,
+              "output_tokens": 25
+            },
+            "latency_ms": 5369.9
+          },
+          {
+            "type": "tool",
+            "name": "get_purchase_request",
+            "input": {
+              "request_id": "SYN-1032"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_requester_profile",
+                "input": {
+                  "employee_id": "E001"
+                }
+              },
+              {
+                "name": "check_department_budget",
+                "input": {
+                  "department": "Marketing",
+                  "annual_cost_usd": 4000
+                }
+              },
+              {
+                "name": "search_existing_software",
+                "input": {
+                  "vendor_name": "TaskFlow",
+                  "category": "Project Management",
+                  "product_name": "TaskFlow Additional Seats",
+                  "use_case_keywords": [
+                    "project management",
+                    "task tracking",
+                    "customer contact management"
+                  ]
+                }
+              },
+              {
+                "name": "get_vendor_registry_record",
+                "input": {
+                  "vendor_name": "TaskFlow"
+                }
+              },
+              {
+                "name": "get_vendor_risk_assessment",
+                "input": {
+                  "vendor_name": "TaskFlow"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 1675,
+              "output_tokens": 160
+            },
+            "latency_ms": 3382.1
+          },
+          {
+            "type": "tool",
+            "name": "get_requester_profile",
+            "input": {
+              "employee_id": "E001"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "check_department_budget",
+            "input": {
+              "department": "Marketing",
+              "annual_cost_usd": 4000
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "search_existing_software",
+            "input": {
+              "vendor_name": "TaskFlow",
+              "category": "Project Management",
+              "product_name": "TaskFlow Additional Seats",
+              "use_case_keywords": [
+                "project management",
+                "task tracking",
+                "customer contact management"
+              ]
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_registry_record",
+            "input": {
+              "vendor_name": "TaskFlow"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_risk_assessment",
+            "input": {
+              "vendor_name": "TaskFlow"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_evidence_pack",
+                "input": {
+                  "data_quality_issues": [],
+                  "prompt_injection_observed": false,
+                  "open_questions": [
+                    "Does the existing company-wide TaskFlow license have available seats, or is an expansion of the contract required?",
+                    "Has the proposed use of TaskFlow for storing customer contact lists been reviewed by the Data Privacy/Compliance team, given the vendor processes personal data?"
+                  ],
+                  "need_summary": "Sarah Lee (Marketing) requests 10 additional seats for TaskFlow to manage customer contact lists (names, emails, phone numbers) for the field team.",
+                  "injection_details": "None detected.",
+                  "overlap_assessment": {
+                    "disposition": "existing_tool_likely_sufficient",
+                    "existing_options": [
+                      "TaskFlow (SW003)"
+                    ],
+                    "reasoning": "TaskFlow is already in use company-wide. The request is for additional seats for an existing tool."
+                  },
+                  "facts": [
+                    {
+                      "source": "get_requester_profile",
+                      "reference": "employees.csv:E001",
+                      "finding": "Requester Sarah Lee (IC4) is in the Marketing department."
+                    },
+                    {
+                      "reference": "department_budgets.csv:Marketing",
+                      "finding": "The requested cost of $4,000 is within the Marketing department's available budget of $15,000.",
+                      "source": "check_department_budget"
+                    },
+                    {
+                      "reference": "software_catalog.csv:SW003",
+                      "source": "search_existing_software",
+                      "finding": "TaskFlow is already an approved vendor with an existing company-wide agreement."
+                    },
+                    {
+                      "source": "get_vendor_registry_record",
+                      "reference": "vendors.csv:V003",
+                      "finding": "Vendor TaskFlow has an approved procurement and security status, with a security review dated 2026-06-03."
+                    },
+                    {
+                      "reference": "GET /vendor-risk/TaskFlow",
+                      "source": "get_vendor_risk_assessment",
+                      "finding": "External risk assessment for TaskFlow is 'low' and confirms they process personal data. Security review is current (2026-06-03)."
+                    }
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2935,
+              "output_tokens": 464
+            },
+            "latency_ms": 4140.5
+          }
+        ]
+      },
+      {
+        "role": "reviewer",
+        "llm_calls": 2,
+        "tool_calls": 1,
+        "usage": {
+          "input_tokens": 6936,
+          "output_tokens": 688,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 10805.5,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "lookup_policy_section",
+                "input": {
+                  "query": "privacy review requirements personal data"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 3312,
+              "output_tokens": 22
+            },
+            "latency_ms": 6983.2
+          },
+          {
+            "type": "tool",
+            "name": "lookup_policy_section",
+            "input": {
+              "query": "privacy review requirements personal data"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_decision",
+                "input": {
+                  "missing_information": [
+                    "Confirmation of seat availability vs. contract expansion.",
+                    "Privacy/Compliance team approval for the specific use case of storing customer contact lists."
+                  ],
+                  "overlap_disposition": "existing_tool_likely_sufficient",
+                  "recommendation": "Escalate for Security and Privacy review due to the processing of customer PII, and verify seat availability with Procurement.",
+                  "clarification_questions": [
+                    "Does the existing company-wide TaskFlow license have available seats, or is a contract expansion required?",
+                    "Has the proposed use of TaskFlow for storing customer contact lists (names, emails, phone numbers) been reviewed by the Data Privacy/Compliance team?"
+                  ],
+                  "status": "ESCALATE_SPECIALIST_REVIEW",
+                  "risk_flags": [
+                    "security_review_required",
+                    "privacy_review_required"
+                  ],
+                  "required_approvals": [
+                    "Department Head",
+                    "Procurement",
+                    "Security",
+                    "Privacy"
+                  ],
+                  "next_step": "Route to Procurement to verify seat availability and initiate Privacy/Security review for the new data use case.",
+                  "evidence": [
+                    {
+                      "reference": "employees.csv:E001",
+                      "source": "get_requester_profile",
+                      "finding": "Requester Sarah Lee (IC4) is in the Marketing department."
+                    },
+                    {
+                      "finding": "The requested cost of $4,000 is within the Marketing department's available budget of $15,000.",
+                      "reference": "department_budgets.csv:Marketing",
+                      "source": "check_department_budget"
+                    },
+                    {
+                      "source": "search_existing_software",
+                      "reference": "software_catalog.csv:SW003",
+                      "finding": "TaskFlow is already an approved vendor with an existing company-wide agreement."
+                    },
+                    {
+                      "finding": "Vendor TaskFlow has an approved procurement and security status, with a security review dated 2026-06-03.",
+                      "source": "get_vendor_registry_record",
+                      "reference": "vendors.csv:V003"
+                    },
+                    {
+                      "source": "get_vendor_risk_assessment",
+                      "reference": "GET /vendor-risk/TaskFlow",
+                      "finding": "External risk assessment for TaskFlow is 'low' and confirms they process personal data. Security review is current (2026-06-03)."
+                    },
+                    {
+                      "reference": "Policy \u00a76",
+                      "source": "lookup_policy_section",
+                      "finding": "Privacy review is required for tools that will process customer PII."
+                    },
+                    {
+                      "source": "lookup_policy_section",
+                      "reference": "Policy \u00a75",
+                      "finding": "Security review is required when customer PII is involved."
+                    }
+                  ],
+                  "prompt_injection_observed": false,
+                  "rationale": "While the vendor is approved and the budget is sufficient, the request involves processing customer PII (names, emails, phone numbers). Per Policy \u00a75 and \u00a76, this triggers mandatory Security and Privacy reviews, regardless of the vendor's existing status. The analyst's assessment of 'existing_tool_likely_sufficient' is correct, but the request requires additional oversight due to the data sensitivity."
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 3624,
+              "output_tokens": 666
+            },
+            "latency_ms": 3822.3
+          }
+        ]
+      }
+    ],
+    "evidence_pack": {
+      "need_summary": "Sarah Lee (Marketing) requests 10 additional seats for TaskFlow to manage customer contact lists (names, emails, phone numbers) for the field team.",
+      "facts": [
+        {
+          "source": "get_requester_profile",
+          "finding": "Requester Sarah Lee (IC4) is in the Marketing department.",
+          "reference": "employees.csv:E001"
+        },
+        {
+          "source": "check_department_budget",
+          "finding": "The requested cost of $4,000 is within the Marketing department's available budget of $15,000.",
+          "reference": "department_budgets.csv:Marketing"
+        },
+        {
+          "source": "search_existing_software",
+          "finding": "TaskFlow is already an approved vendor with an existing company-wide agreement.",
+          "reference": "software_catalog.csv:SW003"
+        },
+        {
+          "source": "get_vendor_registry_record",
+          "finding": "Vendor TaskFlow has an approved procurement and security status, with a security review dated 2026-06-03.",
+          "reference": "vendors.csv:V003"
+        },
+        {
+          "source": "get_vendor_risk_assessment",
+          "finding": "External risk assessment for TaskFlow is 'low' and confirms they process personal data. Security review is current (2026-06-03).",
+          "reference": "GET /vendor-risk/TaskFlow"
+        }
+      ],
+      "overlap_assessment": {
+        "disposition": "existing_tool_likely_sufficient",
+        "existing_options": [
+          "TaskFlow (SW003)"
+        ],
+        "reasoning": "TaskFlow is already in use company-wide. The request is for additional seats for an existing tool."
+      },
+      "data_quality_issues": [],
+      "open_questions": [
+        "Does the existing company-wide TaskFlow license have available seats, or is an expansion of the contract required?",
+        "Has the proposed use of TaskFlow for storing customer contact lists been reviewed by the Data Privacy/Compliance team, given the vendor processes personal data?"
+      ],
+      "prompt_injection_observed": false,
+      "injection_details": "None detected."
+    },
+    "draft": {
+      "status": "ESCALATE_SPECIALIST_REVIEW",
+      "recommendation": "Escalate for Security and Privacy review due to the processing of customer PII, and verify seat availability with Procurement.",
+      "rationale": "While the vendor is approved and the budget is sufficient, the request involves processing customer PII (names, emails, phone numbers). Per Policy \u00a75 and \u00a76, this triggers mandatory Security and Privacy reviews, regardless of the vendor's existing status. The analyst's assessment of 'existing_tool_likely_sufficient' is correct, but the request requires additional oversight due to the data sensitivity.",
+      "evidence": [
+        {
+          "source": "get_requester_profile",
+          "finding": "Requester Sarah Lee (IC4) is in the Marketing department.",
+          "reference": "employees.csv:E001"
+        },
+        {
+          "source": "check_department_budget",
+          "finding": "The requested cost of $4,000 is within the Marketing department's available budget of $15,000.",
+          "reference": "department_budgets.csv:Marketing"
+        },
+        {
+          "source": "search_existing_software",
+          "finding": "TaskFlow is already an approved vendor with an existing company-wide agreement.",
+          "reference": "software_catalog.csv:SW003"
+        },
+        {
+          "source": "get_vendor_registry_record",
+          "finding": "Vendor TaskFlow has an approved procurement and security status, with a security review dated 2026-06-03.",
+          "reference": "vendors.csv:V003"
+        },
+        {
+          "source": "get_vendor_risk_assessment",
+          "finding": "External risk assessment for TaskFlow is 'low' and confirms they process personal data. Security review is current (2026-06-03).",
+          "reference": "GET /vendor-risk/TaskFlow"
+        },
+        {
+          "source": "lookup_policy_section",
+          "finding": "Privacy review is required for tools that will process customer PII.",
+          "reference": "Policy \u00a76"
+        },
+        {
+          "source": "lookup_policy_section",
+          "finding": "Security review is required when customer PII is involved.",
+          "reference": "Policy \u00a75"
+        }
+      ],
+      "required_approvals": [
+        "Department Head",
+        "Procurement",
+        "Security",
+        "Privacy"
+      ],
+      "risk_flags": [
+        "security_review_required",
+        "privacy_review_required"
+      ],
+      "missing_information": [
+        "Confirmation of seat availability vs. contract expansion.",
+        "Privacy/Compliance team approval for the specific use case of storing customer contact lists."
+      ],
+      "clarification_questions": [
+        "Does the existing company-wide TaskFlow license have available seats, or is a contract expansion required?",
+        "Has the proposed use of TaskFlow for storing customer contact lists (names, emails, phone numbers) been reviewed by the Data Privacy/Compliance team?"
+      ],
+      "overlap_disposition": "existing_tool_likely_sufficient",
+      "next_step": "Route to Procurement to verify seat availability and initiate Privacy/Security review for the new data use case.",
+      "prompt_injection_observed": false
+    },
+    "assessment": {
+      "reference_date": "2026-09-30",
+      "annual_amount_usd": 4000.0,
+      "approval_tier": "$1,000.01 - $10,000",
+      "required_approvals": [
+        "Department Head",
+        "Procurement"
+      ],
+      "risk_flags": [],
+      "missing_information": [],
+      "missing_fields": [],
+      "rule_hits": [
+        {
+          "rule": "approval_threshold",
+          "section": "Policy \u00a74",
+          "finding": "Annual amount $4,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+          "adds_approvals": [
+            "Department Head",
+            "Procurement"
+          ],
+          "adds_flags": []
+        },
+        {
+          "rule": "budget_within",
+          "section": "Policy \u00a72",
+          "finding": "Cost $4,000 is within Marketing available budget $15,000 ($11,000 remaining). This does not imply approval.",
+          "adds_approvals": [],
+          "adds_flags": []
+        },
+        {
+          "rule": "extends_existing_agreement",
+          "section": "Policy \u00a73",
+          "finding": "Request extends an existing approved product/agreement (TaskFlow); not a duplicate purchase.",
+          "adds_approvals": [],
+          "adds_flags": []
+        }
+      ],
+      "open_items": [],
+      "budget": {
+        "department": "Marketing",
+        "available_usd": 15000.0,
+        "requested_usd": 4000,
+        "remaining_after_usd": 11000.0,
+        "within_budget": true
+      },
+      "vendor_review": {
+        "registry_status": "Approved",
+        "registry_review_date": "2026-06-03",
+        "registry_days_since_review": 119,
+        "api_status": "approved",
+        "api_review_date": "2026-06-03",
+        "api_days_since_review": 119,
+        "api_outcome": "ok",
+        "validity_days": 365,
+        "assessment_current": true,
+        "conflicts": []
+      },
+      "data_sensitivity": {
+        "data_access_level": "internal_marketing",
+        "category": "low",
+        "security_reasons": [],
+        "privacy_reasons": [],
+        "stores_data_outside_region": false
+      },
+      "overlap": {
+        "flagged": false,
+        "gap_stated": false,
+        "exact_duplicate": false,
+        "matches": [],
+        "extends": [
+          {
+            "software_id": "SW003",
+            "product_name": "TaskFlow",
+            "category": "Project Management",
+            "vendor_name": "TaskFlow",
+            "status": "Approved",
+            "annual_cost_usd": 36000,
+            "licensed_seats": 180,
+            "scope": "Company-wide",
+            "notes": "Project and task management",
+            "relation": "same_vendor_extension",
+            "reference": "software_catalog.csv:SW003"
+          }
+        ]
+      },
+      "injection": {
+        "detected": false,
+        "findings": []
+      },
+      "default_status": "ROUTE_FOR_APPROVAL",
+      "allowed_statuses": [
+        "ROUTE_FOR_APPROVAL",
+        "REQUEST_CLARIFICATION",
+        "MANUAL_REVIEW_REQUIRED",
+        "ESCALATE_SPECIALIST_REVIEW"
+      ],
+      "status_reasons": [
+        "Only standard business approvals are triggered."
+      ],
+      "approver_routing": [
+        {
+          "role": "Department Head",
+          "assignee": "David Chen (E009, Director, Marketing)",
+          "basis": "Director/VP of the requesting department, else first Director/VP in the reporting chain"
+        },
+        {
+          "role": "Procurement",
+          "assignee": "Procurement team queue",
+          "basis": "Functional review queue"
+        }
+      ]
+    }
+  }
+}

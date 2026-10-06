@@ -1,0 +1,826 @@
+{
+  "case_id": "EXT-23",
+  "decision": {
+    "request_id": "SYN-1023",
+    "recommendation": "Request clarification from the requester regarding their identity and existing license utilisation. Do not proceed with approval until the requester is verified and the need for new seats is confirmed.",
+    "evidence": [
+      {
+        "source": "get_purchase_request",
+        "finding": "MetricLoop Additional Seats from MetricLoop (Analytics / BI): annual cost $2,000, users 3, data access 'internal_documents', integrations: none, urgency 'normal'.",
+        "reference": "requests.json:SYN-1023"
+      },
+      {
+        "source": "get_requester_profile",
+        "finding": "Requester could not be verified: Employee 'E999' not found in employees.csv",
+        "reference": "employees.csv"
+      },
+      {
+        "source": "check_department_budget",
+        "finding": "Budget could not be verified: No software budget record for department 'Analytics / BI'",
+        "reference": "department_budgets.csv"
+      },
+      {
+        "source": "search_existing_software",
+        "finding": "Catalog SW006 MetricLoop (MetricLoop, Analytics / BI) is 'Approved', scope Company-wide, 55 seats, $52,000/yr; relation: same vendor extension. Notes: Dashboards and BI.",
+        "reference": "software_catalog.csv:SW006"
+      },
+      {
+        "source": "get_vendor_registry_record",
+        "finding": "Registry V006 MetricLoop: procurement 'Approved', security 'Approved' (review date 2026-05-10), legal terms 'Approved'.",
+        "reference": "vendors.csv:V006"
+      },
+      {
+        "source": "get_vendor_risk_assessment",
+        "finding": "Vendor-risk service: risk 'low', security review 'approved' (last review 2026-05-10), processes personal data: True, stores data outside region: False.",
+        "reference": "GET /vendor-risk/MetricLoop"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Request is not ready for approval: 1 required item(s) missing.",
+        "reference": "Policy \u00a71"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Annual amount $2,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+        "reference": "Policy \u00a74"
+      },
+      {
+        "source": "evaluate_procurement_policy",
+        "finding": "Request extends an existing approved product/agreement (MetricLoop); not a duplicate purchase.",
+        "reference": "Policy \u00a73"
+      },
+      {
+        "source": "get_purchase_request (agent)",
+        "finding": "Request for 3 additional seats of MetricLoop, costing $2,000 annually.",
+        "reference": "requests.json:SYN-1023"
+      },
+      {
+        "source": "get_requester_profile (agent)",
+        "finding": "Requester E999 not found in employee directory.",
+        "reference": "N/A"
+      },
+      {
+        "source": "get_vendor_registry_record (agent)",
+        "finding": "MetricLoop is an existing approved vendor (V006) with approved security and legal status.",
+        "reference": "vendors.csv:V006"
+      },
+      {
+        "source": "get_vendor_risk_assessment (agent)",
+        "finding": "MetricLoop has a low risk level and was last reviewed on 2026-05-10.",
+        "reference": "GET /vendor-risk/MetricLoop"
+      },
+      {
+        "source": "search_existing_software (agent)",
+        "finding": "MetricLoop is already in use company-wide (SW006).",
+        "reference": "software_catalog.csv:SW006"
+      }
+    ],
+    "required_approvals": [
+      "Department Head",
+      "Procurement"
+    ],
+    "missing_information": [
+      "Requester identity: requester_id 'E999' is not in the employee directory",
+      "Departmental budget availability",
+      "Confirmation of seat availability within existing license"
+    ],
+    "risk_flags": [
+      "existing_tool_overlap",
+      "missing_information"
+    ],
+    "next_step": "The requester must provide valid identity information and confirm that existing license capacity has been exhausted. Once provided, the request should be routed to the Department Head and Procurement. Questions for the requester: (1) Can you please confirm your full name and department? Your requester ID (E999) could not be verified in the employee directory. (2) Have you checked with your team's software administrator to see if any existing, unused seats are available under the current company-wide MetricLoop license (SW006) before requesting new ones?",
+    "human_review_required": true,
+    "telemetry": {
+      "llm_calls": 4,
+      "tool_calls": 9,
+      "tool_names": [
+        "get_purchase_request",
+        "get_requester_profile",
+        "check_department_budget",
+        "search_existing_software",
+        "get_vendor_registry_record",
+        "get_vendor_risk_assessment",
+        "check_department_budget",
+        "search_existing_software",
+        "evaluate_procurement_policy"
+      ]
+    }
+  },
+  "trace": {
+    "architecture": "staged",
+    "mode": "llm",
+    "provider": "openai",
+    "model": "gemini-3.1-flash-lite",
+    "fallback_reason": null,
+    "latency_ms": 18687.0,
+    "usage": {
+      "input_tokens": 8824,
+      "output_tokens": 1292,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 0
+    },
+    "cost_usd": null,
+    "guardrails": {
+      "corrections": [
+        "dropped 2 ungrounded evidence claim(s)"
+      ],
+      "omitted_approvals": [],
+      "omitted_flags": [],
+      "added_by_llm_approvals": [],
+      "added_by_llm_flags": [
+        "existing_tool_overlap"
+      ],
+      "status_overridden": false,
+      "llm_status": "REQUEST_CLARIFICATION",
+      "final_status": "REQUEST_CLARIFICATION",
+      "grounded_claims": 5,
+      "ungrounded_claims": [
+        {
+          "source": "lookup_policy_section",
+          "finding": "Annual amount $2,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+          "reason": "cites tool 'lookup_policy_section' which was not called in this run"
+        },
+        {
+          "source": "lookup_policy_section",
+          "finding": "Request is not ready for approval: 1 required item(s) missing (requester identity).",
+          "reason": "cites tool 'lookup_policy_section' which was not called in this run"
+        }
+      ],
+      "unsafe_language_blocked": false,
+      "raw_policy_compliant": true
+    },
+    "tool_log": [
+      {
+        "name": "get_purchase_request",
+        "caller": "analyst",
+        "args": {
+          "request_id": "SYN-1023"
+        },
+        "ok": true,
+        "latency_ms": 0.1,
+        "cached": false
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "analyst",
+        "args": {
+          "employee_id": "E999"
+        },
+        "ok": false,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "analyst",
+        "args": {
+          "annual_cost_usd": 2000,
+          "department": "Analytics / BI"
+        },
+        "ok": false,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "analyst",
+        "args": {
+          "use_case_keywords": [
+            "dashboard access",
+            "track weekly pipeline metrics"
+          ],
+          "product_name": "MetricLoop Additional Seats",
+          "vendor_name": "MetricLoop",
+          "category": "Analytics / BI"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "analyst",
+        "args": {
+          "vendor_name": "MetricLoop"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "analyst",
+        "args": {
+          "vendor_name": "MetricLoop"
+        },
+        "ok": true,
+        "latency_ms": 3.6,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1023"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_requester_profile",
+        "caller": "system",
+        "args": {
+          "employee_id": "E999"
+        },
+        "ok": false,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "check_department_budget",
+        "caller": "system",
+        "args": {
+          "department": "",
+          "annual_cost_usd": 2000.0
+        },
+        "ok": false,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "search_existing_software",
+        "caller": "system",
+        "args": {
+          "product_name": "MetricLoop Additional Seats",
+          "vendor_name": "MetricLoop",
+          "category": "Analytics / BI"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": false
+      },
+      {
+        "name": "get_vendor_registry_record",
+        "caller": "system",
+        "args": {
+          "vendor_name": "MetricLoop"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "get_vendor_risk_assessment",
+        "caller": "system",
+        "args": {
+          "vendor_name": "MetricLoop"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1023"
+        },
+        "ok": true,
+        "latency_ms": 0.2,
+        "cached": false
+      },
+      {
+        "name": "get_purchase_request",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1023"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      },
+      {
+        "name": "evaluate_procurement_policy",
+        "caller": "system",
+        "args": {
+          "request_id": "SYN-1023"
+        },
+        "ok": true,
+        "latency_ms": 0.0,
+        "cached": true
+      }
+    ],
+    "agent_runs": [
+      {
+        "role": "analyst",
+        "llm_calls": 3,
+        "tool_calls": 6,
+        "usage": {
+          "input_tokens": 5580,
+          "output_tokens": 617,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 10978.7,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_purchase_request",
+                "input": {
+                  "request_id": "SYN-1023"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 1365,
+              "output_tokens": 25
+            },
+            "latency_ms": 3851.9
+          },
+          {
+            "type": "tool",
+            "name": "get_purchase_request",
+            "input": {
+              "request_id": "SYN-1023"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "get_requester_profile",
+                "input": {
+                  "employee_id": "E999"
+                }
+              },
+              {
+                "name": "check_department_budget",
+                "input": {
+                  "annual_cost_usd": 2000,
+                  "department": "Analytics / BI"
+                }
+              },
+              {
+                "name": "search_existing_software",
+                "input": {
+                  "use_case_keywords": [
+                    "dashboard access",
+                    "track weekly pipeline metrics"
+                  ],
+                  "product_name": "MetricLoop Additional Seats",
+                  "vendor_name": "MetricLoop",
+                  "category": "Analytics / BI"
+                }
+              },
+              {
+                "name": "get_vendor_registry_record",
+                "input": {
+                  "vendor_name": "MetricLoop"
+                }
+              },
+              {
+                "name": "get_vendor_risk_assessment",
+                "input": {
+                  "vendor_name": "MetricLoop"
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 1654,
+              "output_tokens": 159
+            },
+            "latency_ms": 4585.6
+          },
+          {
+            "type": "tool",
+            "name": "get_requester_profile",
+            "input": {
+              "employee_id": "E999"
+            },
+            "ok": false
+          },
+          {
+            "type": "tool",
+            "name": "check_department_budget",
+            "input": {
+              "annual_cost_usd": 2000,
+              "department": "Analytics / BI"
+            },
+            "ok": false
+          },
+          {
+            "type": "tool",
+            "name": "search_existing_software",
+            "input": {
+              "use_case_keywords": [
+                "dashboard access",
+                "track weekly pipeline metrics"
+              ],
+              "product_name": "MetricLoop Additional Seats",
+              "vendor_name": "MetricLoop",
+              "category": "Analytics / BI"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_registry_record",
+            "input": {
+              "vendor_name": "MetricLoop"
+            },
+            "ok": true
+          },
+          {
+            "type": "tool",
+            "name": "get_vendor_risk_assessment",
+            "input": {
+              "vendor_name": "MetricLoop"
+            },
+            "ok": true
+          },
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_evidence_pack",
+                "input": {
+                  "prompt_injection_observed": false,
+                  "open_questions": [
+                    "Can the requester confirm their department and manager, as they were not found in the employee directory?",
+                    "Is there an existing seat available within the current company-wide license for MetricLoop?"
+                  ],
+                  "need_summary": "The requester (E999) is requesting 3 additional seats for the existing approved software 'MetricLoop' to provide dashboard access for pipeline metrics.",
+                  "injection_details": "None detected.",
+                  "data_quality_issues": [
+                    "Requester E999 not found in employee directory.",
+                    "No software budget record found for department 'Analytics / BI'.",
+                    "Seat utilisation data for existing MetricLoop license is unavailable."
+                  ],
+                  "overlap_assessment": {
+                    "existing_options": [
+                      "MetricLoop (SW006)"
+                    ],
+                    "reasoning": "MetricLoop is already an approved, company-wide tool. It is possible that additional seats are not required if existing licenses are under-utilised.",
+                    "disposition": "existing_tool_likely_sufficient"
+                  },
+                  "facts": [
+                    {
+                      "source": "get_purchase_request",
+                      "reference": "requests.json:SYN-1023",
+                      "finding": "Request for 3 additional seats of MetricLoop, costing $2,000 annually."
+                    },
+                    {
+                      "source": "get_vendor_registry_record",
+                      "reference": "vendors.csv:V006",
+                      "finding": "MetricLoop is an existing approved vendor (V006) with approved security and legal status."
+                    },
+                    {
+                      "source": "get_vendor_risk_assessment",
+                      "finding": "MetricLoop has a low risk level and was last reviewed on 2026-05-10.",
+                      "reference": "GET /vendor-risk/MetricLoop"
+                    },
+                    {
+                      "finding": "MetricLoop is already in use company-wide (SW006).",
+                      "source": "search_existing_software",
+                      "reference": "software_catalog.csv:SW006"
+                    }
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 2561,
+              "output_tokens": 433
+            },
+            "latency_ms": 2541.2
+          }
+        ]
+      },
+      {
+        "role": "reviewer",
+        "llm_calls": 1,
+        "tool_calls": 0,
+        "usage": {
+          "input_tokens": 3244,
+          "output_tokens": 675,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0
+        },
+        "llm_latency_ms": 7011.5,
+        "validation_errors": 0,
+        "transcript": [
+          {
+            "type": "llm",
+            "text": "",
+            "stop_reason": "tool_calls",
+            "tool_uses": [
+              {
+                "name": "submit_decision",
+                "input": {
+                  "next_step": "The requester must provide valid identity information and confirm that existing license capacity has been exhausted. Once provided, the request should be routed to the Department Head and Procurement.",
+                  "missing_information": [
+                    "Requester identity (E999 not found)",
+                    "Departmental budget availability",
+                    "Confirmation of seat availability within existing license"
+                  ],
+                  "overlap_disposition": "existing_tool_likely_sufficient",
+                  "rationale": "The request is for additional seats of an existing, approved tool. However, the requester's identity cannot be verified, and there is no evidence that existing, under-utilised seats have been checked. Per Policy \u00a71, the request is incomplete. The cost triggers Department Head and Procurement review per Policy \u00a74.",
+                  "required_approvals": [
+                    "Department Head",
+                    "Procurement"
+                  ],
+                  "risk_flags": [
+                    "missing_information",
+                    "existing_tool_overlap"
+                  ],
+                  "clarification_questions": [
+                    "Can you please confirm your full name and department? Your requester ID (E999) could not be verified in the employee directory.",
+                    "Have you checked with your team's software administrator to see if any existing, unused seats are available under the current company-wide MetricLoop license (SW006) before requesting new ones?"
+                  ],
+                  "prompt_injection_observed": false,
+                  "recommendation": "Request clarification from the requester regarding their identity and existing license utilisation. Do not proceed with approval until the requester is verified and the need for new seats is confirmed.",
+                  "status": "REQUEST_CLARIFICATION",
+                  "evidence": [
+                    {
+                      "source": "get_purchase_request",
+                      "reference": "requests.json:SYN-1023",
+                      "finding": "Request for 3 additional seats of MetricLoop, costing $2,000 annually."
+                    },
+                    {
+                      "reference": "N/A",
+                      "finding": "Requester E999 not found in employee directory.",
+                      "source": "get_requester_profile"
+                    },
+                    {
+                      "source": "get_vendor_registry_record",
+                      "reference": "vendors.csv:V006",
+                      "finding": "MetricLoop is an existing approved vendor (V006) with approved security and legal status."
+                    },
+                    {
+                      "reference": "GET /vendor-risk/MetricLoop",
+                      "source": "get_vendor_risk_assessment",
+                      "finding": "MetricLoop has a low risk level and was last reviewed on 2026-05-10."
+                    },
+                    {
+                      "reference": "software_catalog.csv:SW006",
+                      "source": "search_existing_software",
+                      "finding": "MetricLoop is already in use company-wide (SW006)."
+                    },
+                    {
+                      "source": "lookup_policy_section",
+                      "reference": "Policy \u00a74",
+                      "finding": "Annual amount $2,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement."
+                    },
+                    {
+                      "finding": "Request is not ready for approval: 1 required item(s) missing (requester identity).",
+                      "source": "lookup_policy_section",
+                      "reference": "Policy \u00a71"
+                    }
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "input_tokens": 3244,
+              "output_tokens": 675
+            },
+            "latency_ms": 7011.5
+          }
+        ]
+      }
+    ],
+    "evidence_pack": {
+      "need_summary": "The requester (E999) is requesting 3 additional seats for the existing approved software 'MetricLoop' to provide dashboard access for pipeline metrics.",
+      "facts": [
+        {
+          "source": "get_purchase_request",
+          "finding": "Request for 3 additional seats of MetricLoop, costing $2,000 annually.",
+          "reference": "requests.json:SYN-1023"
+        },
+        {
+          "source": "get_vendor_registry_record",
+          "finding": "MetricLoop is an existing approved vendor (V006) with approved security and legal status.",
+          "reference": "vendors.csv:V006"
+        },
+        {
+          "source": "get_vendor_risk_assessment",
+          "finding": "MetricLoop has a low risk level and was last reviewed on 2026-05-10.",
+          "reference": "GET /vendor-risk/MetricLoop"
+        },
+        {
+          "source": "search_existing_software",
+          "finding": "MetricLoop is already in use company-wide (SW006).",
+          "reference": "software_catalog.csv:SW006"
+        }
+      ],
+      "overlap_assessment": {
+        "disposition": "existing_tool_likely_sufficient",
+        "existing_options": [
+          "MetricLoop (SW006)"
+        ],
+        "reasoning": "MetricLoop is already an approved, company-wide tool. It is possible that additional seats are not required if existing licenses are under-utilised."
+      },
+      "data_quality_issues": [
+        "Requester E999 not found in employee directory.",
+        "No software budget record found for department 'Analytics / BI'.",
+        "Seat utilisation data for existing MetricLoop license is unavailable."
+      ],
+      "open_questions": [
+        "Can the requester confirm their department and manager, as they were not found in the employee directory?",
+        "Is there an existing seat available within the current company-wide license for MetricLoop?"
+      ],
+      "prompt_injection_observed": false,
+      "injection_details": "None detected."
+    },
+    "draft": {
+      "status": "REQUEST_CLARIFICATION",
+      "recommendation": "Request clarification from the requester regarding their identity and existing license utilisation. Do not proceed with approval until the requester is verified and the need for new seats is confirmed.",
+      "rationale": "The request is for additional seats of an existing, approved tool. However, the requester's identity cannot be verified, and there is no evidence that existing, under-utilised seats have been checked. Per Policy \u00a71, the request is incomplete. The cost triggers Department Head and Procurement review per Policy \u00a74.",
+      "evidence": [
+        {
+          "source": "get_purchase_request",
+          "finding": "Request for 3 additional seats of MetricLoop, costing $2,000 annually.",
+          "reference": "requests.json:SYN-1023"
+        },
+        {
+          "source": "get_requester_profile",
+          "finding": "Requester E999 not found in employee directory.",
+          "reference": "N/A"
+        },
+        {
+          "source": "get_vendor_registry_record",
+          "finding": "MetricLoop is an existing approved vendor (V006) with approved security and legal status.",
+          "reference": "vendors.csv:V006"
+        },
+        {
+          "source": "get_vendor_risk_assessment",
+          "finding": "MetricLoop has a low risk level and was last reviewed on 2026-05-10.",
+          "reference": "GET /vendor-risk/MetricLoop"
+        },
+        {
+          "source": "search_existing_software",
+          "finding": "MetricLoop is already in use company-wide (SW006).",
+          "reference": "software_catalog.csv:SW006"
+        },
+        {
+          "source": "lookup_policy_section",
+          "finding": "Annual amount $2,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+          "reference": "Policy \u00a74"
+        },
+        {
+          "source": "lookup_policy_section",
+          "finding": "Request is not ready for approval: 1 required item(s) missing (requester identity).",
+          "reference": "Policy \u00a71"
+        }
+      ],
+      "required_approvals": [
+        "Department Head",
+        "Procurement"
+      ],
+      "risk_flags": [
+        "missing_information",
+        "existing_tool_overlap"
+      ],
+      "missing_information": [
+        "Requester identity (E999 not found)",
+        "Departmental budget availability",
+        "Confirmation of seat availability within existing license"
+      ],
+      "clarification_questions": [
+        "Can you please confirm your full name and department? Your requester ID (E999) could not be verified in the employee directory.",
+        "Have you checked with your team's software administrator to see if any existing, unused seats are available under the current company-wide MetricLoop license (SW006) before requesting new ones?"
+      ],
+      "overlap_disposition": "existing_tool_likely_sufficient",
+      "next_step": "The requester must provide valid identity information and confirm that existing license capacity has been exhausted. Once provided, the request should be routed to the Department Head and Procurement.",
+      "prompt_injection_observed": false
+    },
+    "assessment": {
+      "reference_date": "2026-09-30",
+      "annual_amount_usd": 2000.0,
+      "approval_tier": "$1,000.01 - $10,000",
+      "required_approvals": [
+        "Department Head",
+        "Procurement"
+      ],
+      "risk_flags": [
+        "missing_information"
+      ],
+      "missing_information": [
+        "Requester identity: requester_id 'E999' is not in the employee directory"
+      ],
+      "missing_fields": [
+        "requester"
+      ],
+      "rule_hits": [
+        {
+          "rule": "required_information",
+          "section": "Policy \u00a71",
+          "finding": "Request is not ready for approval: 1 required item(s) missing.",
+          "adds_approvals": [],
+          "adds_flags": [
+            "missing_information"
+          ]
+        },
+        {
+          "rule": "approval_threshold",
+          "section": "Policy \u00a74",
+          "finding": "Annual amount $2,000 falls in tier '$1,000.01 - $10,000' -> Department Head, Procurement.",
+          "adds_approvals": [
+            "Department Head",
+            "Procurement"
+          ],
+          "adds_flags": []
+        },
+        {
+          "rule": "extends_existing_agreement",
+          "section": "Policy \u00a73",
+          "finding": "Request extends an existing approved product/agreement (MetricLoop); not a duplicate purchase.",
+          "adds_approvals": [],
+          "adds_flags": []
+        }
+      ],
+      "open_items": [],
+      "budget": {
+        "department": null,
+        "available_usd": null,
+        "requested_usd": 2000,
+        "remaining_after_usd": null,
+        "within_budget": null
+      },
+      "vendor_review": {
+        "registry_status": "Approved",
+        "registry_review_date": "2026-05-10",
+        "registry_days_since_review": 143,
+        "api_status": "approved",
+        "api_review_date": "2026-05-10",
+        "api_days_since_review": 143,
+        "api_outcome": "ok",
+        "validity_days": 365,
+        "assessment_current": true,
+        "conflicts": []
+      },
+      "data_sensitivity": {
+        "data_access_level": "internal_documents",
+        "category": "low",
+        "security_reasons": [],
+        "privacy_reasons": [],
+        "stores_data_outside_region": false
+      },
+      "overlap": {
+        "flagged": false,
+        "gap_stated": false,
+        "exact_duplicate": false,
+        "matches": [],
+        "extends": [
+          {
+            "software_id": "SW006",
+            "product_name": "MetricLoop",
+            "category": "Analytics / BI",
+            "vendor_name": "MetricLoop",
+            "status": "Approved",
+            "annual_cost_usd": 52000,
+            "licensed_seats": 55,
+            "scope": "Company-wide",
+            "notes": "Dashboards and BI",
+            "relation": "same_vendor_extension",
+            "reference": "software_catalog.csv:SW006"
+          }
+        ]
+      },
+      "injection": {
+        "detected": false,
+        "findings": []
+      },
+      "default_status": "REQUEST_CLARIFICATION",
+      "allowed_statuses": [
+        "REQUEST_CLARIFICATION"
+      ],
+      "status_reasons": [
+        "Material information is missing (Policy \u00a71)."
+      ],
+      "approver_routing": [
+        {
+          "role": "Department Head",
+          "assignee": "Unresolved - no department head found",
+          "basis": "Director/VP of the requesting department, else first Director/VP in the reporting chain"
+        },
+        {
+          "role": "Procurement",
+          "assignee": "Procurement team queue",
+          "basis": "Functional review queue"
+        }
+      ]
+    }
+  }
+}
