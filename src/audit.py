@@ -20,7 +20,7 @@ _LOCK = threading.Lock()
 
 def record_human_action(*, request_id: str, reviewer: str, action: str, justification: str, architecture: str,
                         copilot_recommendation: str, required_approvals: list[str], risk_flags: list[str],
-                        path: Path = AUDIT_PATH) -> dict:
+                        path: Path | None = None) -> dict:
     if action not in HUMAN_ACTIONS:
         raise ValueError(f"Unknown action '{action}'")
     if not reviewer.strip():
@@ -39,6 +39,7 @@ def record_human_action(*, request_id: str, reviewer: str, action: str, justific
         "risk_flags": risk_flags,
         "note": "Recorded reviewer action. Purchasing and approvals happen in the procurement system, not in the copilot.",
     }
+    path = path or AUDIT_PATH  # resolved at call time so tests can redirect it
     with _LOCK:
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("a", encoding="utf-8") as f:
@@ -46,7 +47,8 @@ def record_human_action(*, request_id: str, reviewer: str, action: str, justific
     return entry
 
 
-def read_log(path: Path = AUDIT_PATH) -> list[dict]:
+def read_log(path: Path | None = None) -> list[dict]:
+    path = path or AUDIT_PATH
     if not path.exists():
         return []
     rows = []
