@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Procurement Copilot</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧾</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="logo">◆</span><div><div class="brand-name">Procurement Copilot</div><div class="brand-sub">AI-assisted purchase review</div></div></div>
+    <nav class="nav" id="nav">
+      <button class="nav-item active" data-view="copilot">Requests</button>
+      <button class="nav-item" data-view="compare">Compare</button>
+      <button class="nav-item" data-view="eval">Evaluation</button>
+      <button class="nav-item" data-view="audit">Audit log</button>
+      <button class="nav-item" data-view="how">How it works</button>
+    </nav>
+    <div class="status" id="status"></div>
+  </header>
+
+  <main>
+    <!-- Requests: inbox + case + evidence -->
+    <section class="view active" id="view-copilot">
+      <aside class="inbox">
+        <div class="inbox-head">
+          <div><div class="h-title">Inbox</div><div class="muted small" id="inbox-count"></div></div>
+          <button class="btn btn-ghost btn-sm" id="btn-new">+ New</button>
+        </div>
+        <input class="search" id="search" placeholder="Search requests…" autocomplete="off">
+        <div class="inbox-list" id="inbox-list"></div>
+      </aside>
+
+      <section class="case" id="case"></section>
+
+      <aside class="side" id="side">
+        <div class="side-tabs">
+          <button class="side-tab active" data-tab="evidence">Evidence</button>
+          <button class="side-tab" data-tab="trace">Trace</button>
+        </div>
+        <div class="side-body" id="side-body"><div class="empty-side">Run an analysis to see the evidence gathered by the tools.</div></div>
+      </aside>
+    </section>
+
+    <section class="view" id="view-compare"><div class="page" id="compare"></div></section>
+    <section class="view" id="view-eval"><div class="page" id="eval"></div></section>
+    <section class="view" id="view-audit"><div class="page" id="audit"></div></section>
+    <section class="view" id="view-how"><div class="page" id="how"></div></section>
+  </main>
+
+  <div class="modal-backdrop" id="modal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-head"><div class="h-title" id="modal-title">New purchase request</div><button class="icon-btn" id="modal-close" aria-label="Close">✕</button></div>
+      <form id="new-form" class="form-grid">
+        <label>Requester<select name="requester_id" id="f-requester" required></select></label>
+        <label>Urgency<select name="urgency"><option>normal</option><option>high</option><option>urgent</option></select></label>
+        <label>Product name<input name="product_name" placeholder="e.g. ChartPilot"></label>
+        <label>Vendor name<input name="vendor_name" placeholder="e.g. ChartPilot Ltd"></label>
+        <label>Category<input name="category" placeholder="e.g. Analytics / BI"></label>
+        <label>Data access level<select name="data_access_level">
+          <option>unknown</option><option>none</option><option>internal_documents</option><option>internal_marketing</option>
+          <option>confidential_documents</option><option>source_code</option><option>production_telemetry</option>
+          <option>employee_pii</option><option>customer_pii</option><option>credentials</option></select></label>
+        <label>Annual cost (USD)<input name="annual_cost_usd" type="number" min="0" step="0.01" placeholder="blank if unknown"></label>
+        <label>Number of users<input name="user_count" type="number" min="0" step="1" placeholder="blank if unknown"></label>
+        <label class="span2">Integrations (comma separated)<input name="requested_integrations" placeholder="e.g. SSO, CRM"></label>
+        <label class="span2">Business justification<textarea name="business_justification" rows="3" placeholder="Why is this needed? Is any existing tool insufficient?"></textarea></label>
+        <div class="span2 modal-actions"><span class="muted small">Missing fields stay missing. The copilot never invents values.</span><button class="btn btn-primary" type="submit">Add &amp; analyze</button></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
