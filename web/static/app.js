@@ -387,28 +387,95 @@ async function renderAudit() {
       </tbody></table></div>` : `<div class="card empty"><div class="big">📜</div><div class="t">No decisions yet</div><div>Analyze a request and record a human decision.</div></div>`);
 }
 
-function renderHow() {
+async function renderHow() {
+  let ev = null;
+  try { ev = await api("/api/evaluation"); } catch (_) {}
+  const pr = (a) => (ev?.available && ev.summary[a]?.pass_rate != null ? `${ev.summary[a].pass_rate}%` : "—");
+  const owner = { ai: ["#7c3aed", "AI"], code: ["#d97706", "Code"], human: ["#059669", "Human"] };
+  const chip = (k) => `<span class="own" style="--c:${owner[k][0]}">${owner[k][1]}</span>`;
+  const steps = [
+    ["Employee request", "Form fields + free-text justification, treated as untrusted data", ["code"]],
+    ["Understand need", "Read the justification; spot vague needs, hidden data use or embedded instructions", ["ai"]],
+    ["Gather evidence", "8 tools: requester, budget, catalog, vendor registry, vendor-risk API, policy", ["ai", "code"]],
+    ["Recommend action", "Policy engine sets the floor; the AI drafts; guardrails validate", ["code", "ai"]],
+    ["Human review", "Approvals, exceptions and overrides, recorded in the audit log", ["human"]],
+  ];
+  const tools = [
+    ["get_purchase_request", "Request + injection scan", "Data", "#64748b"],
+    ["get_requester_profile", "Manager & department head", "Data", "#64748b"],
+    ["check_department_budget", "Cost vs available budget", "Deterministic", "#d97706"],
+    ["search_existing_software", "Overlap with approved tools", "Deterministic", "#d97706"],
+    ["get_vendor_registry_record", "Internal vendor status & terms", "Data", "#64748b"],
+    ["get_vendor_risk_assessment", "External vendor-risk service", "External API", "#db2777"],
+    ["evaluate_procurement_policy", "Thresholds, reviews, conflicts", "Deterministic", "#d97706"],
+    ["lookup_policy_section", "Exact policy wording", "Retrieval", "#2563eb"],
+  ];
+  const guarantees = [
+    ["🛡️", "Escalate, never de-escalate", "The policy engine sets the floor for approvals and risk flags. The AI can add caution, never remove it."],
+    ["🔎", "Grounded evidence", "Every AI claim must cite a tool called in the same run and match its numbers, or it is dropped."],
+    ["🧱", "Untrusted business data", "Request text and vendor notes are data. Embedded instructions are flagged and ignored."],
+    ["⛔", "Fail safe", "If a tool or the model is unavailable, the result is unverified and goes to a human, never assumed favourable."],
+    ["👤", "Humans decide", "The copilot cannot purchase, approve spend, edit budgets or accept vendor terms."],
+    ["📅", "Policy date, not clock", "Review currency is checked against the policy reference date, 2026-09-30, never the machine clock."],
+  ];
+  const pipe = (nodes) => nodes.map(([t, s, c], i) =>
+    `${i ? `<div class="pipe-arrow">↓</div>` : ""}<div class="pipe-node" style="--c:${c}"><div class="pn-t">${t}</div><div class="pn-s">${s}</div></div>`).join("");
+
   $("#how").innerHTML = `
-    <div class="page-head"><div class="page-title">How it works</div><div class="muted">AI interprets and recommends · Code decides thresholds and deterministic checks · Humans approve.</div></div>
+    <div class="how-hero">
+      <div><div class="how-kicker">How it works</div>
+        <div class="how-title">AI interprets. Code decides the rules. Humans approve.</div>
+        <div class="how-sub">An agent gathers evidence with tools, a deterministic policy engine applies the procurement rules, and guardrails make sure the AI can only add caution. Every approval stays with a person.</div></div>
+      <div class="how-stats">
+        <div class="how-stat"><b>8</b><span>tools</span></div><div class="how-stat"><b>3</b><span>deterministic</span></div>
+        <div class="how-stat"><b>33</b><span>eval cases</span></div><div class="how-stat"><b>0</b><span>auto-approvals</span></div></div>
+    </div>
+
     <div class="cols3">
-      <div class="card layer" style="--c:#7c3aed"><div class="card-title">🤖 AI</div><b>Interprets context & recommends</b><div class="muted small" style="margin-top:4px">Is the stated gap vs existing tools credible? Does the text reveal data the form didn't declare? What should the requester be asked?</div></div>
-      <div class="card layer" style="--c:#d97706"><div class="card-title">⚙️ Code</div><b>Thresholds & deterministic checks</b><div class="muted small" style="margin-top:4px">Approval tiers, budget, 365-day review currency on the policy date, registry/API conflicts, Security/Privacy/Legal triggers, injection scan.</div></div>
-      <div class="card layer" style="--c:#059669"><div class="card-title">👤 Human</div><b>Sensitive approvals & exceptions</b><div class="muted small" style="margin-top:4px">Every approval, budget exception and override, recorded with a justification in the audit log.</div></div>
+      <div class="card prin" style="--c:#7c3aed"><div class="prin-ico">🤖</div><div class="prin-k">AI</div><div class="prin-t">Interprets context & recommends</div>
+        <ul class="ticks"><li>Is the stated gap vs existing tools credible?</li><li>Does the text reveal data the form didn't declare?</li><li>What should the requester be asked next?</li></ul></div>
+      <div class="card prin" style="--c:#d97706"><div class="prin-ico">⚙️</div><div class="prin-k">Code</div><div class="prin-t">Thresholds & deterministic checks</div>
+        <ul class="ticks"><li>Approval tiers and budget fit</li><li>365-day vendor review currency</li><li>Registry vs API conflicts, review triggers</li></ul></div>
+      <div class="card prin" style="--c:#059669"><div class="prin-ico">👤</div><div class="prin-k">Human</div><div class="prin-t">Sensitive approvals & exceptions</div>
+        <ul class="ticks"><li>Every approval and sign-off</li><li>Budget exceptions and overrides</li><li>Recorded with a justification</li></ul></div>
     </div>
-    <div class="card" style="margin-top:14px"><div class="card-title">Workflow</div>
-      <div class="flow"><div class="node">1 · Request<span>untrusted text</span></div><div class="arrow">→</div><div class="node">2 · Understand<span>LLM reads need</span></div><div class="arrow">→</div>
-      <div class="node">3 · Gather evidence<span>8 tools · budget · catalog · vendor · policy</span></div><div class="arrow">→</div><div class="node">4 · Recommend<span>LLM draft → guardrails</span></div><div class="arrow">→</div>
-      <div class="node" style="background:#fffbeb;border-color:#fde68a">5 · Human review<span>approvals & exceptions</span></div></div></div>
-    <div class="grid2" style="margin-top:14px">
-      <div class="card"><div class="card-title">A · Single agent</div><div class="flow"><div class="node" style="background:#f5f3ff">Procurement agent<span>8 tools incl. policy engine</span></div><div class="arrow">→</div><div class="node" style="background:#fef2f2">Guardrails<span>escalate, never de-escalate</span></div><div class="arrow">→</div><div class="node">Decision</div></div></div>
-      <div class="card"><div class="card-title">B · Staged (2 agents)</div><div class="flow"><div class="node" style="background:#f5f3ff">Analyst<span>data tools</span></div><div class="arrow">→</div><div class="node" style="background:#fffbeb">Policy engine<span>code</span></div><div class="arrow">→</div><div class="node" style="background:#f5f3ff">Reviewer<span>decides</span></div><div class="arrow">→</div><div class="node" style="background:#fef2f2">Guardrails</div></div></div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="card-title">Workflow · who owns each step</div>
+      <div class="timeline">${steps.map(([t, d, o], i) => `
+        <div class="tl-step ${i === 4 ? "human" : ""}"><div class="tl-dot">${i + 1}</div>
+          <div class="tl-t">${t}</div><div class="tl-d">${d}</div><div class="tl-own">${o.map(chip).join("")}</div></div>`).join("")}</div>
     </div>
-    <div class="card" style="margin-top:14px"><div class="card-title">Guarantees</div><ul class="list">
-      <li>The policy engine sets the floor for approvals and risk flags; the AI can add caution, never remove it.</li>
-      <li>Every AI evidence claim must cite a tool called in the same run and match its numbers, otherwise it is dropped.</li>
-      <li>Request text and vendor notes are untrusted data; embedded instructions are flagged and ignored.</li>
-      <li>If a tool or the model is unavailable, the result is "unverified" and routed to a human, never assumed favourable.</li>
-      <li>The copilot cannot purchase, approve spend, edit budgets or accept terms. Humans decide.</li></ul></div>`;
+
+    <div class="grid2" style="margin-top:16px">
+      <div class="card arch shipped">
+        <div class="arch-head"><div><div class="card-title" style="margin:0">Architecture A</div><div class="arch-name">Single agent</div></div>
+          <div style="text-align:right"><span class="ship">✓ Shipped</span><div class="arch-score">${pr("single")}<span> pass</span></div></div></div>
+        <div class="pipe">${pipe([["Procurement agent", "LLM · 8 tools incl. the policy engine", "#7c3aed"],
+          ["Guardrails", "Code · merge with engine floor, grounding & language checks", "#dc2626"],
+          ["Decision → human review", "Recommendation, evidence, approvals, next step", "#059669"]])}</div>
+        <div class="arch-foot">Fewer moving parts and the correct next action on 97% of cases. It missed 2 semantic cases.</div>
+      </div>
+      <div class="card arch">
+        <div class="arch-head"><div><div class="card-title" style="margin:0">Architecture B</div><div class="arch-name">Staged · 2 agents</div></div>
+          <div style="text-align:right"><span class="ship alt">Evaluated</span><div class="arch-score">${pr("staged")}<span> pass</span></div></div></div>
+        <div class="pipe">${pipe([["Analyst agent", "LLM · data tools only, cannot decide", "#7c3aed"],
+          ["Policy engine", "Code · binding thresholds and triggers", "#d97706"],
+          ["Reviewer agent", "LLM · decides from the evidence pack", "#7c3aed"],
+          ["Guardrails → human review", "Same checks as A", "#dc2626"]])}</div>
+        <div class="arch-foot">Caught every semantic case, but the handoff turned open questions into unnecessary clarification requests.</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="card-title">Tools available to the agents</div>
+      <div class="tools">${tools.map(([n, d, k, c]) => `<div class="tool"><div class="tool-top"><span class="mono tool-n">${n}</span><span class="tool-k" style="--c:${c}">${k}</span></div><div class="tool-d">${d}</div></div>`).join("")}</div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="card-title">Guarantees</div>
+      <div class="guar">${guarantees.map(([i, t, d]) => `<div class="g"><div class="g-ico">${i}</div><div><div class="g-t">${t}</div><div class="g-d">${d}</div></div></div>`).join("")}</div>
+    </div>`;
 }
 
 const VIEWS = { copilot: null, compare: renderCompare, eval: renderEval, audit: renderAudit, how: renderHow };
