@@ -315,9 +315,15 @@ function renderAll() { renderInbox(); renderCase(); renderSide(); }
 async function renderCompare() {
   const r = current();
   const el = $("#compare");
-  el.innerHTML = `<div class="page-head" style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px">
-      <div><div class="page-title">Compare architectures</div><div class="muted">Same request, three ways: ${esc(r?.request_id)} · ${esc(r?.product_name)}. Differences are highlighted.</div></div>
-      <button class="btn btn-primary" id="cmp-run">Run comparison</button></div><div id="cmp-body"></div>`;
+  const options = state.requests.map((x) => `<option value="${esc(x.request_id)}" ${x.request_id === r?.request_id ? "selected" : ""}>${esc(x.request_id)} · ${esc(x.product_name || "(no product)")} · ${esc(money(x.annual_cost_usd))}</option>`).join("");
+  el.innerHTML = `<div class="page-head" style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+      <div><div class="page-title">Compare architectures</div><div class="muted">Runs A · Single agent, B · Staged and the rules-only baseline on the same request. Differences are highlighted.</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-end">
+        <label style="min-width:340px">Request to compare<select id="cmp-req">${options}</select></label>
+        <button class="btn btn-primary" id="cmp-run">Run comparison</button></div></div>
+      <div id="cmp-body"><div class="card empty"><div class="big">⚖️</div><div class="t">Pick a request and click Run comparison</div>
+      <div>A and B call the LLM (a few requests each from your quota). Rules only is instant.</div></div></div>`;
+  $("#cmp-req").onchange = (ev) => { state.selected = ev.target.value; renderAll(); renderCompare(); };
   const draw = (data) => {
     const all = Object.values(data);
     const sets = (f) => all.map((x) => JSON.stringify([...f(x)].sort()));
