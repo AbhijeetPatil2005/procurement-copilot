@@ -1,4 +1,4 @@
-"""One-command local start: vendor-risk mock API + Procurement Copilot UI.
+"""One-command local start: vendor-risk mock API + Procurement Copilot web app.
 
     python run_local.py            # API on :8001 + UI on :8501
     python run_local.py --no-ui    # API only
@@ -55,11 +55,11 @@ def main() -> None:
         if not args.no_ui:
             if not _port_free(args.ui_port):
                 raise RuntimeError(f"Port {args.ui_port} is already in use. Stop the other process or pass --ui-port.")
-            print(f"Starting Procurement Copilot UI on http://127.0.0.1:{args.ui_port} ...")
-            # Starter-pack fix: without --server.headless Streamlit blocks on a first-run e-mail prompt.
+            print(f"Starting Procurement Copilot web app on http://127.0.0.1:{args.ui_port} ...")
+            # FastAPI app (web/server.py) serving the JSON API and the single-page reviewer UI.
             procs.append(subprocess.Popen(
-                [sys.executable, "-m", "streamlit", "run", "app.py", "--server.port", str(args.ui_port),
-                 "--server.headless", "true", "--browser.gatherUsageStats", "false"], cwd=ROOT))
+                [sys.executable, "-m", "uvicorn", "web.server:app", "--host", "127.0.0.1", "--port", str(args.ui_port),
+                 "--log-level", "warning"], cwd=ROOT))
             print(f"\n  Open http://127.0.0.1:{args.ui_port}   (Ctrl+C to stop)\n")
 
         while True:
