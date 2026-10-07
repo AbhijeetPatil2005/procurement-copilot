@@ -1,55 +1,53 @@
-"""Capture README screenshots of the running UI (requires `pip install playwright && playwright install chromium`).
+"""Capture README screenshots of the running web app (requires `pip install playwright && playwright install chromium`).
 
     python run_local.py            # in another terminal
-    python scripts/capture_screenshots.py --architecture "A · Single agent"
+    python scripts/capture_screenshots.py --architecture single
 """
 from __future__ import annotations
 
 import argparse
-import re
 from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
 OUT = Path(__file__).resolve().parents[1] / "docs" / "screenshots"
+SEG_LABEL = {"single": "A · Single agent", "staged": "B · Staged", "rules": "Rules only"}
 
 
-def pick_request(page, request_id: str) -> None:
-    page.locator("[data-testid='stSidebar'] [data-baseweb='select']").first.click()
-    page.get_by_role("option", name=re.compile(rf"^{re.escape(request_id)} ")).click()
+def analyze(page, request_id: str, architecture: str) -> None:
+    page.locator(f".req[data-id='{request_id}']").click()
+    page.locator("#seg button", has_text=SEG_LABEL[architecture]).click()
+    page.locator("#run").click()
+    page.wait_for_selector(".decision", timeout=240_000)
     page.wait_for_timeout(800)
-
-
-def analyze(page, architecture: str) -> None:
-    page.locator("[data-testid='stSidebar']").get_by_text(architecture, exact=True).click()
-    page.get_by_role("button", name="Analyze request").click()
-    page.wait_for_selector(".pc-decision", timeout=180_000)
-    page.wait_for_timeout(1200)
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--url", default="http://127.0.0.1:8501")
-    ap.add_argument("--architecture", default="A · Single agent")
+    ap.add_argument("--architecture", default="single", choices=list(SEG_LABEL))
     args = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
     with sync_playwright() as p:
         browser = p.chromium.launch()
-        # Streamlit scrolls an inner container, so full_page alone misses content - use a tall viewport.
-        page = browser.new_page(viewport={"width": 1500, "height": 2300}, device_scale_factor=1)
+        page = browser.new_page(viewport={"width": 1600, "height": 1400})
         page.goto(args.url)
-        page.wait_for_selector(".pc-hero", timeout=60_000)
+        page.wait_for_selector(".req", timeout=60_000)
 
-        shots = [("REQ-1002", "copilot.png"), ("REQ-1006", "injection.png"), ("REQ-1007", "conflict.png")]
-        for request_id, name in shots:
-            pick_request(page, request_id)
-            analyze(page, args.architecture)
-            page.screenshot(path=str(OUT / name), full_page=True)
+        for request_id, name in [("REQ-1002", "copilot.png"), ("REQ-1006", "injection.png"), ("REQ-1007", "conflict.png")]:
+            analyze(page, request_id, args.architecture)
+            page.screenshot(path=str(OUT / name))
             print("saved", name)
 
-        page.get_by_role("tab", name="📊 Evaluation").click()
-        page.wait_for_timeout(1500)
-        page.screenshot(path=str(OUT / "evaluation.png"), full_page=True)
+        page.locator(".side-tab[data-tab='trace']").click()
+        page.wait_for_timeout(300)
+        page.screenshot(path=str(OUT / "trace.png"))
+        print("saved trace.png")
+
+        page.locator(".nav-item[data-view='eval']").click()
+        page.wait_for_selector(".tbl", timeout=30_000)
+        page.wait_for_timeout(500)
+        page.screenshot(path=str(OUT / "evaluation.png"))
         print("saved evaluation.png")
         browser.close()
 

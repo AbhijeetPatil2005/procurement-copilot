@@ -160,11 +160,11 @@ Every call is logged in a per-run `ToolContext` (args, caller, latency, cache hi
 | Issue | Impact | Fix |
 |---|---|---|
 | `.gitignore` excluded `evals/results_*.csv` | Required evaluation results would never reach the repo | Results go to `evals/results/` and are committed |
-| `run_local.py` launched Streamlit without `--server.headless` | First run blocks on an e-mail prompt | Headless flag, port pre-check, reuse of a running API |
+| `run_local.py` launched Streamlit without `--server.headless` | First run blocks on an e-mail prompt | Port pre-check, reuse of a running API; the UI is now a FastAPI web app, so the prompt no longer exists |
 | `evals/run_public_evals.py` did not start the mock API | Every case silently degraded to "vendor unavailable"; PUB-01 fails | Runner starts/reuses the API (`src/mock_service.py`) |
 | `vendor_client.get_vendor_risk` raised raw exceptions | 503/timeout/404 crash the tool; no retry, no schema validation | `VendorRiskClient` returns typed outcomes with bounded retry |
 | `mock_api` unquoted an already-decoded path param; route not path-typed | Vendor names containing `%` corrupted, `/` → 404 | `{vendor_name:path}`, no double decode |
 | pandas loads blank cells as `NaN` (truthy) | e.g. a missing `security_review_date` passes `if date:` | `DataRepository` normalises blanks to `None` |
 | E007's department "Go To Market" has no budget row; Sales/CS have no director | Naive department-head / budget lookups fail | Reporting-chain resolution + `budget_unverifiable` |
 | SignalWatch registry "Approved" (2025-07-01) vs API "expired" | Silent choice would pass an expired vendor | Conflict + expiry surfaced, manual review |
-| `app.py` showed raw JSON and could only analyse fixed IDs | No evidence panel, no human action | Full reviewer UI with intake form, evidence, actions, audit log |
+| `app.py` (Streamlit) showed raw JSON and could only analyse fixed IDs | No evidence panel, no human action | Replaced by a reviewer web app (`web/`): inbox, case view, evidence and trace, intake form, human decisions, audit log |

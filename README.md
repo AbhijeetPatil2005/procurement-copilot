@@ -14,13 +14,15 @@ The [decision memo](docs/ARCHITECTURE_DECISION.md) explains which one ships and 
 ![Copilot UI](docs/screenshots/copilot.png)
 
 <details>
-<summary><b>More screenshots</b>: prompt injection, conflicting vendor data, evaluation dashboard</summary>
+<summary><b>More screenshots</b>: prompt injection, conflicting vendor data, audit trace, evaluation dashboard</summary>
 
 | Prompt injection + incomplete request (REQ-1006) | Conflicting / expired vendor evidence (REQ-1007) |
 |---|---|
 | ![Injection](docs/screenshots/injection.png) | ![Conflict](docs/screenshots/conflict.png) |
 
-![Evaluation tab](docs/screenshots/evaluation.png)
+| Audit trace (tool calls, policy rules, guardrails) | Evaluation dashboard |
+|---|---|
+| ![Trace](docs/screenshots/trace.png) | ![Evaluation](docs/screenshots/evaluation.png) |
 
 _Captured from a live run (Architecture A, `gemini-3.1-flash-lite`) with `scripts/capture_screenshots.py`._
 </details>
@@ -53,7 +55,7 @@ python -m venv .venv
 python -m pip install -r requirements.txt
 cp .env.example .env          # Windows: Copy-Item .env.example .env   -> add ANTHROPIC_API_KEY
 python verify_setup.py        # pre-flight: packages, data, contract, mock API, copilot pipeline
-python run_local.py           # one command: vendor-risk API (:8001) + UI (:8501)
+python run_local.py           # one command: vendor-risk API (:8001) + web app (:8501)
 ```
 
 Open **http://127.0.0.1:8501**.
@@ -62,8 +64,8 @@ Open **http://127.0.0.1:8501**.
 
 | Command | Purpose |
 |---|---|
-| `python run_local.py` | Start the mock API and the UI |
-| `python -m pytest` | 59 unit and integration tests. Includes the agent loop with scripted LLMs and the Anthropic adapter against real SDK types; no network needed |
+| `python run_local.py` | Start the mock API and the web app |
+| `python -m pytest` | 66 unit and integration tests, including the web API. Includes the agent loop with scripted LLMs and the Anthropic adapter against real SDK types; no network needed |
 | `python evals/run_public_evals.py --architecture single\|staged` | Official public checks (starts the mock API automatically) |
 | `python evals/run_eval_suite.py --repeats 3 --update-docs` | Full comparison: 33 cases × {single, staged, rules}. Refreshes the tables below and in the memo |
 
@@ -76,18 +78,21 @@ flowchart LR
     R["1 · Employee request"] --> U["2 · Understand need"] --> G["3 · Gather evidence<br/>budget · existing tools · vendor risk · policy"] --> D["4 · Recommend next action"] --> H["5 · Human review"]
 ```
 
-The UI (`app.py`, Streamlit) is built for a procurement reviewer:
+The reviewer web app (`web/`: a FastAPI JSON API plus a single-page frontend, no build step) is laid out like a procurement inbox: requests on the left, the case in the middle, evidence and trace on the right.
 
 | Area | What it shows |
 |---|---|
-| **Request details** | Structured fields, plus the business justification in a box marked *untrusted*. Injected instructions are highlighted. |
+| **Inbox** | Every request with its latest status badge, search, and **+ New** to submit a request. |
+| **Request details** | Key figures (cost, users, budget fit, data access, integrations), plus the business justification in a box marked *untrusted*. Injected instructions are highlighted. |
 | **Recommendation** | A colour-coded status: *Route for approval*, *Escalate for specialist review*, *Evaluate existing tool first*, *Manual review required*, or *Request clarification*. Also shows the next step, required approvals with named approvers (manager and department head resolved from the org chart), risk flags, missing information, and open items. |
-| **Evidence panel** | Every finding with its source tool and record reference (`vendors.csv:V011`, `GET /vendor-risk/BrandBoard`, `Policy §5`). LLM interpretations are marked *agent* and appear only if they pass the grounding check. |
+| **Workflow tracker** | The brief's five steps (Request → Understand → Gather evidence → Recommend → Human review), advancing live while the agent works. |
+| **Evidence panel** | Every finding grouped by source tool, with its record reference (`vendors.csv:V011`, `GET /vendor-risk/BrandBoard`, `Policy §5`). LLM interpretations are tagged **AI** and appear only if they pass the grounding check. |
 | **Human decision** | Accept routing, return to requester, override, or reject. Override and reject require a justification. Each decision is written to an append-only audit log. The reviewer can download an approval packet (Markdown) or the decision (JSON). |
-| **Trace** | Policy rules applied (with section numbers), approver routing, every tool call (caller, latency, cache), guardrail corrections, the stage-1 evidence pack, and agent transcripts with token counts. |
-| **Compare architectures** | Runs A, B, and rules-only side by side on the same request. |
-| **Evaluation** | The comparison table plus a per-case pass/fail matrix from the latest run. |
+| **Trace** | Run details and tokens, guardrail corrections, every tool call (caller, latency, cache), policy rules applied with section numbers, and the Analyst → Reviewer handoff for B. |
+| **Compare** | Runs A, B and rules-only side by side on the same request and highlights where they differ. |
+| **Evaluation** | The ship decision, a card per architecture, and the per-case pass/fail grid from the latest run. |
 | **New request** | An intake form. Missing fields stay missing; nothing is invented. |
+| **Audit log** / **How it works** | Recorded human decisions; the AI / code / human design and both architectures. |
 
 Every outcome is a `ProcurementDecision` with: **recommendation · evidence · required_approvals · missing_information · risk_flags · next_step**. `human_review_required` is always `true`.
 
@@ -279,7 +284,8 @@ The full list of 12 is in [docs/ARCHITECTURE.md §9](docs/ARCHITECTURE.md#9-assu
 ## Project structure
 
 ```text
-app.py                      Streamlit reviewer UI
+web/server.py               FastAPI app: JSON API + serves the reviewer UI
+web/static/                 Single-page frontend (HTML/CSS/JS, no build step)
 run_local.py                One-command start (mock API + UI)
 verify_setup.py             Pre-flight checks
 src/
@@ -312,7 +318,7 @@ evals/
 docs/
   ARCHITECTURE.md           Diagrams, ownership table, assumptions, failure modes
   ARCHITECTURE_DECISION.md  Decision memo (≤ 500 words)
-tests/                      59 tests (engine, drift, injection, client, agents, guardrails, adapter, data)
+tests/                      66 tests (engine, drift, injection, client, agents, guardrails, adapter, web API, data)
 ```
 
 ---
