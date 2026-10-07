@@ -13,6 +13,18 @@ The [decision memo](docs/ARCHITECTURE_DECISION.md) explains which one ships and 
 
 ![Copilot UI](docs/screenshots/copilot.png)
 
+<details>
+<summary><b>More screenshots</b>: prompt injection, conflicting vendor data, evaluation dashboard</summary>
+
+| Prompt injection + incomplete request (REQ-1006) | Conflicting / expired vendor evidence (REQ-1007) |
+|---|---|
+| ![Injection](docs/screenshots/injection.png) | ![Conflict](docs/screenshots/conflict.png) |
+
+![Evaluation tab](docs/screenshots/evaluation.png)
+
+_Captured from a live run (Architecture A, `gemini-3.1-flash-lite`) with `scripts/capture_screenshots.py`._
+</details>
+
 ---
 
 ## Contents

@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import argparse
+import re
 from pathlib import Path
 
 from playwright.sync_api import sync_playwright
@@ -15,15 +16,14 @@ OUT = Path(__file__).resolve().parents[1] / "docs" / "screenshots"
 
 def pick_request(page, request_id: str) -> None:
     page.locator("[data-testid='stSidebar'] [data-baseweb='select']").first.click()
-    page.keyboard.type(request_id)
-    page.keyboard.press("Enter")
+    page.get_by_role("option", name=re.compile(rf"^{re.escape(request_id)} ")).click()
     page.wait_for_timeout(800)
 
 
 def analyze(page, architecture: str) -> None:
     page.locator("[data-testid='stSidebar']").get_by_text(architecture, exact=True).click()
     page.get_by_role("button", name="Analyze request").click()
-    page.wait_for_selector(".pc-banner", timeout=180_000)
+    page.wait_for_selector(".pc-decision", timeout=180_000)
     page.wait_for_timeout(1200)
 
 
@@ -38,7 +38,7 @@ def main() -> None:
         # Streamlit scrolls an inner container, so full_page alone misses content - use a tall viewport.
         page = browser.new_page(viewport={"width": 1500, "height": 2300}, device_scale_factor=1)
         page.goto(args.url)
-        page.wait_for_selector("text=AI Procurement Request Copilot", timeout=60_000)
+        page.wait_for_selector(".pc-hero", timeout=60_000)
 
         shots = [("REQ-1002", "copilot.png"), ("REQ-1006", "injection.png"), ("REQ-1007", "conflict.png")]
         for request_id, name in shots:
